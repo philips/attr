@@ -29,6 +29,9 @@ Extended attributes are accessed as atomic objects.
 Reading retrieves the whole value of an attribute and stores it in a buffer.
 Writing replaces any previous value with the new value.
 .PP
+Space consumed for extended attributes is counted towards the disk quotas
+of the file owner and file group.
+.PP
 Currently, support for extended attributes is implemented on Linux by
 the ext2, ext3 and XFS filesystem patches, which can be downloaded from
 .B http://acl.bestbits.at/
@@ -36,9 +39,8 @@ and
 .B http://oss.sgi.com/projects/xfs/
 respectively.
 .SH EXTENDED ATTRIBUTE NAMESPACES
-Attribute names are zero-terminated strings and typically have a short
-(filesystem dependent) length.
-The attribute name is always specified in the full
+Attribute names are zero-terminated strings.
+The attribute name is always specified in the fully qualified
 .IR namespace.attribute
 form, eg.
 .I user.mime_type
@@ -50,33 +52,41 @@ attributes.
 These different classes exist for several reasons, e.g. the permissions
 and capabilities required for manipulating extended attributes of one
 namespace may differ to another.
-They have also been used to distinguish filesystem-specific attribute
-names from canonical, filesystem-independent attribute names.
 .PP
-The extended attribute namespace is always specified as the first
-component of the name.
-This greatly simplifies certain operations, and provides a consistent,
-explicit interface for all operations.
-.PP
-Extended
+Currently the
 .I user
-attributes may be assigned to files and directories for storing arbitrary
-additional information such as the mime type, character set or encoding
-of a file.
-User attributes are subject to the same permissions as the contents of a file.
-The file owner can decide who is allowed to read and/or set these attributes.
-.PP
-Extended
+and
 .I system
-attributes are used by the kernel to store system objects such as
-Access Control Lists and Capabilities. 
-Read and write access permissions to system attributes
-depend on the policy implemented for each system attribute implemented
-in the kernel.
+extended attribute classes are defined as described below. Additional
+classes, such as attributes that are
+accessible only to processes trusted by the kernel, may be added in the
+future.
+.SS Extended user attributes
+Extended user attributes may be assigned to files and directories for
+storing arbitrary additional information such as the mime type,
+character set or encoding of a file. The access permissions for user
+attributes are defined by the file permission bits.
 .PP
-Additional types of extended attributes with different access permissions,
-such as attributes that are accessible only to processes trusted by the
-kernel, may be added in the future.
+The file permission bits of regular files and directories are
+interpreted differently from the file permission bits of special files
+and symbolic links. For regular files and directories the file
+permission bits define access to the file's contents, while for special
+files they define access to the device described by the special file.
+The file permissions of symbolic links are not used in access
+checks. These differences would allow users to consume filesystem resources in
+a way not controllable by disk quotas for group or world writable special files and directories.
+.PP
+For this reason, extended user attributes
+are disallowed for special files, and access to extended user
+attributes is restricted to the owner or users with appropriate
+capabilities for directories with the sticky bit set (see the
+.BR chmod (1)
+manual page for an explanation of Sticky Directories).
+.SS Extended system attributes
+Extended system attributes are used by the kernel to store system
+objects such as Access Control Lists and Capabilities.  Read and write
+access permissions to system attributes depend on the policy implemented
+for each system attribute implemented in the kernel.
 .SH FILESYSTEM DIFFERENCES
 The kernel and the filesystem may place limits on the maximum number
 and size of extended attributes that can be associated with a file.

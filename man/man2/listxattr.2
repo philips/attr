@@ -38,6 +38,8 @@ of extended attribute names associated with the given
 .I path
 in the filesystem.
 The list is the set of (NULL-terminated) names, one after the other.
+Names of extended attributes to which the calling process does not
+have access will be omitted from the list.
 The length of the attribute name
 .I list
 is returned.
@@ -70,10 +72,6 @@ An empty buffer of
 zero can be passed into these calls to return the current size of the
 list of extended attribute names, which can be used to estimate the
 size of a buffer which is sufficiently large to hold the list of names.
-.PP
-The interface is designed to allow guessing of initial buffer
-sizes, and to enlarge buffers when the return value indicates
-that the buffer provided was too small.
 .SH EXAMPLES
 The
 .I list
