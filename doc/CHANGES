@@ -1,4 +1,7 @@
-attr-2.0.3 (1 March 2002)
+attr-2.0.4 (05 March 2002)
+	- A minor change to the test/run script
+
+attr-2.0.3 (01 March 2002)
 	- add in ARM architecture system call numbers
 	- updates to the test output from Andreas
 

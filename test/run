@@ -16,6 +16,8 @@ if (isatty(fileno(STDOUT))) {
 my ($prog, $in, $out) = ([], [], []);
 my $line = 0;
 my $prog_line;
+my ($tests, $failed);
+
 for (;;) {
   my $script = <>; $line++;
   $script =~ s/\@OWNER\@/$owner/g;
@@ -39,6 +41,8 @@ for (;;) {
 		 #print "$out->[$n] != $result->[$n]";
 	 }
        }
+       $tests++;
+       $failed++ unless $good;
        print $good ? $OK : $FAILED, "\n";
        if (!$good) {
          for (my $n=0; $n < $nmax; $n++) {
@@ -62,6 +66,16 @@ for (;;) {
   }
   last unless defined($script);
 }
+my $status = sprintf("%d commands (%d passed, %d failed)",
+	$tests, $tests-$failed, $failed);
+if (isatty(fileno(STDOUT))) {
+	if ($failed) {
+		$status = "\033[31m\033[1m" . $status . "\033[m";
+	} else {
+		$status = "\033[32m" . $status . "\033[m";
+	}
+}
+print $status, "\n";
 
 sub exec_test($$) {
   my ($prog, $in) = @_;
