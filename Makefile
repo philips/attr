@@ -83,4 +83,5 @@ install-dev install-lib: default
 
 realclean distclean: clean
 	rm -f $(LDIRT) $(CONFIGURE)
+	rm -rf autom4te.cache
 	[ ! -d Logs ] || rmdir Logs
