@@ -33,8 +33,7 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-# Currently LINGUAS is undefined, so buildmacros provides no targets.
-LINGUAS =
+LINGUAS = de
 LSRCFILES = $(LINGUAS:%=%.po) $(PKG_NAME).pot
 
 XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \
