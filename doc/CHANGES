@@ -1,4 +1,6 @@
-[cvs]
+attr-2.0.10 (28 August 2002)
+	- Add system call numbers for the m68k architecture
+	- Add missing "enabling" #define for the Alpha architecture
 	- Build updates to allow rpmbuild to build rpms (newer versions
 	  of rpm require this, as rpm itself can no longer build rpms)
 	- Several section 3 man page corrections (minor)
