@@ -77,18 +77,18 @@
 # define __NR_fremovexattr	1228
 #elif defined (__powerpc__)
 # define HAVE_XATTR_SYSCALLS 1
-# define __NR_setxattr		208
-# define __NR_lsetxattr		209
-# define __NR_fsetxattr		210
-# define __NR_getxattr		211
-# define __NR_lgetxattr		212
-# define __NR_fgetxattr		213
-# define __NR_listxattr		214
-# define __NR_llistxattr	215
-# define __NR_flistxattr	216
-# define __NR_removexattr	217
-# define __NR_lremovexattr	218
-# define __NR_fremovexattr	219
+# define __NR_setxattr		209
+# define __NR_lsetxattr		210
+# define __NR_fsetxattr		211
+# define __NR_getxattr		212
+# define __NR_lgetxattr		213
+# define __NR_fgetxattr		214
+# define __NR_listxattr		215
+# define __NR_llistxattr	216
+# define __NR_flistxattr	217
+# define __NR_removexattr	218
+# define __NR_lremovexattr	219
+# define __NR_fremovexattr	220
 #else
 # warning "Extended attribute syscalls undefined for this architecture"
 # define HAVE_XATTR_SYSCALLS 0
