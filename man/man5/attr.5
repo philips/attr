@@ -85,16 +85,11 @@ In the current ext2 and ext3 filesystem implementations, all extended
 attributes must fit on a single filesystem block (1024, 2048 or 4096 bytes,
 depending on the block size specified when the filesystem
 was created). This limit may be removed in a future version.
-Device special files cannot be associated with extended user attributes
-(but they may be associated with extended system attributes). Permissions
-of device special files define access to the devices rather than to the
-device special files.
 .PP
 In the XFS filesystem implementation, there is no practical limit on the
 number of extended attributes associated with a file, and the algorithms
 used to store extended attribute information on disk are scalable (stored
 either inline in the inode, as an extent, or in a B+ tree).
-XFS allows extended attributes to be associated with device inodes.
 .SH ADDITIONAL NOTES
 Since the filesystems on which extended attributes are stored might also
 be used on architectures with a different byte order and machine word

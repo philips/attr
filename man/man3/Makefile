@@ -38,6 +38,7 @@ MAN_SECTION	= 3
 MAN_PAGES	= $(shell echo *.$(MAN_SECTION))
 MAN_DEST	= $(PKG_MAN_DIR)/man$(MAN_SECTION)
 LSRCFILES	= $(MAN_PAGES)
+LDIRT		= $(MAN_PAGES:%=%.ps) $(MAN_PAGES:%=%.html)
 
 default install : $(MAN_PAGES)
 
@@ -47,3 +48,13 @@ install-dev : default
 	$(INSTALL) -m 755 -d $(MAN_DEST)
 	$(INSTALL_MAN)
 install-lib:
+
+html : $(MAN_PAGES:%=%.html)
+ps : $(MAN_PAGES:%=%.ps)
+
+%.$(MAN_SECTION).ps : %.$(MAN_SECTION)
+	groff -man -T ps $< > $@
+
+%.$(MAN_SECTION).html : %.$(MAN_SECTION)
+	groff -man -T html $< > $@
+

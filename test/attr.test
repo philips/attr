@@ -168,3 +168,25 @@ $ ls -s f g h
    0 g
    0 h
 $ rm f g h
+!
+! Attributes of symlinks vs. the files pointed to
+!
+$ touch f
+$ ln -s f l
+$ setfattr -n user.filename -v f l
+$ setfattr -h -n user.filename -v l l
+$ getfattr -d f l
+# file: f
+user.filename="f"
+
+# file: l
+user.filename="f"
+
+$ getfattr -h -d f l
+# file: f
+user.filename="f"
+
+# file: l
+user.filename="l"
+
+$ rm f l

@@ -1,3 +1,9 @@
+attr-2.0.5 (12 March 2002)
+	- Fix build for architectures which don't have syscalls yet
+	- Fix the syscall number used on Sparc for fremovexattr(2)
+	- Test script updates
+	- Man page updates
+
 attr-2.0.4 (05 March 2002)
 	- A minor change to the test/run script
 

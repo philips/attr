@@ -36,6 +36,7 @@
  * indirection.  This avoids the dependency on kernel sources.
  */
 
+#include <errno.h>
 #include <unistd.h>
 
 #if defined (__i386__)
@@ -65,7 +66,7 @@
 # define __NR_flistxattr	180
 # define __NR_removexattr	181
 # define __NR_lremovexattr	182
-# define __NR_fremovexattr	183
+# define __NR_fremovexattr	186
 #elif defined (__ia64__)
 # define HAVE_XATTR_SYSCALLS 1
 # define __NR_setxattr		1217

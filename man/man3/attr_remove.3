@@ -7,9 +7,9 @@ attr_remove, attr_removef \- remove a user attribute of a filesystem object
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_remove (const char \(**path, const char \(**attrname, int flags);"
+.B "int attr_remove (const char **path, const char **attrname, int flags);"
 .PP
-.B "int attr_removef (int fd, const char \(**attrname, int flags);"
+.B "int attr_removef (int fd, const char **attrname, int flags);"
 .Op
 .SH DESCRIPTION
 The

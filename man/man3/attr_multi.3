@@ -7,10 +7,10 @@ attr_multi, attr_multif \- manipulate multiple user attributes on a filesystem o
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_multi (const char \(**path, attr_multiop_t \(**oplist, "
+.B "int attr_multi (const char **path, attr_multiop_t **oplist, "
 .B "                int count, int flags);"
 .PP
-.B "int attr_multif (int fd, attr_multiop_t \(**oplist, "
+.B "int attr_multif (int fd, attr_multiop_t **oplist, "
 .B "                 int count, int flags);"
 .Op
 .SH DESCRIPTION
