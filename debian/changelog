@@ -1,3 +1,9 @@
+attr (2.1.2-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Nathan Scott <nathans@debian.org>  Mon, 25 Nov 2002 11:26:30 +1100
+
 attr (2.1.1-1) unstable; urgency=low
 
   * Fix the group for libattr1, was "utils" now "libs" (closes: #166836)

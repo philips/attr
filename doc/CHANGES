@@ -1,3 +1,6 @@
+attr-2.1.2 (22 November 2002)
+	- Add a description of trusted extended attributes to attr(5).
+
 attr-2.1.1 (31 October 2002)
 	- Minor updates to the Debian packaging.
 
