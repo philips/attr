@@ -7,17 +7,17 @@ attr_multi, attr_multif \- manipulate multiple user attributes on a filesystem o
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_multi (const char **path, attr_multiop_t **oplist, "
-.B "                int count, int flags);"
+.B "int attr_multi (const char **\f2path\f3, attr_multiop_t **\f2oplist\f3, "
+.B "                int \f2count\f3, int \f2flags\f3);"
 .PP
-.B "int attr_multif (int fd, attr_multiop_t **oplist, "
-.B "                 int count, int flags);"
+.B "int attr_multif (int \f2fd\f3, attr_multiop_t **\f2oplist\f3, "
+.B "                 int \f2count\f3, int \f2flags\f3);"
 .Op
 .SH DESCRIPTION
 The
-.I attr_multi
+.B attr_multi
 and
-.I attr_multif
+.B attr_multif
 functions provide a way to operate on multiple attributes of a
 filesystem object at once.
 .P
@@ -79,7 +79,7 @@ the result codes that are possible from the corresponding
 single-attribute function call.
 For example, the result code possible from an \f4ATTR_OP_GET\fP
 sub-operation are a subset of those that can be returned from an
-.I attr_get
+.B attr_get
 function call.
 .PP
 The
@@ -166,7 +166,7 @@ otherwise the USER namespace will be searched.
 The
 .I flags
 argument to the
-.I attr_multi
+.B attr_multi
 call is used to control following of symbolic links in the
 .I path
 argument.
@@ -174,7 +174,7 @@ The default is to follow symbolic links,
 .I flags
 should be set to ATTR_DONTFOLLOW to not follow symbolic links.
 .PP
-.I attr_multi
+.B attr_multi
 will fail if one or more of the following are true:
 .TP 17
 .SM
@@ -230,7 +230,7 @@ or a pathname component is longer than
 .SM
 .RI { MAXNAMELEN }.
 .PP
-.I attr_multif
+.B attr_multif
 will fail if:
 .TP 15
 .SM
@@ -250,17 +250,9 @@ points outside the allocated address space of the process.
 \%[EBADF]
 .I Fd\^
 does not refer to a valid descriptor.
-.SH "SEE ALSO"
-attr(1),
-.br
-attr_get(3), attr_getf(3),
-.br
-attr_remove(3), attr_removef(3),
-.br
-attr_set(3), attr_set(3)
 .SH "DIAGNOSTICS"
 Upon successful completion of the
-.I attr_multi
+.B attr_multi
 call, a value of 0 is returned.
 Otherwise, a value of \-1 is returned and
 .I errno
@@ -273,3 +265,9 @@ The
 variable only records the result of the
 .I attr_multi
 call itself, not the result of any of the sub-operations.
+.SH "SEE ALSO"
+.BR attr (1),
+.BR attr_get (3),
+.BR attr_remove (3),
+and
+.BR attr_set (3).

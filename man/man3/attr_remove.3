@@ -7,15 +7,15 @@ attr_remove, attr_removef \- remove a user attribute of a filesystem object
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_remove (const char **path, const char **attrname, int flags);"
+.B "int attr_remove (const char **\f2path\f3, const char **\f2attrname\f3, int \f2flags\f3);"
 .PP
-.B "int attr_removef (int fd, const char **attrname, int flags);"
+.B "int attr_removef (int \f2fd\f3, const char **\f2attrname\f3, int \f2flags\f3);"
 .Op
 .SH DESCRIPTION
 The
-.I attr_remove
+.B attr_remove
 and
-.I attr_removef
+.B attr_removef
 functions provide a way to remove previously created attributes
 from filesystem objects.
 .P
@@ -47,11 +47,11 @@ address space.
 Do not follow symbolic links when resolving a
 .I path
 on an
-.I attr_remove
+.B attr_remove
 function call.
 The default is to follow symbolic links.
 .PP
-.I attr_remove
+.B attr_remove
 will fail if one or more of the following are true:
 .TP 17
 .SM
@@ -110,7 +110,7 @@ or a pathname component is longer than
 .SM
 .RI { MAXNAMELEN }.
 .PP
-.I attr_removef\^
+.B attr_removef\^
 will fail if:
 .TP 15
 .SM
@@ -136,16 +136,14 @@ points outside the allocated address space of the process.
 \%[EBADF]
 .I Fd\^
 does not refer to a valid descriptor.
-.SH "SEE ALSO"
-attr(1),
-.br
-attr_get(3), attr_getf(3),
-.br
-attr_multi(3), attr_multif(3),
-.br
-attr_set(3), attr_setf(3),
 .SH "DIAGNOSTICS"
 Upon successful completion, a value of 0 is returned.
 Otherwise, a value of \-1 is returned and
 .I errno\^
 is set to indicate the error.
+.SH "SEE ALSO"
+.BR attr (1),
+.BR attr_get (3),
+.BR attr_multi (3),
+and
+.BR attr_set (3).

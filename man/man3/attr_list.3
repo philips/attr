@@ -2,24 +2,23 @@
 .SH NAME
 attr_list, attr_listf \- list the names of the user attributes of a filesystem object
 .SH C SYNOPSIS
-.PP
 .sp
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_list (const char **path, char **buffer, "
-.B "               const int buffersize, int flags,"
-.B "               attrlist_cursor_t **cursor);"
+.B "int attr_list (const char **\f2path\f3, char **\f2buffer\f3, "
+.B "               const int \f2buffersize\f3, int \f2flags\f3,"
+.B "               attrlist_cursor_t **\f2cursor\f3);"
 .PP
-.B "int attr_listf (int fd, char **buffer, "
-.B "                const int buffersize, int flags,"
-.B "                attrlist_cursor_t **cursor);"
+.B "int attr_listf (int \f2fd\f3, char **\f2buffer\f3, "
+.B "                const int \f2buffersize\f3, int \f2flags\f3,"
+.B "                attrlist_cursor_t **\f2cursor\f3);"
 .Op
 .SH DESCRIPTION
 The
-.I attr_list
+.B attr_list
 and
-.I attr_listf
+.B attr_listf
 functions provide a way to list the existing attributes of a
 filesystem object.
 .P
@@ -66,7 +65,7 @@ array.
 The
 .I al_more
 field will be non-zero if another
-.I attr_list
+.B attr_list
 call would result in more attributes.
 The
 .I al_offset
@@ -108,10 +107,10 @@ The name is a NULL terminated string.
 .PP
 Note that the value of the attribute cannot be obtained through
 this interface, the
-.I attr_get
+.B attr_get
 call should be used to get the value.
 The
-.I attr_list
+.B attr_list
 interface tells the calling process how large of a buffer
 it must have in order to get the attribute\'s value.
 .PP
@@ -133,7 +132,7 @@ address space.
 Do not follow symbolic links when resolving a
 .I path
 on an
-.I attr_list
+.B attr_list
 function call.
 The default is to follow symbolic links.
 .PP
@@ -144,18 +143,18 @@ to track the calling process\'s position in the attribute list.
 The only valid operations on a
 .I cursor
 are to pass it into an
-.I attr_list
+.B attr_list
 function call or to zero it out.
 It should be zero\'ed out before the first
-.I attr_list
+.B attr_list
 call.
 Note that multi-threaded applications may keep more than one
 .I cursor
 in order to serve multiple contexts, ie: the
-.I attr_list
+.B attr_list
 call is "thread-safe".
 .PP
-.I attr_list
+.B attr_list
 will fail if one or more of the following are true:
 .TP 17
 .SM
@@ -222,7 +221,7 @@ or a pathname component is longer than
 .I attribute\^
 does not exist for this file.
 .PP
-.I attr_listf\^
+.B attr_listf\^
 will fail if:
 .TP 15
 .SM
@@ -250,20 +249,15 @@ are not 32bit aligned.
 \%[EBADF]
 .I Fd\^
 does not refer to a valid descriptor.
-.SH "SEE ALSO"
-attr(1),
-.br
-attrctl(2),
-.br
-attr_get(3), attr_getf(3),
-.br
-attr_multi(3), attr_multif(3)
-.br
-attr_remove(3), attr_removef(3),
-.br
-attr_set(3), attr_set(3)
 .SH "DIAGNOSTICS"
 Upon successful completion, a value of 0 is returned.
 Otherwise, a value of \-1 is returned and
 .I errno\^
 is set to indicate the error.
+.SH "SEE ALSO"
+.BR attr (1),
+.BR attr_get (3),
+.BR attr_multi (3),
+.BR attr_remove (3),
+and
+.BR attr_set (3).

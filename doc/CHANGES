@@ -1,5 +1,6 @@
-[current]
+attr-2.0.6 (26 March 2002)
 	- Add MIPS/MIPS64 system call numbers
+	- Several man page updates
 
 attr-2.0.5 (12 March 2002)
 	- Fix build for architectures which don't have syscalls yet

@@ -7,19 +7,19 @@ attr_set, attr_setf \- set the value of a user attribute of a filesystem object
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_set (const char **path, const char **attrname, "
-.B "              const char **attrvalue, const int valuelength,"
-.B "              int flags);"
+.B "int attr_set (const char **\f2path\f3, const char **\f2attrname\f3, "
+.B "              const char **\f2attrvalue\f3, const int \f2valuelength\f3,"
+.B "              int \f2flags\f3);"
 .PP
-.B "int attr_setf (int fd, const char **attrname, "
-.B "               const char **attrvalue, const int valuelength,"
-.B "               int flags);"
+.B "int attr_setf (int \f2fd\f3, const char **\f2attrname\f3, "
+.B "               const char **\f2attrvalue\f3, const int \f2valuelength\f3,"
+.B "               int \f2flags\f3);"
 .Op
 .SH DESCRIPTION
 The
-.I attr_set
+.B attr_set
 and
-.I attr_setf
+.B attr_setf
 functions provide a way to create attributes and set/change their values.
 .P
 .I Path\^
@@ -57,7 +57,7 @@ address space.
 Do not follow symbolic links when resolving a
 .I path
 on an
-.I attr_set
+.B attr_set
 function call.
 The default is to follow symbolic links.
 .TP
@@ -68,7 +68,7 @@ already exists on the indicated filesystem object,
 otherwise create an attribute with the given name and value.
 This flag is used to implement a pure create operation,
 without this flag
-.I attr_set
+.B attr_set
 will create the attribute if it does not already exist.
 An error (EINVAL) will be returned if both ATTR_CREATE and ATTR_REPLACE
 are set in the same call.
@@ -80,12 +80,12 @@ does not already exist on the indicated filesystem object,
 otherwise replace the existing attribute\'s value with the given value.
 This flag is used to implement a pure replacement operation,
 without this flag
-.I attr_set
+.B attr_set
 will create the attribute if it does not already exist.
 An error (EINVAL) will be returned if both ATTR_CREATE and ATTR_REPLACE
 are set in the same call.
 .PP
-.I attr_set
+.B attr_set
 will fail if one or more of the following are true:
 .TP 17
 .SM
@@ -158,7 +158,7 @@ or a pathname component is longer than
 .SM
 .RI { MAXNAMELEN }.
 .PP
-.I attr_setf\^
+.B attr_setf\^
 will fail if:
 .TP 15
 .SM
@@ -196,16 +196,14 @@ points outside the allocated address space of the process.
 \%[EBADF]
 .I Fd\^
 does not refer to a valid descriptor.
-.SH "SEE ALSO"
-attr(1),
-.br
-attr_get(3), attr_getf(3),
-.br
-attr_multi(3), attr_multif(3),
-.br
-attr_remove(3), attr_removef(3),
 .SH "DIAGNOSTICS"
 Upon successful completion, a value of 0 is returned.
 Otherwise, a value of \-1 is returned and
 .I errno\^
 is set to indicate the error.
+.SH "SEE ALSO"
+.BR attr (1),
+.BR attr_get (3),
+.BR attr_multi (3),
+and
+.BR attr_remove (3).
