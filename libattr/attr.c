@@ -33,9 +33,10 @@
 #include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/types.h>
 #include <asm/types.h>
-#include <asm/unistd.h>
+#include <unistd.h>
 #include <attributes.h>
 
 
@@ -287,32 +288,27 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 
 /* 
  * attrctl(2) system call function definition.
- * _syscall4 -> __syscall_return -> sets errno
  */
 
 #if __i386__
 #  define HAVE_ACL_SYSCALL 1
-#  ifndef __NR__attrctl
-#    define __NR__attrctl       250
+#  ifndef SYS__attrctl
+#    define SYS__attrctl       250
 #  endif
 #elif __ia64__
 #  define HAVE_ACL_SYSCALL 1
-#  ifndef __NR__attrctl
-#    define __NR__attrctl       1215
+#  ifndef SYS__attrctl
+#    define SYS__attrctl       1215
 #  endif
 #else
 #  define HAVE_ACL_SYSCALL 0
-#endif
-
-#if HAVE_ACL_SYSCALL
-static _syscall4(int, _attrctl, long, obj, int, type, attr_op_t *, ops, int, count);
 #endif
 
 int
 attrctl(attr_obj_t obj, int type, attr_op_t *ops, int count)
 {
 #if HAVE_ACL_SYSCALL
-	return _attrctl(* (long *) &obj, type, ops, count);
+	return syscall(SYS__attrctl, * (long *) &obj, type, ops, count);
 #else
 	fprintf(stderr, "libattr: attrctl system call not defined "
 			"for this architecture\n");
