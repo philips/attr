@@ -1,3 +1,6 @@
+attr-1.1.2 (27 Jul 2001)
+	- fixes for (hopefully) the last few nits in libtool usage
+
 attr-1.1.1 (23 Jul 2001)
 	- install static libs and libtool archives into /usr/lib
 	- shared libraries are unchanged, however
