@@ -311,7 +311,7 @@ static int
 attrctl(attr_obj_t obj, int type, attr_op_t *ops, int count)
 {
 #if HAVE_ACL_SYSCALL
-	return syscall(SYS__attrctl, * (long *) &obj, type, ops, count);
+	return syscall(SYS__attrctl, obj, type, ops, count);
 #else
 	errno = ENOSYS;
 	return -1;
