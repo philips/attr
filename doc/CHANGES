@@ -1,3 +1,6 @@
+attr-2.4.7 (29 July 2003)
+	- Make quote return NULL if out of memory instead of exiting. 
+
 attr-2.4.6 (21 July 2003)
 	- Add internal library for misc. functions: quote, unquote,
 	  high_water_alloc.

@@ -23,8 +23,6 @@
 #include <ctype.h>
 #include "misc.h"
 
-extern const char *progname;
-
 const char *quote(const char *str)
 {
 	static char *quoted_str;
@@ -40,10 +38,8 @@ const char *quote(const char *str)
 		return str;
 
 	if (high_water_alloc((void **)&quoted_str, &quoted_str_len,
-			     nonpr * 3 + 1)) {
-		perror(progname);
-		exit(1);
-	}
+			     nonpr * 3 + 1))
+		return NULL;
 	for (s = (unsigned char *)str, q = quoted_str; *s != '\0'; s++) {
 		if (!isprint(*s) || isspace(*s) || *s == '\\') {
 			*q++ = '\\';

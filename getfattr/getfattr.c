@@ -71,6 +71,16 @@ int had_errors;
 regex_t name_regex;
 
 
+static const char *xquote(const char *str)
+{
+	const char *q = quote(str);
+	if (q == NULL) {
+		fprintf(stderr, "%s: %s\n", progname, strerror(errno));
+		exit(1);
+	}
+	return q;
+}
+
 int do_getxattr(const char *path, const char *name, void *value, size_t size)
 {
 	return (opt_deref ? getxattr : lgetxattr)(path, name, value, size);
@@ -218,8 +228,8 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 	if (opt_dump || opt_value_only) {
 		length = do_getxattr(path, name, NULL, 0);
 		if (length < 0) {
-			fprintf(stderr, "%s: ", quote(path));
-			fprintf(stderr, "%s: %s\n", quote(name),
+			fprintf(stderr, "%s: ", xquote(path));
+			fprintf(stderr, "%s: %s\n", xquote(name),
 				strerror_ea(errno));
 			return 1;
 		}
@@ -230,8 +240,8 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 		}
 		length = do_getxattr(path, name, value, value_size);
 		if (length < 0) {
-			fprintf(stderr, "%s: ", quote(path));
-			fprintf(stderr, "%s: %s\n", quote(name),
+			fprintf(stderr, "%s: ", xquote(path));
+			fprintf(stderr, "%s: %s\n", xquote(name),
 				strerror_ea(errno));
 			return 1;
 		}
@@ -255,7 +265,7 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 	}
 
 	if (!*header_printed && !opt_value_only) {
-		printf("# file: %s\n", quote(path));
+		printf("# file: %s\n", xquote(path));
 		*header_printed = 1;
 	}
 
@@ -265,9 +275,9 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 		const char *enc = encode(value, &length);
 		
 		if (enc)
-			printf("%s=%s\n", quote(name), enc);
+			printf("%s=%s\n", xquote(name), enc);
 	} else
-		puts(quote(name));
+		puts(xquote(name));
 
 	return 0;
 }
@@ -284,7 +294,7 @@ int list_attributes(const char *path, int *header_printed)
 
 	length = do_listxattr(path, NULL, 0);
 	if (length < 0) {
-		fprintf(stderr, "%s: %s: %s\n", progname, quote(path),
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
 			strerror_ea(errno));
 		had_errors++;
 		return 1;
@@ -299,7 +309,7 @@ int list_attributes(const char *path, int *header_printed)
 
 	length = do_listxattr(path, list, list_size);
 	if (length < 0) {
-		perror(quote(path));
+		perror(xquote(path));
 		had_errors++;
 		return 1;
 	}
@@ -341,7 +351,7 @@ int do_print(const char *path, const struct stat *stat,
 
 	if (flag & FTW_DNR) {
 		/* Item is a directory which can't be read. */
-		fprintf(stderr, "%s: %s: %s\n", progname, quote(path),
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
 			strerror(errno));
 		return 0;
 	}

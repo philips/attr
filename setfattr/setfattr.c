@@ -70,6 +70,16 @@ const char *strerror_ea(int err)
 	return strerror(err);
 }
 
+static const char *xquote(const char *str)
+{
+	const char *q = quote(str);
+	if (q == NULL) {
+		fprintf(stderr, "%s: %s\n", progname, strerror(errno));
+		exit(1);
+	}
+	return q;
+}
+
 int do_setxattr(const char *path, const char *name,
 		const void *value, size_t size)
 {
@@ -270,7 +280,7 @@ int do_set(const char *path, const char *name, const char *value)
 
 	if (error < 0) {
 		fprintf(stderr, "%s: %s: %s\n",
-			progname, quote(path), strerror_ea(errno));
+			progname, xquote(path), strerror_ea(errno));
 		had_errors++;
 		return 1;
 	}

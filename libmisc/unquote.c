@@ -23,8 +23,6 @@
 #include <ctype.h>
 #include "misc.h"
 
-extern const char *progname;
-
 char *unquote(char *str)
 {
 	unsigned char *s, *t;
