@@ -1,3 +1,6 @@
+attr-2.4.11 (07 October 2003)
+	- Man page tweaks
+
 attr-2.4.10 (29 August 2003)
 	- Fix a bug in nftw worker routines' error handling code.
 
