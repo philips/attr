@@ -499,7 +499,7 @@ int main(int argc, char *argv[])
 	while (optind < argc) {
 		if (nftw(argv[optind], do_print, 0,
 			 opt_walk_physical * FTW_PHYS) < 0) {
-			fprintf(stderr, "%s: %s\n", progname,
+			fprintf(stderr, "%s: %s: %s\n", progname, argv[optind],
 			        strerror_ea(errno));
 		}
 		optind++;
