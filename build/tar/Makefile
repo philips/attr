@@ -42,7 +42,7 @@ include $(BUILDRULES)
 
 dist : default
 	@HERE=`pwd`; cd $${DIST_ROOT:-/}; \
-	sort $$HERE/../bin-manifest | uniq | $(AWK) ' \
+	$(SORT) -u $$HERE/../bin-manifest | $(AWK) ' \
 		$$1 == "f" { printf (".%s\n", $$6); } \
 		$$1 == "d" { next; } \
 		$$1 == "l" { printf (".%s\n", $$3); }' \

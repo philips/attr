@@ -53,9 +53,9 @@ fi
 # build RPM packages - manual clean before starting
 echo "== clean, log is $LOGDIR/clean"
 if $verbose ; then
-	$MAKE realclean 2>&1 | tee $LOGDIR/clean
+	$MAKE clean 2>&1 | tee $LOGDIR/clean
 else
-	$MAKE realclean > $LOGDIR/clean 2>&1  || exit 1
+	$MAKE clean > $LOGDIR/clean 2>&1  || exit 1
 fi
 
 echo
