@@ -1,3 +1,10 @@
+attr-2.0.2 (27 February 2002)
+	- add in S/390 system call numbers from Martin Schwidefsky
+	- revert IA64 syscall numbering after further mail with
+	  David Mosberger (apparently sys_tkill will be moved)
+	  See:	https://external-lists.valinux.com/archives/\
+			/linux-ia64/2002-February/002990.html
+
 attr-2.0.1 (26 February 2002)
 	- incorporate several documentation changes from Andreas,
 	  including a script to convert from the aget format of

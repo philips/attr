@@ -35,7 +35,7 @@ pkg_release=$PKG_BUILD
 AC_SUBST(pkg_version)
 AC_SUBST(pkg_release)
 
-pkg_distribution="SGI XFS"
+pkg_distribution="Generic Linux"
 test -z "$DISTRIBUTION" || pkg_distribution="$DISTRIBUTION"
 AC_SUBST(pkg_distribution)
 
