@@ -182,7 +182,7 @@
 # define __NR_removexattr	391
 # define __NR_lremovexattr	392
 # define __NR_fremovexattr	393
-#elif defined (__m68k__)
+#elif defined (__mc68000__)
 # define HAVE_XATTR_SYSCALLS 1
 # define __NR_setxattr		223
 # define __NR_lsetxattr		224

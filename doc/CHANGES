@@ -1,3 +1,6 @@
+	- Fix: the m68k architecture is identified by __mc68000__
+	  rather than by __m68k__.
+
 attr-2.0.11 (04 September 2002)
 	- Make the test/run script return a proper status code.
 	- Fix up the error message returned for ENODATA rather
