@@ -1,3 +1,7 @@
+attr-2.4.22 (21 February 2005)
+	- Allocate the line buffer dynamically when reading from a file.
+	  This mainly fixes restoring of large attributes.
+
 attr-2.4.21 (31 January 2005)
 	- Replace use of _POSIX_PATH_MAX with the larger PATH_MAX
 	  (thanks to Andree Leidenfrost).
