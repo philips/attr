@@ -1,3 +1,6 @@
+attr-2.4.3 (26 April 2003)
+	- Rework configure.in to make use of shared macros.
+
 attr-2.4.2 (14 April 2003)
 	- Found a better way to handle the trusted/xfsroot namespace
 	  transition, from a suggestion from Andreas.  COMPAT_XFSROOT

@@ -1,9 +1,9 @@
-attr (2.4.2-1) unstable; urgency=low
+attr (2.4.3-1) unstable; urgency=low
 
   * New upstream release
   * Note: COMPAT_XFSROOT environment variable is no longer needed
 
- -- Nathan Scott <nathans@debian.org>  Mon, 14 Apr 2003 09:00:18 +1000
+ -- Nathan Scott <nathans@debian.org>  Sat, 26 Apr 2003 04:36:01 +1000
 
 attr (2.4.0-1) unstable; urgency=low
 

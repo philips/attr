@@ -1,219 +1,23 @@
-dnl unpacking check - this file must exist
 AC_INIT(include/attributes.h)
 AC_CONFIG_HEADER(include/config.h)
-
-pkg_name="attr"
-AC_SUBST(pkg_name)
-
 AC_PREFIX_DEFAULT(/usr)
 
-#
-# Note: the following environment variables may be set to override the
-# defaults (to change paths and/or executables, build parameters, etc):
-#
-#   DEBUG  OPTIMIZER  MALLOCLIB
-#   PLATFORM  DISTRIBUTION  INSTALL_USER  INSTALL_GROUP
-#   MAKE  CC  LD  TAR  ZIP  AWK  SED  ECHO  RPM  LIBTOOL
-#   MSGFMT  MSGMERGE  XGETTEXT
-#
-
-DEBUG=${DEBUG:-'-DDEBUG'}		# -DNDEBUG
-OPTIMIZER=${OPTIMIZER:-'-g'}		# -O2
-MALLOCLIB=${MALLOCLIB:-''}		# /usr/lib/libefence.a
-
-dnl Debug build?
-debug_build="$DEBUG"
-AC_SUBST(debug_build)
-
-dnl Optimization options?
-opt_build="$OPTIMIZER"
-AC_SUBST(opt_build)
-
-dnl Alternate malloc library?
-malloc_lib="$MALLOCLIB"
-AC_SUBST(malloc_lib)
-
-dnl Set version
-. ./VERSION
-
-pkg_version=${PKG_MAJOR}.${PKG_MINOR}.${PKG_REVISION}
-pkg_release=$PKG_BUILD
-AC_SUBST(pkg_version)
-AC_SUBST(pkg_release)
-
-pkg_platform=`uname -s`
-pkg_distribution="Generic $pkg_platform"
-pkg_platform=`echo $pkg_platform | tr 'A-Z' 'a-z'`
-test -z "$PLATFORM" || pkg_platform="$PLATFORM"
-test -z "$DISTRIBUTION" || pkg_distribution="$DISTRIBUTION"
-AC_SUBST(pkg_distribution)
-AC_SUBST(pkg_platform)
-
-pkg_user=root
-test -z "$INSTALL_USER" || pkg_user="$INSTALL_USER"
-AC_SUBST(pkg_user)
-
-pkg_group=root
-test -z "$INSTALL_GROUP" || pkg_group="$INSTALL_GROUP"
-AC_SUBST(pkg_group)
-
-dnl check if user wants their own C compiler
-if test -z "$CC"; then
-	AC_PROG_CC
-fi
-cc=$CC
-AC_SUBST(cc)
-
-dnl check if users wants their own make
-if test -z "$MAKE"; then
-	AC_PATH_PROG(MAKE, make, /usr/bin/make)
-fi
-make=$MAKE
-AC_SUBST(make)
-
-dnl check if users wants their own linker
-if test -z "$LD"; then
-	AC_PATH_PROG(LD, ld, /usr/bin/ld)
-fi
-ld=$LD
-AC_SUBST(ld)
-
-dnl check if the tar program is available
-if test -z "$TAR"; then
-	AC_PATH_PROG(TAR, tar)
-fi
-tar=$TAR
-AC_SUBST(tar)
-
-dnl check if the gzip program is available
-if test -z "$ZIP"; then
-	AC_PATH_PROG(ZIP, gzip, /bin/gzip)
-fi
-zip=$ZIP
-AC_SUBST(zip)
-
-dnl check if the makedepend program is available
-if test -z "$MAKEDEPEND"; then
-	AC_PATH_PROG(MAKEDEPEND, makedepend, /bin/true)
-fi
-makedepend=$MAKEDEPEND
-AC_SUBST(makedepend)
-
-dnl check if the rpm program is available
-if test -z "$RPM"; then
-	AC_PATH_PROG(RPM, rpm, /bin/rpm)
-fi
-rpm=$RPM
-AC_SUBST(rpm)
-
-dnl .. and what version is rpm
-rpm_version=0
-test -x $RPM && \
-	rpm_version=`$RPM --version | awk '{print $NF}' | awk -F. '{print $1}'`
-AC_SUBST(rpm_version)
-
-dnl At some point in rpm 4.0, rpm can no longer build rpms, and
-dnl rpmbuild is needed (rpmbuild may go way back; not sure)
-dnl So, if rpm version >= 4.0, look for rpmbuild.  Otherwise build w/ rpm
-
-if test $rpm_version -ge 4; then
-	AC_PATH_PROG(RPMBUILD, rpmbuild)
-	rpmbuild=$RPMBUILD
-else
-	rpmbuild=$RPM
-fi
-AC_SUBST(rpmbuild)
-
-dnl check if symbolic links are supported
-AC_PROG_LN_S
-
-dnl check if user wants their own awk, sed and echo
-if test -z "$AWK"; then
-	AC_PATH_PROG(AWK, awk, /bin/awk)
-fi
-awk=$AWK
-AC_SUBST(awk)
-if test -z "$SED"; then
-	AC_PATH_PROG(SED, sed, /bin/sed)
-fi
-sed=$SED
-AC_SUBST(sed)
-if test -z "$ECHO"; then
-	AC_PATH_PROG(ECHO, echo, /bin/echo)
-fi
-echo=$ECHO
-AC_SUBST(echo)
-
-dnl ensure libtool is installed
-if test -z "$LIBTOOL"; then
-	AC_PATH_PROG(LIBTOOL, libtool,,/usr/bin)
-fi
-if test -z "$LIBTOOL"; then
-	echo
-	echo 'FATAL ERROR: libtool does not seem to be installed.'
-	echo $pkg_name cannot be built without a working libtool installation.
-	exit 1
-fi
-libtool=$LIBTOOL
-AC_SUBST(libtool)
-
-dnl libtool to build libraries static only?
 AC_ARG_ENABLE(shared,
 [ --enable-shared=[yes/no] Enable use of shared libraries [default=yes]],,
 	enable_shared=yes)
 AC_SUBST(enable_shared)
 
-dnl will we be making use of gettext?
 AC_ARG_ENABLE(gettext,
 [ --enable-gettext=[yes/no] Enable alternate language support [default=yes]],,
 	enable_gettext=yes)
-if test $enable_gettext = yes; then
-	AC_DEFINE(ENABLE_GETTEXT)
-fi
 AC_SUBST(enable_gettext)
 
-dnl check if the msgfmt, msgmerge, xgettext programs are available
-if test "$enable_gettext" = yes; then
-	if test -z "$MSGFMT"; then
-		AC_CHECK_PROG(MSGFMT, msgfmt, /usr/bin/msgfmt)
-	fi
-	msgfmt=$MSGFMT
-	AC_SUBST(msgfmt)
-	if test -z "$MSGMERGE"; then
-		 AC_CHECK_PROG(MSGMERGE, msgmerge, /usr/bin/msgmerge)
-	fi
-	msgmerge=$MSGMERGE
-	AC_SUBST(msgmerge)
-	if test -z "$XGETTEXT"; then
-		AC_CHECK_PROG(XGETTEXT, xgettext, /usr/bin/xgettext)
-	fi
-	xgettext=$XGETTEXT
-	AC_SUBST(xgettext)
+AC_PACKAGE_GLOBALS(attr)
+AC_PACKAGE_UTILITIES(attr)
+AC_MANUAL_FORMAT
 
-	if test -z "$XGETTEXT"; then
-		echo
-		echo 'FATAL ERROR: xgettext does not seem to be installed.'
-		echo $pkg_name cannot be built without a working gettext installation.
-		exit 1
-	fi
-fi
-
-dnl man pages (source)
-dnl also check if man page source is gzipped
-dnl (usually on Debian, but not Redhat pre-7.0)
-have_zipped_manpages=false
-for d in ${prefix}/share/man ${prefix}/man ; do
-    if test -f $d/man1/man.1.gz; then
-	have_zipped_manpages=true
-	break
-    fi
-done
-AC_SUBST(have_zipped_manpages)
-
-dnl Some more stuff for the ACL copying functions
 AC_C_CONST
 AC_TYPE_MODE_T
 AC_FUNC_ALLOCA
 
-dnl build definitions for use in Makefiles
 AC_OUTPUT(include/builddefs)
