@@ -36,7 +36,7 @@ include $(TOPDIR)/include/builddefs
 LTLIBRARY = libmisc.la
 LTLDFLAGS =
 
-CFILES = quote.c unquote.c high_water_alloc.c
+CFILES = quote.c unquote.c high_water_alloc.c next_line.c
 
 default: $(LTLIBRARY)
 install install-dev install-lib:

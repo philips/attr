@@ -61,7 +61,6 @@ const char *progname;
 int do_set(const char *path, const char *name, const char *value);
 const char *decode(const char *value, size_t *size);
 int restore(const char *filename);
-char *next_line(FILE *file);
 int hex_digit(char c);
 int base64_digit(char c);
 
@@ -149,8 +148,15 @@ int restore(const char *filename)
 				*value++ = '\0';
 			status = do_set(path, unquote(name), value);
 		}
-		if (l != NULL)
-			line++;
+		if (l == NULL)
+			break;
+		line++;
+	}
+	if (!feof(file)) {
+		fprintf(stderr, "%s: %s: %s\n", progname, filename,
+			strerror(errno));
+		if (!status)
+			status = 1;
 	}
 
 cleanup:
@@ -176,45 +182,6 @@ void help(void)
 "      --restore=file      restore extended attributes\n"
 "      --version           print version and exit\n"
 "      --help              this help text\n"));
-}
-
-char *next_line(FILE *file)
-{
-	static char *line;
-	static size_t line_size;
-	char *c;
-	int eol = 0;
-	
-	if (!line) {
-		if (high_water_alloc((void **)&line, &line_size, PATH_MAX)) {
-			perror(progname);
-			had_errors++;
-			return NULL;
-		}
- 	}
-	c = line;
-	do {
-		if (!fgets(c, line_size - (c - line), file))
-			return NULL;
-		c = strrchr(c, '\0');
-		while (c > line && (*(c-1) == '\n' || *(c-1) == '\r')) {
-			c--;
-			*c = '\0';
-			eol = 1;
-		}
-		if (feof(file))
-			break;
-		if (!eol) {
-			if (high_water_alloc((void **)&line, &line_size,
-					     2 * line_size)) {
-				perror(progname);
-				had_errors++;
-				return NULL;
-			}
-			c = strrchr(line, '\0');
-		}
-	} while (!eol);
- 	return line;
 }
 
 int main(int argc, char *argv[])
