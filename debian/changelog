@@ -1,3 +1,9 @@
+attr (2.0.8-1) unstable; urgency=low
+
+  * New upstream bugfix release
+
+ -- Nathan Scott <nathans@debian.org>  Mon, 22 Apr 2002 15:04:53 +1000
+
 attr (2.0.7-1) unstable; urgency=low
 
   * New upstream bugfix release
