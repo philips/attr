@@ -181,6 +181,28 @@ int do_listxattr(const char *path, char *list, size_t size)
 	return listxattr(path, list, size);
 }
 
+int high_water_alloc(void **buf, int *bufsize, int newsize)
+{
+	/*
+	 * Goal here is to avoid unnecessary memory allocations by
+	 * using static buffers which only grow when necessary.
+	 * Size is increased in fixed size chunks (CHUNK_SIZE).
+	 */
+#define CHUNK_SIZE	256
+	if (bufsize < newsize) {
+		newsize = (newsize + CHUNK_SIZE-1) & ~(CHUNK_SIZE-1);
+		*buf = realloc(newsize);
+		if (!*buf) {
+			perror(progname);
+			had_errors++;
+			*bufsize = 0;
+			return 1;
+		}
+		*bufsize = newsize;
+	}
+	return 0;
+}
+
 int pstrcmp(const char **a, const char **b)
 {
 	return strcmp(*a, *b);
@@ -188,30 +210,27 @@ int pstrcmp(const char **a, const char **b)
 
 int do_get_all(const char *path, struct stat *stat, void *dummy)
 {
-	/* nathans TODO - use a high-water-mark allocation here! */
-	char *v;
-	char *list;	/* ie. make list & lbufsize "static" & realloc */
-	int n = 0, count = 0;
-	ssize_t listsize, lbufsize;
-	const char **names = NULL;
+	static char *list;
+	static ssize_t bufsize;
+	static char **names;
+	static int ncount;
 
-	lbufsize = do_listxattr(path, NULL, 0);
-	if (lbufsize < 0) {
+	char *v;
+	ssize_t listsize;
+	int n, count = 0;
+
+	listsize = do_listxattr(path, NULL, 0);
+	if (listsize < 0) {
 		if (errno != ENOATTR && errno != ENOTSUP) {
 			perror(path);
 			had_errors++;
 			return 1;
 		}
-	} else {
-		/* nathans TODO - use a high-water-mark allocation here! */
-		list = malloc(++lbufsize);
-		if (!list) {
-			perror(progname);
-			had_errors++;
+	} else if (listsize > 0) {
+		if (high_water_alloc(&list, &bufsize, listsize))
 			return 1;
-		}
-		memset(list, 0, lbufsize);
-		listsize = do_listxattr(path, list, lbufsize - 1);
+
+		listsize = do_listxattr(path, list, bufsize);
 		if (listsize < 0) {
 			perror(path);
 			had_errors++;
@@ -222,12 +241,10 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 			if (regexec(&re, v, (size_t) 0, NULL, 0) == 0)
 				count++;
 		if (count) {
-			names = (const char **)malloc(count * sizeof(char *));
-			if (!names) {
-				perror(progname);
-				had_errors++;
+			n = count * sizeof(char *);
+			if (high_water_alloc(&names, &ncount, n))
 				return 1;
-			}
+			n = 0;
 			for (v = list; v - list <= listsize; v += strlen(v)+1)
 				if (regexec(&re, v, (size_t) 0, NULL, 0) == 0)
 					names[n++] = v;
@@ -258,9 +275,10 @@ int do_get_one(const char *path, struct stat *stat, void *name)
 
 int get_one(const char *path, const char *name)
 {
-	char *value = NULL;
-	size_t size = 0;
-	int error;
+	static char *value;
+	static size_t vsize;
+
+	int error, lsize = 0;
 
 	if (opt_dump || opt_value_only) {
 		error = do_getxattr(path, name, NULL, 0);
@@ -276,18 +294,13 @@ syscall_failed:
 			fprintf(stderr, "%s: %s: %s\n", path, name, strerr);
 			return 1;
 		}
-		/* nathans TODO - high-water-mark allocate here too? */
-		size = error;
-		value = (char *)malloc(size+1);
-		if (!value) {
-			perror(progname);
+		if (high_water_alloc(&value, &vsize, error + 1))
 			return 1;
-		}
-		error = do_getxattr(path, name, value, size);
+		error = do_getxattr(path, name, value, vsize);
 		if (error < 0)
 			goto syscall_failed;
-		value[size] = '\0';
-		size = error;
+		lsize = error;
+		value[lsize] = '\0';
 	}
 
 	if (opt_strip_leading_slash) {
@@ -313,8 +326,8 @@ syscall_failed:
 	}
 	if (opt_value_only)
 		puts(value);
-	else if (size) {
-		const char *e = encode(value, &size);
+	else if (lsize) {
+		const char *e = encode(value, &lsize);
 
 		if (e)
 			printf("%s=%s\n", name, e);
