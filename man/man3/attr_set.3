@@ -197,10 +197,9 @@ points outside the allocated address space of the process.
 .I Fd\^
 does not refer to a valid descriptor.
 .SH "DIAGNOSTICS"
-Upon successful completion, a value of 0 is returned.
-Otherwise, a value of \-1 is returned and
-.I errno\^
-is set to indicate the error.
+On success, zero is returned.  On error, \-1 is returned, and
+.I errno
+is set appropriately.
 .SH "SEE ALSO"
 .BR attr (1),
 .BR attr_get (3),
