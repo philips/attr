@@ -77,9 +77,7 @@ int restore(FILE *file, const char *filename)
 		while ((l = next_line(file)) != NULL && *l != '\0') {
 			char *name = l, *value = strchr(l, '=');
 			line++;
-			if (value == NULL)
-				value = "";
-			else
+			if (value)
 				*value++ = '\0';
 			status = do_set(name, value, path_p);
 		}
@@ -190,10 +188,7 @@ int main(int argc, char *argv[])
 	if (((opt_name && opt_remove) || (!opt_name && !opt_remove) ||
 	    optind >= argc) && !opt_restore)
 		goto synopsis;
-	if (opt_name) {
-		if (!opt_value)
-			opt_value = "";
-	} else {
+	if (!opt_name) {
 		opt_name = opt_remove;
 		opt_value = NULL;
 	}
