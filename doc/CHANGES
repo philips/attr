@@ -1,3 +1,10 @@
+attr-2.4.14 (14 January 2004)
+	- When attr_copy_file is used on a symlink, process the
+	  symlink instead of the file the symlink points to.
+	- Improve wording in attr(5) man page.
+	- Add the security namespace into the attr(1) command and
+	  libattr IRIX-compatibility code for XFS commands to use.
+
 attr-2.4.13 (06 January 2004)
 	- Fix a permission bug in directory tree walking code.
 

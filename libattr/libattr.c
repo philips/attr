@@ -50,6 +50,7 @@ static int
 api_convert(char *name, const char *irixname, int irixflags, int compat)
 {
 	static const char *user_name = "user.";
+	static const char *secure_name = "security.";
 	static const char *trusted_name = "trusted.";
 	static const char *xfsroot_name = "xfsroot.";
 
@@ -62,6 +63,8 @@ api_convert(char *name, const char *irixname, int irixflags, int compat)
 			strcpy(name, xfsroot_name);
 		else
 			strcpy(name, trusted_name);
+	} else if (irixflags & ATTR_SECURE) {
+		strcpy(name, secure_name);
 	} else {
 		strcpy(name, user_name);
 	}

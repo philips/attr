@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2000-2002 Silicon Graphics, Inc.  All Rights Reserved.
+ * Copyright (c) 2000-2002,2004 Silicon Graphics, Inc.  All Rights Reserved.
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2 of the GNU General Public License as
@@ -54,9 +54,9 @@ void
 usage(void)
 {
 	fprintf(stderr, _(
-"Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n"
-"       %s [-LRq] -g attrname pathname                 # get value\n"
-"       %s [-LRq] -r attrname pathname                 # remove attr\n"
+"Usage: %s [-LRSq] -s attrname [-V attrvalue] pathname  # set value\n"
+"       %s [-LRSq] -g attrname pathname                 # get value\n"
+"       %s [-LRSq] -r attrname pathname                 # remove attr\n"
 "      -s reads a value from stdin and -g writes a value to stdout\n"),
 		progname, progname, progname);
 	exit(1);
@@ -67,7 +67,7 @@ main(int argc, char **argv)
 {
 	char *attrname, *attrvalue, *filename;
 	int attrlength;
-	int opflag, ch, error, follow, verbose, rootflag;
+	int opflag, ch, error, follow, verbose, rootflag, secureflag;
 
 	progname = basename(argv[0]);
 
@@ -80,9 +80,9 @@ main(int argc, char **argv)
 	 * Pick up and validate the arguments.
 	 */
 	verbose = 1;
-	follow = opflag = rootflag = 0;
+	follow = opflag = rootflag = secureflag = 0;
 	attrname = attrvalue = NULL;
-	while ((ch = getopt(argc, argv, "s:V:g:r:qLR")) != EOF) {
+	while ((ch = getopt(argc, argv, "s:V:g:r:qLRS")) != EOF) {
 		switch (ch) {
 		case 's':
 			if ((opflag != 0) && (opflag != SETOP)) {
@@ -126,6 +126,9 @@ main(int argc, char **argv)
 		case 'R':
 			rootflag++;
 			break;
+		case 'S':
+			secureflag++;
+			break;
 		case 'q':
 			verbose = 0;
 			break;
@@ -161,6 +164,7 @@ main(int argc, char **argv)
 		error = attr_set(filename, attrname, attrvalue,
 					   attrlength,
 					   (!follow ? ATTR_DONTFOLLOW : 0) |
+					   (secureflag ? ATTR_SECURE : 0) |
 					   (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_set");
@@ -186,6 +190,7 @@ main(int argc, char **argv)
 		error = attr_get(filename, attrname, attrvalue,
 					   &attrlength,
 					   (!follow ? ATTR_DONTFOLLOW : 0) |
+					   (secureflag ? ATTR_SECURE : 0) |
 					   (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_get");
@@ -206,6 +211,7 @@ main(int argc, char **argv)
 	case REMOVEOP:
 		error = attr_remove(filename, attrname,
 					      (!follow ? ATTR_DONTFOLLOW : 0) |
+					      (secureflag ? ATTR_SECURE : 0) |
 					      (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_remove");

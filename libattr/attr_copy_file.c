@@ -71,7 +71,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 	if (check == NULL)
 		check = attr_copy_check_permissions;
 
-	size = listxattr (src_path, NULL, 0);
+	size = llistxattr (src_path, NULL, 0);
 	if (size < 0) {
 		if (errno != ENOSYS && errno != ENOTSUP) {
 			const char *qpath = quote (ctx, src_path);
@@ -87,7 +87,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 		ret = -1;
 		goto getout;
 	}
-	size = listxattr (src_path, names, size);
+	size = llistxattr (src_path, names, size);
 	if (size < 0) {
 		const char *qpath = quote (ctx, src_path);
 		error (ctx, _("listing attributes of %s"), qpath);
@@ -107,7 +107,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 		if (!*name || !check(name, ctx))
 			continue;
 
-		size = getxattr (src_path, name, NULL, 0);
+		size = lgetxattr (src_path, name, NULL, 0);
 		if (size < 0) {
 			const char *qpath = quote (ctx, src_path);
 			const char *qname = quote (ctx, name);
@@ -124,7 +124,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 			error (ctx, "");
 			ret = -1;
 		}
-		size = getxattr (src_path, name, value, size);
+		size = lgetxattr (src_path, name, value, size);
 		if (size < 0) {
 			const char *qpath = quote (ctx, src_path);
 			const char *qname = quote (ctx, name);
@@ -134,7 +134,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 			quote_free (ctx, qpath);
 			ret = -1;
 		}
-		if (setxattr (dst_path, name, value, size, 0) != 0)
+		if (lsetxattr (dst_path, name, value, size, 0) != 0)
 		{
 			const char *qpath = quote (ctx, dst_path);
 			if (errno == ENOSYS) {

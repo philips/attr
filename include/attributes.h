@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Silicon Graphics, Inc.  All Rights Reserved.
+ * Copyright (c) 2001-2002,2004 Silicon Graphics, Inc.  All Rights Reserved.
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2.1 of the GNU Lesser General Public License
@@ -39,7 +39,7 @@ extern "C" {
 
 /*
  *	An almost-IRIX-compatible extended attributes API
- *	(the IRIX attribute "list" operation is missing).
+ *	(the IRIX attribute "list" operation is missing, added ATTR_SECURE).
  */
 
 /*
@@ -55,9 +55,10 @@ extern "C" {
  * All desired flags should be bit-wise OR'ed together.
  */
 #define ATTR_DONTFOLLOW	0x0001	/* do not follow symlinks for a pathname */
-#define ATTR_ROOT	0x0002	/* use root-defined attrs in op, not user */
+#define ATTR_ROOT	0x0002	/* use root namespace attributes in op */
 #define ATTR_TRUST	0x0004	/* tell server we can be trusted to properly
 				   handle extended attributes */
+#define ATTR_SECURE	0x0008	/* use security namespace attributes in op */
 
 /*
  * Additional flags that can be used with the set() attribute call.
