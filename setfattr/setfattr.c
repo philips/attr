@@ -33,7 +33,7 @@
 #include <libintl.h>
 #define _(String) gettext (String)
 
-#define CMD_LINE_OPTIONS "n:x:v:hB:HV"
+#define CMD_LINE_OPTIONS "n:x:v:h"
 #define CMD_LINE_SPEC "{-n name|-x name} [-v value] [-h] file..."
 
 struct option long_options[] = {

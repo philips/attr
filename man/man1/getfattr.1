@@ -3,11 +3,11 @@
 getfattr \- get extended attributes of filesystem objects
 .SH SYNOPSIS
 .nf
-\f3getfattr\f1 [\f3\-hvRLP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
+\f3getfattr\f1 [\f3\-hRLP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
 \f3pathname\f1...
-\f3getfattr\f1 [\f3\-hvRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
+\f3getfattr\f1 [\f3\-hRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
 [\f3\-m pattern\f1] \f3pathname\f1...
-\f3getfattr\f1 [\f3\-VH\f1]
+\f3getfattr\f1 [\f3\-\-version\f1]
 .fi
 .SH DESCRIPTION
 For each file,
@@ -17,15 +17,15 @@ and the set of extended attribute names (and optionally values) which
 are associated with that file.
 .PP
 The output format of
-.B "getfattr \-ds"
+.B "getfattr \-d"
 is as follows:
 .fam C
 .RS
 .nf
  1:  # file: somedir/
  2:  user.name0="value0"
- 3:  system.name0="value1"
- 4:  user.name1="value2"
+ 3:  user.name1="value1"
+ 4:  user.name2="value2"
  5:  ...
 .fi
 .RE
@@ -40,35 +40,31 @@ and
 pairs associated with the specified file.
 .SS OPTIONS
 .TP 4
-.I \-n name
+.BR \-n " \f2name\f1, " \-\-name "=\f2name\f1"
 Dump the value of the named extended attribute extended attribute.
 .TP
-.I \-a
-Absolute names \- suppress the stripping of leading '/' from an absolute
-.IR pathname .
-.TP
-.I \-d
+.BR \-d ", " \-\-dump
 Dump the values of all extended attributes associated with
 .IR pathname .
 .TP
-.I \-e en
+.BR \-e " \f2en\f1, " \-\-encoding "=\f2en\f1"
 Encode values after retrieving them.
 Valid values of
 .I en
 are "text", "hex", and "base64".
 .TP
-.I \-h
+.BR \-h ", " \-\-no-dereference
 Do not follow symlinks - if
 .I pathname
 is a symbolic link, it is not followed, but is instead itself the
 inode being examined.
 .TP
-.I \-m
+.BR \-m " \f2pattern\f1, " \-\-match "=\f2pattern\f1"
 .I pattern
 is a regular expression pattern to apply to the set of extended
 attribute names being returned.
 It defaults to "^user\\." if no
-.I \-r
+.B \-m
 is specified, which causes
 .B getfattr
 to operate on only extended attributes from the user namespace.
@@ -76,28 +72,32 @@ Refer to
 .BR attr (5)
 for a more detailed discussion on namespaces.
 .TP
-.I \-v
+.B \-\-absolute-names
+Suppress the stripping of leading '/' from an absolute
+.IR pathname .
+.TP
+.B \-\-only-values
 Dump out the extended attribute value(s) only.
 .TP
-.I \-R
+.BR \-R ", " \-\-recursive
 Recurse into subdirectories, dumping extended attributes for each file
 encountered (breadth first).
 .TP
-.I \-L
+.BR \-L ", " \-\-logical
 Refines the \-R option - "logical walk" (do follow symbolic links).
 .TP
-.I \-P
+.BR \-P ", " \-\-physical
 Refines the \-R option - "physical walk" (do not follow symbolic links).
 .TP
-.I \-V
+.B \-\-version
 Print the version of
 .B getfattr
 and exit.
 .TP
-.I \-h
+.B \-\-help
 Print help explaining the command line options.
 .TP
-.I \-\-
+.B \-\-
 End of command line options.
 All remaining parameters are interpreted as file names, even if they
 start with a dash character.

@@ -34,8 +34,8 @@
 #include <libintl.h>
 #define _(String) gettext (String)
 
-#define CMD_LINE_OPTIONS "ade:hm:n:v:HRLP"
-#define CMD_LINE_SPEC "[-ahvRLP] [-n name|-d] [-e en] [-m pattern] path..."
+#define CMD_LINE_OPTIONS "n:de:m:hRLP"
+#define CMD_LINE_SPEC "[-hRLP] [-n name|-d] [-e en] [-m pattern] path..."
 
 struct option long_options[] = {
 	{ "name",		1, 0, 'n' },
