@@ -1,7 +1,13 @@
+attr (2.4.1-1) unstable; urgency=low
+
+  * New upstream release
+
+ -- Nathan Scott <nathans@debian.org>  Thu, 27 Mar 2003 10:30:18 +1100
+
 attr (2.4.0-1) unstable; urgency=low
 
   * New upstream release
-  * Updated policy version this package conforms to
+  * Updated policy version to which this package conforms
   * Note: xfsdump and xfsrestore are affected by a change in libattr
     which deprecates the attribute name prefix "xfsroot", replacing
     it with the generic "trusted" name -- the environment variable
