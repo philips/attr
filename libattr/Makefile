@@ -34,10 +34,24 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 STATICLIBTARGET = libattr.a
+
 CFILES = attr.c
+LCFLAGS = -D_REENTRANT
 
 default: $(STATICLIBTARGET)
 
 include $(BUILDRULES)
 
 install: default
+
+install-dev: default
+	$(INSTALL) -m 755 -d $(PKG_LIB_DIR)
+	$(INSTALL) -m 644 $(STATICLIBTARGET) $(PKG_LIB_DIR)
+
+#LIBTARGET = libattr.so.1
+#install: default
+#	$(INSTALL) -m 755 -d $(PKG_SLIB_DIR)
+#	$(INSTALL) -m 755 $(LIBTARGET) $(PKG_SLIB_DIR)
+#install-dev: default
+#	...
+#	$(INSTALL) -S $(PKG_SLIB_DIR)/$(LIBTARGET) $(PKG_LIB_DIR)/libattr.so

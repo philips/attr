@@ -30,19 +30,20 @@
 # http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
 #
 
-TOPDIR = ..
+TOPDIR = ../..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+MAN_SECTION	= 2
 
-default: $(CMDTARGET)
+MAN_PAGES	= $(shell echo *.$(MAN_SECTION))
+MAN_DEST	= $(PKG_MAN_DIR)/man$(MAN_SECTION)
+LSRCFILES	= $(MAN_PAGES)
+
+default : $(MAN_PAGES)
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
+install : default
+	$(INSTALL) -m 755 -d $(MAN_DEST)
+	$(INSTALL_MAN)
 install-dev:

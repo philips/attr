@@ -1,0 +1,6 @@
+
+attr-1.0.0 (15 January 2001)
+	- extended attribute code abstracted from xfs-cmds package
+	- completed Debian packaging
+	- late beta code
+

@@ -30,19 +30,47 @@
 # http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
 #
 
-TOPDIR = ..
+TOPDIR = ../..
+TREEROOT = $(shell cd ${TOPDIR}; pwd)
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+SPECF = $(PKG_NAME).spec
+LDIRT = $(PKG_NAME)*.rpm $(SPECF) rpmmacros rpm-*.rc $(TOPDIR)/files*.rpm
 
-default: $(CMDTARGET)
+LSRCFILES = macros.template $(SPECF).in rpm-2.rc.template
+
+default install install-dev :
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:
+# generate a binary rpm file
+dist : default $(SPECF) rpm-$(RPM_VERSION).rc
+	$(RPM) -ba --rcfile ./rpm-$(RPM_VERSION).rc $(SPECF)
+
+# Because rpm prior to v.2.90 does not support macros and old style config
+# is not supported by rpm v.3, we have to resort to such ugly hacks
+ifneq ($RPM_VERSION,2)
+rpm-$(RPM_VERSION).rc : rpmmacros
+	sed -e '/^macrofiles:/s|~/.rpmmacros|./rpmmacros|' </usr/lib/rpm/rpmrc >$@
+
+rpmmacros : macros.template
+	@sed -e 's|%topdir%|$(TREEROOT)|g' < $< > $@
+else
+rpm-2.rc: rpm-2.rc.template
+	@sed -e 's|%topdir%|$(TOPDIR)|g' < $< > $@
+endif
+
+.PHONY: $(SPECF)
+${SPECF} : ${SPECF}.in
+	sed -e's|@pkg_name@|$(PKG_NAME)|g' \
+	    -e's|@pkg_version@|$(PKG_VERSION)|g' \
+	    -e's|@pkg_release@|$(PKG_RELEASE)|g' \
+	    -e's|@pkg_distribution@|$(PKG_DISTRIBUTION)|g' \
+	    -e's|@pkg_builder@|$(PKG_BUILDER)|g' \
+	    -e's|@build_root@|$(DIST_ROOT)|g' \
+	    -e'/^BuildRoot: *$$/d' \
+	    -e's|@pkg_var_dir@|$(PKG_VAR_DIR)|g' \
+	    -e's|@pkg_share_dir@|$(PKG_SHARE_DIR)|g' \
+	    -e's|@pkg_log_dir@|$(PKG_LOG_DIR)|g' \
+	    -e's|@pkg_tmp_dir@|$(PKG_TMP_DIR)|g' \
+	    -e's|@make@|$(MAKE)|g' < $< > $@

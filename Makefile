@@ -30,19 +30,45 @@
 # http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
 #
 
-TOPDIR = ..
+TOPDIR = .
+HAVE_BUILDDEFS = $(shell test -f $(TOPDIR)/include/builddefs && echo yes || echo no)
+
+ifeq ($(HAVE_BUILDDEFS), yes)
 include $(TOPDIR)/include/builddefs
+endif
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+CONFIGURE = configure include/builddefs
+LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
+LDIRT = config.* conftest* Logs/* built install.* install-dev.* *.gz
 
-default: $(CMDTARGET)
+SUBDIRS = include libattr attr man doc debian build
 
+default: $(CONFIGURE)
+ifeq ($(HAVE_BUILDDEFS), no)
+	$(MAKE) -C . $@
+else
+	$(SUBDIRS_MAKERULE)
+endif
+
+ifeq ($(HAVE_BUILDDEFS), yes)
 include $(BUILDRULES)
+else
+clean:	# if configure hasn't run, nothing to clean
+endif
+
+$(CONFIGURE): configure.in include/builddefs.in VERSION
+	rm -f config.cache
+	autoconf
+	./configure
 
 install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:
+	$(SUBDIRS_MAKERULE)
+	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)
+	$(INSTALL) -m 644 README $(PKG_DOC_DIR)
+
+install-dev: default
+	$(SUBDIRS_MAKERULE)
+
+realclean distclean: clean
+	rm -f $(LDIRT) $(CONFIGURE)
+	[ ! -d Logs ] || rmdir Logs

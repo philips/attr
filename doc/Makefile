@@ -33,16 +33,23 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+# [don't install COPYING for Debian builds - use Debian preferred method]
+HAVE_DEBIAN = $(shell test -f /etc/debian_version && echo yes || echo no)
 
-default: $(CMDTARGET)
+LSRCFILES = INSTALL PORTING CHANGES COPYING
+LDIRT = *.gz
+
+default: $(CMDTARGET) CHANGES.gz
 
 include $(BUILDRULES)
 
+CHANGES.gz:
+	$(ZIP) --best -c < CHANGES > $@
+
 install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
+	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)
+ifeq ($(HAVE_DEBIAN), no)
+	$(INSTALL) -m 644 COPYING $(PKG_DOC_DIR)
+endif
+	$(INSTALL) -m 644 PORTING CHANGES.gz $(PKG_DOC_DIR)
 install-dev:

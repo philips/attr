@@ -30,19 +30,21 @@
 # http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
 #
 
-TOPDIR = ..
+TOPDIR = ../..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+BINTAR=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+LDIRT = $(BINTAR)
 
-default: $(CMDTARGET)
+default install install-dev :
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:
+dist : default
+	@HERE=`pwd`; cd $${DIST_ROOT:-/}; \
+	sort $$HERE/../bin-manifest | uniq | $(AWK) ' \
+		$$1 == "f" { printf (".%s\n", $$6); } \
+		$$1 == "d" { next; } \
+		$$1 == "l" { printf (".%s\n", $$3); }' \
+	| $(TAR) -T - -cf - | $(ZIP) --best > $$HERE/$(BINTAR)
+	@echo Wrote: `pwd`/$(BINTAR)

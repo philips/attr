@@ -33,16 +33,8 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+LSRCFILES = changelog control copyright rules
 
-default: $(CMDTARGET)
+default install install-dev:
 
 include $(BUILDRULES)
-
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:

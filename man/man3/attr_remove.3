@@ -1,0 +1,155 @@
+.TH ATTR_REMOVE 3
+.SH NAME
+attr_remove, attr_removef \- remove a user attribute of a filesystem object
+.SH C SYNOPSIS
+.PP
+.sp
+.nf
+.B #include <sys/attributes.h>
+.sp
+.B "int attr_remove (const char \(**path, const char \(**attrname, int flags);"
+.PP
+.B "int attr_removef (int fd, const char \(**attrname, int flags);"
+.Op
+.SH DESCRIPTION
+The
+.I attr_remove
+and
+.I attr_removef
+functions provide a way to remove previously created attributes
+from filesystem objects.
+.P
+.I Path\^
+points to a path name for a filesystem object, and 
+.I fd\^
+refers to the file descriptor associated with a file.
+If the attribute
+.I attrname
+exists, the attribute name and value will be removed from the
+fileystem object.
+The
+.I flags
+argument can contain the following symbols bitwise OR\'ed together:
+.TP
+.SM
+\%ATTR_ROOT
+Look for
+.I attrname
+in the
+.B root
+address space, not in the
+.B user
+address space.
+(limited to use by super-user only)
+.TP
+.SM
+\%ATTR_DONTFOLLOW
+Do not follow symbolic links when resolving a
+.I path
+on an
+.I attr_remove
+function call.
+The default is to follow symbolic links.
+.PP
+.I attr_remove
+will fail if one or more of the following are true:
+.TP 17
+.SM
+\%[ENOATTR]
+The attribute name given is not associated with the indicated
+filesystem object.
+.TP
+.SM
+\%[ENOENT]
+The named file does not exist.
+.TP
+.SM
+\%[EPERM]
+The effective user
+.SM ID
+does not match the owner of the file
+and the effective user
+.SM ID
+is not super-user.
+.TP
+.SM
+\%[ENOTDIR]
+A component of the
+path prefix
+is not a directory.
+.TP
+.SM
+\%[EACCES]
+Search permission is denied on a
+component of the
+path prefix.
+.TP
+.SM
+\%[EINVAL]
+A bit was set in the
+.I flag
+argument that is not defined for this system call.
+.TP
+.SM
+\%[EFAULT]
+.I Path
+points outside the allocated address space of the process.
+.TP
+.SM
+\%[ELOOP]
+A path name lookup involved too many symbolic links.
+.TP
+.SM
+\%[ENAMETOOLONG]
+The length of
+.I path
+exceeds
+.SM
+.RI { MAXPATHLEN },
+or a pathname component is longer than
+.SM
+.RI { MAXNAMELEN }.
+.PP
+.I attr_removef\^
+will fail if:
+.TP 15
+.SM
+\%[ENOATTR]
+The attribute name given is not associated with the indicated
+filesystem object.
+.TP
+.SM
+\%[EINVAL]
+A bit was set in the
+.I flag
+argument that is not defined for this system call,
+or
+.I fd\^
+refers to a socket, not a file.
+.TP
+.SM
+\%[EFAULT]
+.I Attrname
+points outside the allocated address space of the process.
+.TP
+.SM
+\%[EBADF]
+.I Fd\^
+does not refer to a valid descriptor.
+.SH "SEE ALSO"
+attr(1),
+.br
+attrctl(2),
+.br
+attr_get(3), attr_getf(3),
+.br
+attr_list(3), attr_listf(3)
+.br
+attr_multi(3), attr_multif(3)
+.br
+attr_set(3), attr_setf(3),
+.SH "DIAGNOSTICS"
+Upon successful completion, a value of 0 is returned.
+Otherwise, a value of \-1 is returned and
+.I errno\^
+is set to indicate the error.

@@ -33,16 +33,9 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+SUBDIRS = man1 man2 man3
 
-default: $(CMDTARGET)
+default install install-dev : $(SUBDIRS)
+	$(SUBDIRS_MAKERULE)
 
 include $(BUILDRULES)
-
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:

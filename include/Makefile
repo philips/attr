@@ -33,16 +33,13 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-CMDTARGET = attr
-CFILES = attr.c
-LLDLIBS = $(LIBATTR)
-LLDFLAGS = -L$(TOPDIR)/libattr
+HFILES = attributes.h
+LSRCFILES = builddefs.in buildrules
 
-default: $(CMDTARGET)
+default install :
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL) -m 755 -d $(PKG_SBIN_DIR)
-	$(INSTALL) -m 755 $(CMDTARGET) $(PKG_SBIN_DIR)
-install-dev:
+install-dev: default
+	$(INSTALL) -m 755 -d $(PKG_INC_DIR)
+	$(INSTALL) -m 644 $(HFILES) $(PKG_INC_DIR)
