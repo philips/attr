@@ -32,14 +32,16 @@
 #
 
 TOPDIR = ..
+
+LTLDFLAGS = -Wl,--version-script,$(TOPDIR)/exports
 include $(TOPDIR)/include/builddefs
 
 LTLIBRARY = libattr.la
-LT_CURRENT = 1
-LT_REVISION = 2
-LT_AGE = 0
+LT_CURRENT = 2
+LT_REVISION = 0
+LT_AGE = 1
 
-CFILES = libattr.c syscalls.c attr_copy_fd.c attr_copy_file.c
+CFILES = libattr.c syscalls.c attr_copy_fd.c attr_copy_file.c attr_copy_check.c
 HFILES = libattr.h
 
 LCFLAGS = -include libattr.h

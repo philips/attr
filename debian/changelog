@@ -1,4 +1,4 @@
-attr (2.3.0-1) unstable; urgency=low
+attr (2.4.0-1) unstable; urgency=low
 
   * New upstream release
   * Note: xfsdump and xfsrestore are affected by a change in libattr
@@ -6,7 +6,7 @@ attr (2.3.0-1) unstable; urgency=low
     it with the generic "trusted" name.  The environment variable
     COMPAT_XFSROOT can be used to obtain the old behavior.
 
- -- Nathan Scott <nathans@debian.org>  Fri, 21 Feb 2003 16:28:13 +1100
+ -- Nathan Scott <nathans@debian.org>  Wed, 26 Feb 2003 16:07:57 +1100
 
 attr (2.2.0-1) unstable; urgency=low
 

@@ -1,4 +1,16 @@
-attr-2.3.0 (21 February 2002)
+attr-2.4.0 (26 February 2003)
+	- Add symbol level versioning to libattr. This improves link
+	  time consistency checks. The library versions are also
+	  honored by RPM, so an RPM package built against say,
+	  libattr.so.1(ATTR_1.1) won't link against
+	  libattr.so.1(ATTR_1.0), which was not checked before.
+	- Make the default check function used by attr_copy_{fd,file}()
+	  accessible as attr_copy_check_permissions().
+	- Increment the library version number, so that the attr_copy
+	  functions can be checked for.
+	- Fix some minor typos.
+
+attr-2.3.0 (21 February 2003)
 	- By default, we use the "trusted" attribute name prefix for
 	  XFS ROOT attribute names, instead of the "xfsroot" prefix.
 	  If the COMPAT_XFSROOT environment variable is set, however,

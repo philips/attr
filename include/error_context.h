@@ -24,7 +24,7 @@ struct error_context {
 # define quote(ctx, name) \
 	( ((ctx) && (ctx)->quote) ? (ctx)->quote((ctx), (name)) : (name) )
 # define quote_free(ctx, name) do { \
-	if ((ctx) && (ctx)->quote) \
+	if ((ctx) && (ctx)->quote_free) \
 		(ctx)->quote_free((ctx), (name)); \
 	} while(0)
 #endif

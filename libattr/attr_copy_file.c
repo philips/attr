@@ -33,6 +33,10 @@
 # include <attr/xattr.h>
 #endif
 
+#if defined(HAVE_ATTR_LIBATTR_H)
+# include "attr/libattr.h"
+#endif
+
 #define ERROR_CONTEXT_MACROS
 #include "error_context.h"
 
@@ -47,13 +51,6 @@
 # define my_alloc(size) malloc (size)
 # define my_free(ptr) free (ptr)
 #endif
-
-static int
-check_no_acl(const char *name, struct error_context *ctx)
-{
-	return strcmp(name, "system.posix_acl_access") &&
-	       strcmp(name, "system.posix_acl_default");
-}
 
 /* Copy extended attributes from src_path to dst_path. If the file
    has an extended Access ACL (system.posix_acl_access) and that is
@@ -72,7 +69,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 
 	/* ignore acls by default */
 	if (check == NULL)
-		check = check_no_acl;
+		check = attr_copy_check_permissions;
 
 	size = listxattr (src_path, NULL, 0);
 	if (size < 0) {

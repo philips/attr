@@ -38,7 +38,7 @@ include $(TOPDIR)/include/builddefs
 endif
 
 CONFIGURE = configure include/builddefs include/config.h
-LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
+LSRCFILES = configure configure.in Makepkgs install-sh README VERSION exports
 
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
