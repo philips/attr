@@ -15,6 +15,11 @@ $ setfattr -n user -v value f
 setfattr: f: Operation not supported
 $ setfattr -n user. -v value f
 setfattr: f: Invalid argument
+$ setfattr -n user.name f
+$ getfattr -d f
+# file: f
+user.name
+
 $ setfattr -n user.n -v value f
 $ rm f
 ! === size checks, for an ext2/ext3 file system with a block size of 1K
@@ -182,19 +187,18 @@ $ rm f g h
 $ touch f
 $ ln -s f l
 $ setfattr -n user.filename -v f l
+$ setfattr -n user.filename -v l l
 $ setfattr -h -n user.filename -v l l
+setfattr: l: Operation not permitted
 $ getfattr -d f l
 # file: f
-user.filename="f"
-
-# file: l
-user.filename="f"
-
-$ getfattr -h -d f l
-# file: f
-user.filename="f"
+user.filename="l"
 
 # file: l
 user.filename="l"
 
+! Some POSIX ACL tests...
+$ setfattr -n system.posix_acl_access -v 0sAgAAAAEABgD/////AgAGAAEAAAAEAAQA/////xAABgD/////IAAEAP////8= f
+$ setfattr -n system.posix_acl_accessFOO -v 0sAgAAAAEABgD/////AgAGAAEAAAAEAAQA/////xAABgD/////IAAEAP////8= f
+setfattr: f: Invalid argument
 $ rm f l

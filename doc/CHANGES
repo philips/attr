@@ -1,5 +1,8 @@
 	- Fix: the m68k architecture is identified by __mc68000__
 	  rather than by __m68k__.
+	- Correction in the attr(5) manual page.
+	- Add test cases for empty EA values, and for a bad
+	  ACL extended attribute name (there were bugs with these).
 
 attr-2.0.11 (04 September 2002)
 	- Make the test/run script return a proper status code.
