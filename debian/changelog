@@ -1,8 +1,9 @@
-attr (2.4.10-1) unstable; urgency=low
+attr (2.4.12-1) unstable; urgency=low
 
   * New upstream release
+  * Fix GNU/Hurd build issues, thanks to Robert Millan (closes: #215154)
 
- -- Nathan Scott <nathans@debian.org>  Fri, 29 Aug 2003 08:55:04 +1000
+ -- Nathan Scott <nathans@debian.org>  Mon, 13 Oct 2003 13:02:58 +1000
 
 attr (2.4.8-1) unstable; urgency=low
 

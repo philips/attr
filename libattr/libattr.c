@@ -36,7 +36,6 @@
 #include <string.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <asm/types.h>
 
 #include <attr/xattr.h>
 #include <attr/attributes.h>
