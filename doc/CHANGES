@@ -1,4 +1,7 @@
 
+attr-1.0.3 (18 May 2001)
+	- man page corrections
+
 attr-1.0.2 (24 April 2001)
 	- rearrange headers to make system call internals private
 	- update package descriptions
