@@ -2,6 +2,7 @@ attr-2.0.1 (26 February 2002)
 	- incorporate several documentation changes from Andreas,
 	  including a script to convert from the aget format of
 	  attribute backup file, to the new getfattr format
+	- fix IA64 syscall numbering
 
 attr-2.0.0 (26 February 2002)
 	- initial introduction of the new system call interface
