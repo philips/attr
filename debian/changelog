@@ -1,4 +1,10 @@
-attr (1.1.0-1) unstable; urgency=low
+attr (1.1.1-0) unstable; urgency=low
+
+  * New upstream release
+
+ -- Nathan Scott <nathans@debian.org>  Mon, 23 Jul 2001 10:27:37 +1000
+
+attr (1.1.0-0) unstable; urgency=low
 
   * Reworked package slightly so that its not Debian native
   * Debian-specific changes now documented in changelog.Debian.gz
