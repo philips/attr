@@ -258,7 +258,7 @@ int do_set(const char *path, const char *name, const char *value)
 		if (!value)
 			return 1;
 	}
-	if (opt_set)
+	if (opt_set || opt_restore)
 		error = do_setxattr(path, name, value, size);
 	else
 		error = do_removexattr(path, name);
