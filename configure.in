@@ -176,5 +176,10 @@ for d in ${prefix}/share/man ${prefix}/man ; do
 done
 AC_SUBST(have_zipped_manpages)
 
+dnl Some more stuff for the ACL copying functions
+AC_C_CONST
+AC_TYPE_MODE_T
+AC_FUNC_ALLOCA
+
 dnl build definitions for use in Makefiles
 AC_OUTPUT(include/builddefs)

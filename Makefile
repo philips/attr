@@ -43,7 +43,8 @@ LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
-SUBDIRS = include libattr attr getfattr setfattr test man doc po debian build
+SUBDIRS = include libattr attr getfattr setfattr \
+	  examples test man doc po debian build
 
 default: $(CONFIGURE)
 ifeq ($(HAVE_BUILDDEFS), no)

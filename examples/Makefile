@@ -33,20 +33,9 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-LINGUAS = de
-LSRCFILES = $(LINGUAS:%=%.po) $(PKG_NAME).pot
-
-XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \
-		$(TOPDIR)/getfattr/getfattr.c \
-		$(TOPDIR)/setfattr/setfattr.c \
-		$(TOPDIR)/libattr/attr_copy_fd.c \
-		$(TOPDIR)/libattr/attr_copy_file.c
-
-default: $(LINGUAS:%=%.mo)
+LSRCFILES = copyattr.c
+LDIRT = copyattr
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL_LINGUAS)
-
-install-dev install-lib:
+default install install-dev install-lib:

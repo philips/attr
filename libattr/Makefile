@@ -36,10 +36,13 @@ include $(TOPDIR)/include/builddefs
 
 LTLIBRARY = libattr.la
 LT_CURRENT = 1
-LT_REVISION = 1
+LT_REVISION = 2
 LT_AGE = 0
 
-CFILES = libattr.c syscalls.c
+CFILES = libattr.c syscalls.c attr_copy_fd.c attr_copy_file.c
+HFILES = libattr.h
+
+LCFLAGS = -include libattr.h
 
 default: $(LTLIBRARY)
 

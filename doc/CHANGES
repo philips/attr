@@ -1,3 +1,15 @@
+attr-2.3.0 (21 February 2002)
+	- By default, we use the "trusted" attribute name prefix for
+	  XFS ROOT attribute names, instead of the "xfsroot" prefix.
+	  If the COMPAT_XFSROOT environment variable is set, however,
+	  the old (now deprecated) names are used.  This is useful for
+	  XFS kernel code older than, well, today.  Newer kernels will
+	  work correctly with the new tools (but not the old tools).
+	- Added routines to libattr for copying extended attributes -
+	  attr_copy_file and attr_copy_fd.
+	- libattr.so version updated to reflect these changes.
+	- Update licensing notice in system call man pages for aeb.
+
 attr-2.2.0 (30 November 2002)
 	- Complete the internationalisation support, and added initial
 	  German translation from Andreas.

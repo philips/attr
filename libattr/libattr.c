@@ -44,25 +44,32 @@
 #undef MAXNAMELEN
 #define MAXNAMELEN 256
 
-static const char *user_name = "user.";
-static const char *root_name = "xfsroot.";
-
 /*
  * Convert IRIX API components into Linux/XFS API components
  */
 static int
 api_convert(char *name, const char *irixname, int irixflags)
 {
-	int len = strlen(irixname);
+	static const char *user_name = "user.";
+	static const char *trusted_name = "trusted.";
+	static const char *xfsroot_name = "xfsroot.";
+	static int compat = -1;
 
-	if (len >= MAXNAMELEN) {
+	if (compat == -1)
+		compat = (getenv("COMPAT_XFSROOT") != NULL);
+
+	if (strlen(irixname) >= MAXNAMELEN) {
 		errno = EINVAL;
 		return -1;
 	}
-	if (irixflags & ATTR_ROOT)
-		strcpy(name, root_name);
-	else
+	if (irixflags & ATTR_ROOT) {
+		if (compat)
+			strcpy(name, xfsroot_name);
+		else
+			strcpy(name, trusted_name);
+	} else {
 		strcpy(name, user_name);
+	}
 	strcat(name, irixname);
 	return 0;
 }
