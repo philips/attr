@@ -244,15 +244,6 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 	if (opt_dump || opt_value_only) {
 		length = do_getxattr(path, name, NULL, 0);
 		if (length < 0) {
-			if (errno == ENOATTR) {
-				/*
-				 * Occasionally there are attribute
-				 * names in the name list that are not
-				 * accessible, or don't really exist.
-				 * Silently ignore this case.
-				 */
-				return 0;
-			}
 			fprintf(stderr, "%s: %s: %s\n", path, name,
 				strerror_ea(errno));
 			return 1;
