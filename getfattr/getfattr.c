@@ -237,7 +237,7 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 			return 1;
 		}
 
-		for (v = list; v - list <= listsize; v += strlen(v)+1)
+		for (v = list; (v - list) < listsize; v += strlen(v)+1)
 			if (regexec(&re, v, (size_t) 0, NULL, 0) == 0)
 				count++;
 		if (count) {
@@ -245,7 +245,7 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 			if (high_water_alloc((void **)&names, &ncount, n))
 				return 1;
 			n = 0;
-			for (v = list; v - list <= listsize; v += strlen(v)+1)
+			for (v = list; (v - list) < listsize; v += strlen(v)+1)
 				if (regexec(&re, v, (size_t) 0, NULL, 0) == 0)
 					names[n++] = v;
 			qsort(names, count, sizeof(char *),
