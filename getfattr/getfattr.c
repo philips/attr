@@ -221,11 +221,9 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 
 	listsize = do_listxattr(path, NULL, 0);
 	if (listsize < 0) {
-		if (errno != ENOATTR && errno != ENOTSUP) {
-			perror(path);
-			had_errors++;
-			return 1;
-		}
+		perror(path);
+		had_errors++;
+		return 1;
 	} else if (listsize > 0) {
 		if (high_water_alloc((void **)&list, &bufsize, listsize))
 			return 1;
