@@ -17,8 +17,7 @@
    Software Foundation, 59 Temple Place, Suite 330, Boston, MA 02111 USA. */
 
 #include <string.h>
-
-struct error_context;
+#include "error_context.h"
 
 int
 attr_copy_check_permissions(const char *name, struct error_context *ctx)
