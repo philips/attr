@@ -1,10 +1,11 @@
 attr (2.4.0-1) unstable; urgency=low
 
   * New upstream release
+  * Updated policy version this package conforms to
   * Note: xfsdump and xfsrestore are affected by a change in libattr
     which deprecates the attribute name prefix "xfsroot", replacing
-    it with the generic "trusted" name.  The environment variable
-    COMPAT_XFSROOT can be used to obtain the old behavior.
+    it with the generic "trusted" name -- the environment variable
+    COMPAT_XFSROOT can be used to obtain the old behavior
 
  -- Nathan Scott <nathans@debian.org>  Wed, 26 Feb 2003 16:07:57 +1100
 
