@@ -84,7 +84,7 @@ ENABLE_SHARED = @enable_shared@
 ENABLE_GETTEXT = @enable_gettext@
 HAVE_ZIPPED_MANPAGES = @have_zipped_manpages@
 
-ifneq "$(findstring $(PKG_PLATFORM), linux gnuhurd)" ""
+ifneq "$(findstring $(PKG_PLATFORM), linux gnu)" ""
 PCFLAGS = -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64
 endif
 
