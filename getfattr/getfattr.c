@@ -501,6 +501,7 @@ int main(int argc, char *argv[])
 			 opt_walk_physical * FTW_PHYS) < 0) {
 			fprintf(stderr, "%s: %s: %s\n", progname, argv[optind],
 			        strerror_ea(errno));
+			had_errors++;
 		}
 		optind++;
 	}
