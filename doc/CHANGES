@@ -1,7 +1,7 @@
-attr-2.0.8 (04 July 2002)
+attr-2.0.9 (04 July 2002)
 	- Build infrastructure updates so that configure options can be
 	  used to specify paths rather than semi-hard-coded path names
-	  controlled by the ROOT/ROOT_PREFIX environment variables; eg.
+	  controlled by the PREFIX/ROOT_PREFIX environment variables; eg.
 	  now allows /lib64 and /lib32
 	- Add system call numbers for the Alpha architecture
 
