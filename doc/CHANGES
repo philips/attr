@@ -1,3 +1,6 @@
+attr-2.4.9 (04 August 2003)
+	- Fix issues in the libmisc quote routine (from Ben Escoto).
+
 attr-2.4.8 (04 August 2003)
 	- Make quote/unquote return NULL if passed NULL. 
 

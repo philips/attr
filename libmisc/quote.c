@@ -35,16 +35,16 @@ const char *quote(const char *str)
 		return str;
 
 	for (nonpr = 0, s = (unsigned char *)str; *s != '\0'; s++)
-		if (!isprint(*s) || isspace(*s) || *s == '\\')
+		if (!isprint(*s) || isspace(*s) || *s == '\\' || *s == '=')
 			nonpr++;
 	if (nonpr == 0)
 		return str;
 
 	if (high_water_alloc((void **)&quoted_str, &quoted_str_len,
-			     nonpr * 3 + 1))
+			     (s - (unsigned char *)str) + nonpr * 3 + 1))
 		return NULL;
 	for (s = (unsigned char *)str, q = quoted_str; *s != '\0'; s++) {
-		if (!isprint(*s) || isspace(*s) || *s == '\\') {
+		if (!isprint(*s) || isspace(*s) || *s == '\\' || *s == '=') {
 			*q++ = '\\';
 			*q++ = '0' + ((*s >> 6)    );
 			*q++ = '0' + ((*s >> 3) & 7);
