@@ -48,8 +48,6 @@ You should install attr-devel if you want to develop programs
 which make use of extended attributes.  If you install attr-devel,
 you'll also want to install attr.
 
-# If .census exists, then no setup is necessary, just go and do the build,
-# otherwise run setup
 %prep
 if [ -f .census ] ; then
    if [ ! -d ${RPM_PACKAGE_NAME}-${RPM_PACKAGE_VERSION} ] ; then
@@ -57,8 +55,7 @@ if [ -f .census ] ; then
    fi
 else
 %setup
-touch .census
-./configure
+@make@ configure
 fi
 
 %build

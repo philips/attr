@@ -36,7 +36,7 @@ include $(TOPDIR)/include/builddefs
 
 LTLIBRARY = libattr.la
 LT_CURRENT = 1
-LT_REVISION = 0
+LT_REVISION = 1
 LT_AGE = 0
 
 CFILES = libattr.c syscalls.c

@@ -40,7 +40,7 @@ endif
 CONFIGURE = configure include/builddefs
 LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
 
-LDIRT = config.log config.status config.cache confdefs.h conftest* \
+LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
 SUBDIRS = include libattr attr getfattr setfattr test man doc debian build
@@ -60,7 +60,17 @@ endif
 
 $(CONFIGURE):
 	autoconf
-	./configure
+	./configure \
+		--prefix=/ \
+		--exec-prefix=/ \
+		--sbindir=/bin \
+		--bindir=/usr/bin \
+		--libdir=/lib \
+		--libexecdir=/usr/lib \
+		--includedir=/usr/include \
+		--mandir=/usr/share/man \
+		--datadir=/usr/share \
+		$$LOCAL_CONFIGURE_OPTIONS
 	touch .census
 
 install: default

@@ -26,8 +26,7 @@ config: .census
 .census:
 	@echo "== dpkg-buildpackage: configure" 1>&2
 	$(checkdir)
-	autoconf
-	$(options) ./configure
+	$(options) $(MAKE) configure
 	touch .census
 
 clean:
@@ -54,11 +53,9 @@ binary-arch: checkroot built
 	$(pkgtmp) $(MAKE) -C build src-manifest
 	@echo "== dpkg-buildpackage: debstd" 1>&2
 	$(stdenv) debstd -m | grep -v 'Dangling symlink'
-	find . > /tmp/debstd.out
 	dpkg-gencontrol -isp -p$(package) -P$(dirtmp) -Tdebian/substvars
 	dpkg-gencontrol -isp -p$(develop) -P$(dirdev)
 	dpkg-gencontrol -isp -p$(library) -P$(dirlib) -Tdebian/$(library).substvars
-	find . > /tmp/gencontrol.out
 	chown -R root.root $(dirtmp) $(dirdev) $(dirlib)
 	chmod -R go=rX $(dirtmp) $(dirdev) $(dirlib)
 	dpkg --build $(dirtmp) .. 
