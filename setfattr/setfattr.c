@@ -180,7 +180,7 @@ void help(void)
 
 char *next_line(FILE *file)
 {
-	static char line[_POSIX_PATH_MAX+32], *c;
+	static char line[PATH_MAX+32], *c;
 	if (!fgets(line, sizeof(line), file))
 		return NULL;
 

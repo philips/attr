@@ -1,3 +1,7 @@
+attr-2.4.21 (31 January 2005)
+	- Replace use of _POSIX_PATH_MAX with the larger PATH_MAX
+	  (thanks to Andree Leidenfrost).
+
 attr-2.4.20 (30 November 2004)
 	- Licensing fixes and clarifications.
 	- Update outdated email addresses.

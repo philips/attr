@@ -1,3 +1,10 @@
+attr (2.4.21-1) unstable; urgency=low
+
+  * New upstream release
+  * Replace use of _POSIX_PATH_MAX with PATH_MAX (see bug 292819)
+
+ -- Nathan Scott <nathans@debian.org>  Mon, 31 Jan 2005 20:13:02 +1100
+
 attr (2.4.20-1) unstable; urgency=low
 
   * New upstream release
