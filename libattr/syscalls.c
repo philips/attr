@@ -94,6 +94,20 @@
 # define __NR_removexattr	218
 # define __NR_lremovexattr	219
 # define __NR_fremovexattr	220
+#elif defined (__x86_64__)
+# define HAVE_XATTR_SYSCALLS 1
+# define __NR_setxattr		188
+# define __NR_lsetxattr		189
+# define __NR_fsetxattr		190
+# define __NR_getxattr		191
+# define __NR_lgetxattr		192
+# define __NR_fgetxattr		193
+# define __NR_listxattr		194
+# define __NR_llistxattr	195
+# define __NR_flistxattr	196
+# define __NR_removexattr	197
+# define __NR_lremovexattr	198
+# define __NR_fremovexattr	199
 #else
 # warning "Extended attribute syscalls undefined for this architecture"
 # define HAVE_XATTR_SYSCALLS 0
