@@ -47,11 +47,11 @@
 __BEGIN_DECLS
 
 extern int setxattr (const char *__path, const char *__name,
-			void *__value, size_t __size, int __flags) __THROW;
+		      const void *__value, size_t __size, int __flags) __THROW;
 extern int lsetxattr (const char *__path, const char *__name,
-			void *__value, size_t __size, int __flags) __THROW;
+		      const void *__value, size_t __size, int __flags) __THROW;
 extern int fsetxattr (int __filedes, const char *__name,
-			void *__value, size_t __size, int __flags) __THROW;
+		      const void *__value, size_t __size, int __flags) __THROW;
 
 extern ssize_t getxattr (const char *__path, const char *__name,
 				void *__value, size_t __size) __THROW;

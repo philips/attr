@@ -3,11 +3,11 @@
 getfattr \- get extended attributes of filesystem objects
 .SH SYNOPSIS
 .nf
-\f3getfattr\f1 [\f3\-lvRLP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
+\f3getfattr\f1 [\f3\-hvRLP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
 \f3pathname\f1...
-\f3getfattr\f1 [\f3\-lvRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
-[\f3\-r regex\f1] \f3pathname\f1...
-\f3getfattr\f1 [\f3\-Vh\f1]
+\f3getfattr\f1 [\f3\-hvRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
+[\f3\-m pattern\f1] \f3pathname\f1...
+\f3getfattr\f1 [\f3\-VH\f1]
 .fi
 .SH DESCRIPTION
 For each file,
@@ -57,14 +57,14 @@ Valid values of
 .I en
 are "text", "hex", and "base64".
 .TP
-.I \-l
+.I \-h
 Do not follow symlinks - if
 .I pathname
 is a symbolic link, it is not followed, but is instead itself the
 inode being examined.
 .TP
-.I \-r
-.I regex
+.I \-m
+.I pattern
 is a regular expression pattern to apply to the set of extended
 attribute names being returned.
 It defaults to "^user\\." if no
@@ -83,14 +83,11 @@ Dump out the extended attribute value(s) only.
 Recurse into subdirectories, dumping extended attributes for each file
 encountered (breadth first).
 .TP
-.I \-5
-Same as \-R, except done in post-order (depth first).
-.TP
 .I \-L
-Refines the \-R or \-5 option - "logical walk" (do follow symbolic links).
+Refines the \-R option - "logical walk" (do follow symbolic links).
 .TP
 .I \-P
-Refines the \-R or \-5 option - "physical walk" (do not follow symbolic links).
+Refines the \-R option - "physical walk" (do not follow symbolic links).
 .TP
 .I \-V
 Print the version of

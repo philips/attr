@@ -34,8 +34,7 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 LTCOMMAND = getfattr
-CFILES = walk_tree.c getfattr.c
-HFILES = walk_tree.h
+CFILES = getfattr.c
 
 LLDLIBS = $(LIBATTR)
 LTDEPENDENCIES = $(LIBATTR)

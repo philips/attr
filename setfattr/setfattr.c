@@ -1,9 +1,24 @@
 /*
- * Original setfattr.c:
- *	Copyright (C) 2001 by Andreas Gruenbacher <a.gruenbacher@computer.org>
- * Changes to use revised EA syscall interface:
- *	Copyright (C) 2001 by SGI XFS development <linux-xfs@oss.sgi.com>
- */
+  File: setfattr.c
+  (Linux Extended Attributes)
+
+  Copyright (C) 2001-2002 Andreas Gruenbacher <a.gruenbacher@computer.org>
+  Copyright (C) 2001-2002 SGI XFS development <linux-xfs@oss.sgi.com>
+
+  This program is free software; you can redistribute it and/or
+  modify it under the terms of the GNU Library General Public
+  License as published by the Free Software Foundation; either
+  version 2 of the License, or (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  Library General Public License for more details.
+
+  You should have received a copy of the GNU Library General Public
+  License along with this library; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+*/
 
 #include <limits.h>
 #include <stdio.h>
@@ -18,31 +33,72 @@
 #include <libintl.h>
 #define _(String) gettext (String)
 
-#define CMD_LINE_OPTIONS "n:lv:x:B:Vh"
-#define CMD_LINE_SPEC1 "{-n name|-x name} [-v value] [-lVh] file..."
-#define CMD_LINE_SPEC2 "{-B filename} [-lVh] file..."
+#define CMD_LINE_OPTIONS "n:x:v:hB:HV"
+#define CMD_LINE_SPEC "{-n name|-x name} [-v value] [-h] file..."
 
-char *opt_name;
-char *opt_remove;
-char *opt_value;
-int opt_restore;
-int opt_symlink;
+struct option long_options[] = {
+	{ "name",		1, 0, 'n' }, 
+	{ "remove",		1, 0, 'x' },
+	{ "value",		1, 0, 'v' },
+	{ "no-dereference",	0, 0, 'h' },
+	{ "restore",		1, 0, 'B' },
+	{ "version",		0, 0, 'V' },
+	{ "help",		0, 0, 'H' },
+	{ NULL,			0, 0, 0 }
+};
+
+char *opt_name;  /* attribute name to set */
+char *opt_value;  /* attribute value */
+int opt_set;  /* set an attribute */
+int opt_remove;  /* remove an attribute */
+int opt_restore;  /* restore has been run */
+int opt_deref = 1;  /* dereference symbolic links */
 
 int had_errors;
 const char *progname;
 
-int do_set(const char *name, const char *value, const char *path);
+int do_set(const char *path, const char *name, const char *value);
 const char *decode(const char *value, size_t *size);
-int restore(FILE *file, const char *filename);
+int restore(const char *filename);
 char *next_line(FILE *file);
 int hex_digit(char c);
 int base64_digit(char c);
 
-int restore(FILE *file, const char *filename)
+const char *strerror_ea(int err)
 {
-	char *path_p = NULL, *l;
+	if (err == ENOATTR)
+		return _("No such attribute");
+	return strerror(err);
+}
+
+int do_setxattr(const char *path, const char *name,
+		const void *value, size_t size)
+{
+	return (opt_deref ? setxattr : lsetxattr)(path, name, value, size, 0);
+}
+
+int do_removexattr(const char *path, const char *name)
+{
+	return (opt_deref ? removexattr : lremovexattr)(path, name);
+}
+
+int restore(const char *filename)
+{
+	FILE *file;
+	char *path = NULL, *l;
 	int line = 0, backup_line, status = 0;
 	
+	if (strcmp(filename, "-") == 0)
+		file = stdin;
+	else {
+		file = fopen(filename, "r");
+		if (file == NULL) {
+				fprintf(stderr, "%s: %s: %s\n",
+					progname, filename, strerror_ea(errno));
+				return 1;
+		}
+	}
+
 	for(;;) {
 		backup_line = line;
 		while ((l = next_line(file)) != NULL && *l == '\0')
@@ -65,45 +121,48 @@ int restore(FILE *file, const char *filename)
 			goto cleanup;
 		} else
 			l += 8;
-		if (path_p)
-			free(path_p);
-		path_p = (char *)malloc(strlen(l) + 1);
-		if (!path_p) {
+		if (path)
+			free(path);
+		path = (char *)malloc(strlen(l) + 1);
+		if (!path) {
 			status = 1;
 			goto cleanup;
 		}
-		strcpy(path_p, l);
+		strcpy(path, l);
 
 		while ((l = next_line(file)) != NULL && *l != '\0') {
 			char *name = l, *value = strchr(l, '=');
 			line++;
 			if (value)
 				*value++ = '\0';
-			status = do_set(name, value, path_p);
+			status = do_set(path, name, value);
 		}
 		if (l != NULL)
 			line++;
 	}
 
 cleanup:
-	if (path_p)
-		free(path_p);
+	if (path)
+		free(path);
+	if (file != stdin)
+		fclose(file);
+	if (status)
+		had_errors++;
 	return status;
 }
 
 void help(void)
 {
 	printf(_("%s %s -- set extended attributes\n"), progname, VERSION);
-	printf(_("Usage: %s %s\n"), progname, CMD_LINE_SPEC1);
-	printf(_("       %s %s\n"), progname, CMD_LINE_SPEC2);
-	printf(_("Options:\n"));
-	printf(_("\t-n name\tset value of extended attribute `name'\n"
-		"\t-l\tset extended attribute values of a symlink\n"
-		"\t-x name\tremove extended attribute `name'\n"
-		"\t-v value\n\t\tvalue for extended attribute `name'\n"
-		"\t-B filename\n\t\trestore extended attributes (inverse of `getfattr -sdlR')\n"
-		"\t-V\tprint version and exit\n"
-		"\t-h\tthis help text\n"));
+	printf(_("Usage: %s %s\n"), progname, CMD_LINE_SPEC);
+	printf(_(
+"  -n, --name=name         set the value of the named extended attribute\n"
+"  -x, --remove=name       remove the named extended attribute\n"
+"  -v, --value=value       use value as the attribute value\n"
+"  -h, --no-dereference    do not dereference symbolic links\n"
+"      --restore=file      restore extended attributes\n"
+"      --version           print version and exit\n"
+"      --help              this help text\n"));
 }
 
 char *next_line(FILE *file)
@@ -123,21 +182,22 @@ char *next_line(FILE *file)
 
 int main(int argc, char *argv[])
 {
-	FILE *file;
-	int status;
+	int opt;
 
 	progname = basename(argv[0]);
 
-	while ((optopt = getopt(argc, argv, CMD_LINE_OPTIONS)) != -1) {
-		switch(optopt) {
+	while ((opt = getopt_long(argc, argv, CMD_LINE_OPTIONS,
+		                  long_options, NULL)) != -1) {
+		switch(opt) {
 			case 'n':  /* attribute name */
-				if (opt_remove)
+				if (opt_name || opt_remove)
 					goto synopsis;
 				opt_name = optarg;
+				opt_set = 1;
 				break;
 
-			case 'l':  /* set attribute on symlink itself */
-				opt_symlink = 1;
+			case 'h':  /* set attribute on symlink itself */
+				opt_deref = 0;
 				break;
 
 			case 'v':  /* attribute value */
@@ -147,37 +207,22 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'x':  /* remove attribute */
-				if (opt_name)
+				if (opt_name || opt_set)
 					goto synopsis;
-				opt_remove = optarg;
+				opt_name = optarg;
+				opt_remove = 1;
 				break;
 
 			case 'B':  /* restore */
 				opt_restore = 1;
-				if (strcmp(optarg, "-") == 0)
-					file = stdin;
-				else {
-					file = fopen(optarg, "r");
-					if (file == NULL) {
-						fprintf(stderr, "%s: %s: %s\n",
-						        progname, optarg,
-						        strerror(errno));
-						return 1;
-					}
-				}
-				status = restore(file,
-				               (file == stdin) ? NULL : optarg);
-				if (file != stdin)
-					fclose(file);
-				if (status != 0)
-					return 1;
+				restore(optarg);
 				break;
 
 			case 'V':
 				printf("%s " VERSION "\n", progname);
 				return 0;
 
-			case 'h':
+			case 'H':
 				help();
 				return 0;
 
@@ -185,15 +230,11 @@ int main(int argc, char *argv[])
 				goto synopsis;
 		}
 	}
-	if (((opt_name && opt_remove) || (!opt_name && !opt_remove) ||
-	    optind >= argc) && !opt_restore)
+	if (!(((opt_remove || opt_set) && optind < argc) || opt_restore))
 		goto synopsis;
-	if (!opt_name) {
-		opt_name = opt_remove;
-		opt_value = NULL;
-	}
+
 	while (optind < argc) {
-		do_set(opt_name, opt_value, argv[optind]);
+		do_set(argv[optind], opt_name, opt_value);
 		optind++;
 	}
 
@@ -201,27 +242,12 @@ int main(int argc, char *argv[])
 
 synopsis:
 	fprintf(stderr, _("Usage: %s %s\n"
-			  "       %s %s\n"
-	                  "Try `%s -h' for more information.\n"),
-		progname, CMD_LINE_SPEC1, progname, CMD_LINE_SPEC2, progname);
+	                  "Try `%s --help' for more information.\n"),
+		progname, CMD_LINE_SPEC, progname);
 	return 2;
 }
 
-int do_setxattr(const char *path, const char *name, void *value, size_t size)
-{
-	if (opt_symlink)	
-		return lsetxattr(path, name, value, size, 0);
-	return setxattr(path, name, value, size, 0);
-}
-
-int do_removexattr(const char *path, const char *name)
-{
-	if (opt_symlink)	
-		return lremovexattr(path, name);
-	return removexattr(path, name);
-}
-
-int do_set(const char *name, const char *value, const char *path)
+int do_set(const char *path, const char *name, const char *value)
 {
 	size_t size = 0;
 	int error;
@@ -232,10 +258,14 @@ int do_set(const char *name, const char *value, const char *path)
 		if (!value)
 			return 1;
 	}
-	error = opt_remove? do_removexattr(path, name):
-		do_setxattr(path, name, (void *)value, size);
+	if (opt_set)
+		error = do_setxattr(path, name, value, size);
+	else
+		error = do_removexattr(path, name);
+
 	if (error < 0) {
-		perror(path);
+		fprintf(stderr, "%s: %s: %s\n",
+			progname, path, strerror_ea(errno));
 		had_errors++;
 		return 1;
 	}
@@ -256,7 +286,8 @@ const char *decode(const char *value, size_t *size)
 
 		decoded = d = (char *)malloc(*size / 2);
 		if (!decoded) {
-			perror("");
+			fprintf(stderr, "%s: %s\n",
+				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
@@ -289,7 +320,8 @@ const char *decode(const char *value, size_t *size)
 
 		decoded = d = (char *)malloc(*size / 4 * 3);
 		if (!decoded) {
-			perror("");
+			fprintf(stderr, "%s: %s\n",
+				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
@@ -360,7 +392,8 @@ const char *decode(const char *value, size_t *size)
 
 		decoded = d = (char *)malloc(*size);
 		if (!decoded) {
-			perror("");
+			fprintf(stderr, "%s: %s\n",
+				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
