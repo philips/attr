@@ -39,11 +39,10 @@ MAN_PAGES	= $(shell echo *.$(MAN_SECTION))
 MAN_DEST	= $(PKG_MAN_DIR)/man$(MAN_SECTION)
 LSRCFILES	= $(MAN_PAGES)
 
-default : $(MAN_PAGES)
+default install : $(MAN_PAGES)
 
 include $(BUILDRULES)
 
-install : default
+install-dev : default
 	$(INSTALL) -m 755 -d $(MAN_DEST)
 	$(INSTALL_MAN)
-install-dev:
