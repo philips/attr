@@ -39,10 +39,12 @@ clean:
 binary-indep:
 
 # Note1: dev pkg with .so symlinks to base pkg confuses debstd;
-# so the .so 'Dangling symlink' message is benign.
+#        so the .so 'Dangling symlink' message is benign, as is
+#        the message about not having executables/libraries.
 # Note2: absolute symlinks (required by policy) confuse debstd;
-# so we'll filter out symlink messages entirely now.
-# 
+#        so we'll filter out symlink messages entirely now.
+fixup_messages = egrep -v 'Dangling symlink|No executables or libraries'
+
 binary-arch: checkroot built
 	@echo "== dpkg-buildpackage: binary-arch" 1>&2
 	$(checkdir)
@@ -52,10 +54,11 @@ binary-arch: checkroot built
 	$(pkglib) $(MAKE) -C . install-lib
 	$(pkgtmp) $(MAKE) -C build src-manifest
 	@echo "== dpkg-buildpackage: debstd" 1>&2
-	$(stdenv) debstd -m | grep -v 'Dangling symlink'
+	$(stdenv) debstd -m | $(fixup_messages)
 	dpkg-gencontrol -isp -p$(package) -P$(dirtmp) -Tdebian/substvars
 	dpkg-gencontrol -isp -p$(develop) -P$(dirdev)
 	dpkg-gencontrol -isp -p$(library) -P$(dirlib) -Tdebian/$(library).substvars
+	cp debian/shlibs.$(library) $(dirlib)/DEBIAN/shlibs
 	chown -R root.root $(dirtmp) $(dirdev) $(dirlib)
 	chmod -R go=rX $(dirtmp) $(dirdev) $(dirlib)
 	dpkg --build $(dirtmp) .. 

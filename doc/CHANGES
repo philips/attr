@@ -1,3 +1,6 @@
+attr-2.4.4 (04 Junel 2003)
+	- Some Debian-specific packaging updates.
+
 attr-2.4.3 (26 April 2003)
 	- Rework configure.in to make use of shared macros.
 
