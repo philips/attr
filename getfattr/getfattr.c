@@ -347,14 +347,8 @@ int list_attributes(const char *path, int *header_printed)
 int do_print(const char *path, const struct stat *stat,
              int flag, struct FTW *ftw)
 {
+	int saved_errno = errno;
 	int header_printed = 0;
-
-	if (flag == FTW_DNR) {
-		/* Item is a directory which can't be read. */
-		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
-			strerror(errno));
-		return 0;
-	}
 
 	/*
 	 * Process the target of a symbolic link, and traverse the
@@ -374,6 +368,13 @@ int do_print(const char *path, const struct stat *stat,
 
 	if (header_printed)
 		puts("");
+
+	if (flag == FTW_DNR && opt_recursive) {
+		/* Item is a directory which can't be read. */
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
+			strerror(saved_errno));
+		return 0;
+	}
 
 	/*
 	 * We also get here in non-recursive mode. In that case,
