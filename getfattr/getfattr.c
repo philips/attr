@@ -353,6 +353,13 @@ int do_print(const char *path, const struct stat *stat,
 {
 	int header_printed = 0;
 
+	if (flag & FTW_DNR) {
+		/* Item is a directory which can't be read. */
+		fprintf(stderr, "%s: %s: %s\n",
+			progname, path, strerror(errno));
+		return 0;
+	}
+
 	/*
 	 * Process the target of a symbolic link, and traverse the
 	 * link, only if doing a logical walk, or if the symbolic link
