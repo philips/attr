@@ -35,7 +35,7 @@ include $(TOPDIR)/include/builddefs
 
 INCDIR = attr
 HFILES = attributes.h xattr.h
-LSRCFILES = builddefs.in buildrules
+LSRCFILES = builddefs.in buildmacros buildrules
 LDIRT = $(INCDIR)
 
 default:
