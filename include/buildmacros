@@ -116,7 +116,7 @@ INSTALL_LTLIB_STATIC = \
 	../$(INSTALL) -m 644 -T old_lib $(LIBNAME).lai $(PKG_DEVLIB_DIR)
 
 INSTALL_MAN = \
-	@for d in $(MAN_PAGES); do \
+	@for d in $(MAN_PAGES) ""; do \
 		first=true; \
 		for m in `$(AWK) \
 			'/^\.S[h|H] NAME/ {ok=1; next} ok {print; exit}' $$d \
@@ -143,10 +143,12 @@ INSTALL_MAN = \
 
 ifeq ($(ENABLE_GETTEXT),yes)
 INSTALL_LINGUAS = \
-	@for l in $(LINGUAS); do \
-		ldir=$(PKG_LOCALE_DIR)/$$l/LC_MESSAGES; \
-		$(INSTALL) -m 755 -d $$ldir; \
-		$(INSTALL) -m 644 $$l.mo $$ldir/$(PKG_NAME).mo; \
+	@for l in $(LINGUAS) ""; do \
+		if test -f "$$l.mo" ; then \
+			ldir=$(PKG_LOCALE_DIR)/$$l/LC_MESSAGES; \
+			$(INSTALL) -m 755 -d $$ldir; \
+			$(INSTALL) -m 644 $$l.mo $$ldir/$(PKG_NAME).mo; \
+		fi; \
 	done
 endif
 
