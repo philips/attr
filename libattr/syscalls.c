@@ -33,12 +33,12 @@
 
 /*
  * The use of the syscall() function is an additional level of
- * indirection. For now, this avoids the dependency on kernel sources, though.
+ * indirection.  This avoids the dependency on kernel sources.
  */
 
 #include <unistd.h>
 
-#if defined(__i386__)
+#if defined (__i386__)
 # define HAVE_XATTR_SYSCALLS 1
 # define __NR_setxattr		226
 # define __NR_lsetxattr		227
@@ -122,6 +122,21 @@
 # define __NR_removexattr	233
 # define __NR_lremovexattr	234
 # define __NR_fremovexattr	235
+#elif defined (__arm__)
+# define HAVE_XATTR_SYSCALLS 1
+# define __NR_SYSCALL_BASE 0x900000
+# define __NR_setxattr		(__NR_SYSCALL_BASE+226)
+# define __NR_lsetxattr		(__NR_SYSCALL_BASE+227)
+# define __NR_fsetxattr		(__NR_SYSCALL_BASE+228)
+# define __NR_getxattr		(__NR_SYSCALL_BASE+229)
+# define __NR_lgetxattr		(__NR_SYSCALL_BASE+230)
+# define __NR_fgetxattr		(__NR_SYSCALL_BASE+231)
+# define __NR_listxattr		(__NR_SYSCALL_BASE+232)
+# define __NR_llistxattr	(__NR_SYSCALL_BASE+233)
+# define __NR_flistxattr	(__NR_SYSCALL_BASE+234)
+# define __NR_removexattr	(__NR_SYSCALL_BASE+235)
+# define __NR_lremovexattr	(__NR_SYSCALL_BASE+236)
+# define __NR_fremovexattr	(__NR_SYSCALL_BASE+237)
 #else
 # warning "Extended attribute syscalls undefined for this architecture"
 # define HAVE_XATTR_SYSCALLS 0

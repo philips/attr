@@ -1,4 +1,4 @@
-attr (2.0.2-1) unstable; urgency=low
+attr (2.0.3-1) unstable; urgency=low
 
   * Major new upstream release
   * Uses the new official ext2/ext3/XFS extended attributes interfaces

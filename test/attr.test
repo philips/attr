@@ -1,78 +1,170 @@
 !
-! Tests for getting/setting extended file attributes with ext2/ext3
-! The initial size checks are ext2/ext3 specific, but the remainder
-! should work for any extended attributes filesystem (eg. XFS).
+! Tests for extended attributes on ext2/ext3 file systems. The initial
+! size checks and the file size checks are ext2/ext3 specific. The
+! other setfattr/getfattr operations are designed to cover all special
+! cases in the ext27ext3 kernel patches, but they should work on other
+! filesystems as well.
 !
-$ mkdir attr-test
-$ touch attr-test/f
-! Maximum attribute size for 1024 byte blocks = 1024 - (20+20+4) = 980
-$ aset -n user.name -v 968+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ attr-test/f
-! Attribute too big for 1024 byte blocks
-$ aset -n user.name -v 969++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ attr-test/f
-attr-test/f: No space left on device
-$ aset -n user.name attr-test/f
-$ aget -d attr-test/f
-# file: attr-test/f
-user.name
+! Execute this test using the `run' script in this directory:
+!
+!  $ run attr.text
+!
+! === size checks, for an ext2/ext3 file system with a block size of 1K
+$ touch f
+$ setfattr -n user.name -v 968+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ f
+$ setfattr -n user.name -v 969++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ f
+setfattr: f: No space left on device
+$ rm f
+!
+! Editing values
+!
+$ touch f
+$ setfattr -n user.vvvvvvvvvvvv -v vvvvvvvvvvvv f
+$ setfattr -n user.wwwwwwww -v wwwwwwww f
+$ setfattr -n user.xxxx -v xxxx f
+$ getfattr -d f
+# file: f
+user.vvvvvvvvvvvv="vvvvvvvvvvvv"
+user.wwwwwwww="wwwwwwww"
+user.xxxx="xxxx"
 
-$ aset -n user.name -v 0xbabe attr-test/f
-$ aset -n user.name2 -v 0xdeadbeef attr-test/f
-$ aset -n user.name3 -v 0xdeface attr-test/f
+$ setfattr -n user.wwwwwwww -v wwww f
+$ getfattr -d f
+# file: f
+user.vvvvvvvvvvvv="vvvvvvvvvvvv"
+user.wwwwwwww="wwww"
+user.xxxx="xxxx"
+
+$ setfattr -n user.xxxx -v xxxxxxxx f
+$ getfattr -d f
+# file: f
+user.vvvvvvvvvvvv="vvvvvvvvvvvv"
+user.wwwwwwww="wwww"
+user.xxxx="xxxxxxxx"
+
+$ rm f
 !
+! Value encodings
 !
-$ aget -d -e hex attr-test/f
-# file: attr-test/f
+$ touch f
+$ setfattr -n user.name -v 0xbabe f
+$ setfattr -n user.name2 -v 0s3q2+7w== f
+$ setfattr -n user.name3 -v 0xdeface f
+$ getfattr -d -e hex f
+# file: f
 user.name=0xbabe
 user.name2=0xdeadbeef
 user.name3=0xdeface
 
-$ aget -d -e base64 attr-test/f
-# file: attr-test/f
+$ getfattr -d -e base64 f
+# file: f
 user.name=0sur4=
 user.name2=0s3q2+7w==
 user.name3=0s3vrO
 
-!
-! shrink value of existing attribute
-!
-$ aset -n user.name2 -v 0xdeaf attr-test/f
-$ aget -d -e hex attr-test/f
-# file: attr-test/f
-user.name=0xbabe
-user.name2=0xdeaf
-user.name3=0xdeface
+$ getfattr -d -e text f
+# file: f
+user.name="º¾"
+user.name2="Þ­¾ï"
+user.name3="ÞúÎ"
 
+$ rm f
 !
-! grow value of existing attribute
+! Everything with one file
 !
-$ aset -n user.name2 -v 0xdecade attr-test/f
-$ aget -d -e hex attr-test/f
-# file: attr-test/f
-user.name=0xbabe
-user.name2=0xdecade
-user.name3=0xdeface
+$ touch f
+$ setfattr -n user.novalue f
+$ setfattr -n user.somename -v somevalue f
+$ setfattr -n user.somename -v somevalue f
+$ setfattr -n user.longername -v longervalue f
+$ setfattr -n user.short -v value f
+$ setfattr -n user.novalue-yet f
+$ ls -s f
+   1 f
+$ getfattr -d f
+# file: f
+user.longername="longervalue"
+user.novalue
+user.novalue-yet
+user.short="value"
+user.somename="somevalue"
 
-!
-! empty value
-!
-$ aset -n user.name2 attr-test/f
-$ aget -d -n user.name2 attr-test/f
-# file: attr-test/f
-user.name2
+$ setfattr -n user.novalue-yet -v avalue-now f
+$ getfattr -d f
+# file: f
+user.longername="longervalue"
+user.novalue
+user.novalue-yet="avalue-now"
+user.short="value"
+user.somename="somevalue"
 
-!
-! overwrite empty value
-!
-$ aset -n user.name2 -v 0xcafe attr-test/f
-$ aget -d -e hex -n user.name2 attr-test/f
-# file: attr-test/f
-user.name2=0xcafe
+$ setfattr -x user.noname f
+setfattr: f: No such attribute
+$ setfattr -x user.somename f
+$ setfattr -x user.short f
+$ getfattr -d f
+# file: f
+user.longername="longervalue"
+user.novalue
+user.novalue-yet="avalue-now"
 
+$ setfattr -x user.longername f
+$ setfattr -x user.novalue f
+$ setfattr -x user.novalue-yet f
+$ getfattr -d f
+$ ls -s f
+   0 f
+$ rm f
 !
-! remove attribute
+! Test extended attribute block sharing
 !
-$ aset -x user.name2 attr-test/f
-$ aget -d -n user.name2 attr-test/f
-attr-test/f: user.name2: No such attribute
-$ rm attr-test/f
-$ rmdir attr-test
+$ touch f g h
+$ setfattr -n user.novalue f g h
+$ ls -s f g h
+   1 f
+   1 g
+   1 h
+$ setfattr -n user.name -v value f
+$ ls -s f g h
+   1 f
+   1 g
+   1 h
+$ getfattr -d f g h
+# file: f
+user.name="value"
+user.novalue
+
+# file: g
+user.novalue
+
+# file: h
+user.novalue
+
+$ setfattr -n user.name -v value g
+$ ls -s f g h
+   1 f
+   1 g
+   1 h
+$ setfattr -x user.novalue h
+$ ls -s f g h
+   1 f
+   1 g
+   0 h
+$ getfattr -d f g h
+# file: f
+user.name="value"
+user.novalue
+
+# file: g
+user.name="value"
+user.novalue
+
+$ setfattr -n user.name -v other-value g
+$ setfattr -n user.name -v value g
+$ setfattr -x user.name f g
+$ setfattr -x user.novalue f g
+$ ls -s f g h
+   0 f
+   0 g
+   0 h
+$ rm f g h
