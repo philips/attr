@@ -66,7 +66,7 @@ int base64_digit(char c);
 
 const char *strerror_ea(int err)
 {
-	if (err == ENOATTR)
+	if (err == ENODATA)
 		return _("No such attribute");
 	return strerror(err);
 }

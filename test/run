@@ -76,6 +76,7 @@ if (isatty(fileno(STDOUT))) {
 	}
 }
 print $status, "\n";
+exit $failed ? 1 : 0;
 
 sub exec_test($$) {
   my ($prog, $in) = @_;

@@ -108,7 +108,7 @@ int high_water_alloc(void **buf, size_t *bufsize, size_t newsize)
 
 const char *strerror_ea(int err)
 {
-	if (err == ENOATTR)
+	if (err == ENODATA)
 		return _("No such attribute");
 	return strerror(err);
 }

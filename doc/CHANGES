@@ -1,3 +1,9 @@
+attr-2.0.11 (04 September 2002)
+	- Make the test/run script return a proper status code.
+	- Fix up the error message returned for ENODATA rather
+	  than ENOATTR, so if ENOATR is assigned a separate number
+	  we don't mess with ENOATTR's text message.
+
 attr-2.0.10 (28 August 2002)
 	- Add system call numbers for the m68k architecture
 	- Add missing "enabling" #define for the Alpha architecture

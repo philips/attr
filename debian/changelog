@@ -1,8 +1,8 @@
-attr (2.0.10-1) unstable; urgency=low
+attr (2.0.11-1) unstable; urgency=low
 
   * New upstream release
 
- -- Nathan Scott <nathans@debian.org>  Wed, 28 Aug 2002 13:39:50 +1000
+ -- Nathan Scott <nathans@debian.org>  Thu,  5 Sep 2002 09:12:02 +1000
 
 attr (2.0.9-1) unstable; urgency=low
 
