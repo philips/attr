@@ -45,8 +45,9 @@ The attribute name is always specified in the fully qualified
 form, eg.
 .IR user.mime_type ,
 .IR trusted.md5sum ,
+.IR system.posix_acl_access ,
 or
-.IR system.posix_acl_access .
+.IR security.selinux .
 .PP
 The namespace mechanism is used to define different classes of extended
 attributes.
@@ -55,12 +56,33 @@ and capabilities required for manipulating extended attributes of one
 namespace may differ to another.
 .PP
 Currently the
-.IR user ,
+.IR security ,
+.IR system ,
 .IR trusted ,
 and
-.I system
+.IR user
 extended attribute classes are defined as described below. Additional
 classes may be added in the future.
+.SS Extended security attributes
+The security attribute namespace is used by kernel security modules,
+such as Security Enhanced Linux.  
+Read and write access permissions to security attributes depend on the
+policy implemented for each security attribute by the security module.
+When no security module is loaded, all processes have read access to
+extended security attributes, and write access is limited to processes
+that have the CAP_SYS_ADMIN capability.
+.SS Extended system attributes
+Extended system attributes are used by the kernel to store system
+objects such as Access Control Lists and Capabilities.  Read and write
+access permissions to system attributes depend on the policy implemented
+for each system attribute implemented by filesystems in the kernel.
+.SS Trusted extended attributes
+Trusted extended attributes are visible and accessible only to processes that
+have the CAP_SYS_ADMIN capability (the super user usually has this
+capability).
+Attributes in this class are used to implement mechanisms in user
+space (i.e., outside the kernel) which keep information in extended attributes
+to which ordinary processes should not have access.
 .SS Extended user attributes
 Extended user attributes may be assigned to files and directories for
 storing arbitrary additional information such as the mime type,
@@ -81,18 +103,6 @@ owner and to users with appropriate capabilities for directories with the
 sticky bit set (see the
 .BR chmod (1)
 manual page for an explanation of Sticky Directories).
-.SS Trusted extended attributes
-Trusted extended attributes are visible and accessible only to processes that
-have the CAP_SYS_ADMIN capability (the super user usually has this
-capability).
-Attributes in this class are used to implement mechanisms in user
-space (i.e., outside the kernel) which keep information in extended attributes
-to which ordinary processes should not have access.
-.SS Extended system attributes
-Extended system attributes are used by the kernel to store system
-objects such as Access Control Lists and Capabilities.  Read and write
-access permissions to system attributes depend on the policy implemented
-for each system attribute implemented in the kernel.
 .SH FILESYSTEM DIFFERENCES
 The kernel and the filesystem may place limits on the maximum number
 and size of extended attributes that can be associated with a file.
