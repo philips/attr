@@ -1,6 +1,6 @@
 .TH SETFATTR 1 "Extended Attributes" "Dec 2001" "File Utilities"
 .SH NAME
-setfattr, aset \- set extended attributes of filesystem objects
+setfattr \- set extended attributes of filesystem objects
 .SH SYNOPSIS
 .nf
 \f3setfattr\f1 [\f3\-l\f1] \f3\-n name\f1 [\f3\-v value\f1] \f3pathname\f1...
@@ -16,11 +16,6 @@ command is used to associate a new
 with an extended attribute
 .IR name
 for each specified file.
-.PP
-.B aset
-is exactly the same as
-.BR setfattr ,
-and is installed for compatibility purposes.
 .SS OPTIONS
 .TP 4
 .I \-n name

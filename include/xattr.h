@@ -37,7 +37,7 @@
 
 #include <errno.h>
 #ifndef ENOATTR
-# define ENOATTR ENODATA	/* fallback value until real errno exists */
+# define ENOATTR ENODATA        /* No such attribute */
 #endif
 
 #define XATTR_CREATE  0x1       /* set value, fail if attr already exists */

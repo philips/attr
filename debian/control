@@ -30,3 +30,13 @@ Description: Extended attribute static libraries and headers
  Currently only ext2, ext3 and XFS support extended attributes.
  The SGI IRIX compatibility API built above the Linux system calls is
  used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
+
+Package: libattr1
+Depends: ${shlibs:Depends}
+Section: utils
+Priority: optional
+Conflicts: attr (<< 2.0.0)
+Architecture: any
+Description: Extended attribute shared library
+ Contains the runtime environment required by programs that make use
+ of extended attributes.

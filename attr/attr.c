@@ -41,7 +41,7 @@
 #include <errno.h>
 #include <string.h>
 
-#include <attributes.h>
+#include <attr/attributes.h>
 
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */

@@ -35,6 +35,7 @@ include $(TOPDIR)/include/builddefs
 
 LSRCFILES = changelog control copyright rules
 DEV_DOC_DIR = $(PKG_DOC_DIR)/../$(PKG_NAME)-dev
+LIB_DOC_DIR = $(PKG_DOC_DIR)/../lib$(PKG_NAME)1
 
 default:
 
@@ -52,4 +53,12 @@ ifeq ($(PKG_DISTRIBUTION), debian)
 	$(INSTALL) -m 755 -d $(DEV_DOC_DIR)
 	$(INSTALL) -m 644 copyright $(DEV_DOC_DIR)
 	$(INSTALL) -m 644 changelog $(DEV_DOC_DIR)/changelog.Debian
+endif
+
+install-lib: default
+ifeq ($(PKG_DISTRIBUTION), debian)
+	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)
+	$(INSTALL) -m 755 -d $(LIB_DOC_DIR)
+	$(INSTALL) -m 644 copyright $(LIB_DOC_DIR)
+	$(INSTALL) -m 644 changelog $(LIB_DOC_DIR)/changelog.Debian
 endif

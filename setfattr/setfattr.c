@@ -12,7 +12,7 @@
 #include <getopt.h>
 #include <ctype.h>
 
-#include <xattr.h>
+#include <attr/xattr.h>
 
 #include <locale.h>
 #include <libintl.h>

@@ -2,11 +2,14 @@
 
 package = attr
 develop = $(package)-dev
+library = lib$(package)1
 
 dirtmp = debian/tmp
 dirdev = debian/$(develop)
+dirlib = debian/$(library)
 pkgtmp = DIST_ROOT=`pwd`/$(dirtmp); export DIST_ROOT;
 pkgdev = DIST_ROOT=`pwd`/$(dirdev); export DIST_ROOT;
+pkglib = DIST_ROOT=`pwd`/$(dirlib); export DIST_ROOT;
 stdenv = @GZIP=-q; export GZIP;
 
 options = DEBUG="-DNDEBUG"; OPTIMIZER="-O1 -g"; DISTRIBUTION="debian"; \
@@ -32,7 +35,7 @@ clean:
 	$(checkdir)
 	-rm -f built .census
 	$(MAKE) distclean
-	-rm -rf $(dirtmp) $(dirdev) debian/*substvars debian/files*
+	-rm -rf $(dirtmp) $(dirdev) $(dirlib) debian/*substvars debian/files*
 
 binary-indep:
 
@@ -44,18 +47,23 @@ binary-indep:
 binary-arch: checkroot built
 	@echo "== dpkg-buildpackage: binary-arch" 1>&2
 	$(checkdir)
-	-rm -rf $(dirtmp) $(dirdev)
+	-rm -rf $(dirtmp) $(dirdev) $(dirlib)
 	$(pkgtmp) $(MAKE) -C . install
 	$(pkgdev) $(MAKE) -C . install-dev
+	$(pkglib) $(MAKE) -C . install-lib
 	$(pkgtmp) $(MAKE) -C build src-manifest
 	@echo "== dpkg-buildpackage: debstd" 1>&2
 	$(stdenv) debstd -m | grep -v 'Dangling symlink'
-	dpkg-gencontrol -isp -p$(package) -P$(dirtmp)
+	find . > /tmp/debstd.out
+	dpkg-gencontrol -isp -p$(package) -P$(dirtmp) -Tdebian/substvars
 	dpkg-gencontrol -isp -p$(develop) -P$(dirdev)
-	chown -R root.root $(dirtmp) $(dirdev)
-	chmod -R go=rX $(dirtmp) $(dirdev)
+	dpkg-gencontrol -isp -p$(library) -P$(dirlib) -Tdebian/$(library).substvars
+	find . > /tmp/gencontrol.out
+	chown -R root.root $(dirtmp) $(dirdev) $(dirlib)
+	chmod -R go=rX $(dirtmp) $(dirdev) $(dirlib)
 	dpkg --build $(dirtmp) .. 
 	dpkg --build $(dirdev) ..
+	dpkg --build $(dirlib) ..
 
 binary: binary-indep binary-arch
 

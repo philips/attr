@@ -42,7 +42,7 @@ LDIRT = *-manifest *.gz $(TOPDIR)/$(PKG_NAME)-*
 SUBDIRS = tar rpm
 
 # nothing to build here (it's all packaging)
-default install install-dev :
+default install install-dev install-lib:
 
 include $(BUILDRULES)
 
@@ -60,6 +60,7 @@ $(MANIFEST) : $(_FORCE)
 	else \
 	    unset TAPE; \
 	    $(TAR) -T $$CDIR/$@ -cf - | $(ZIP) --best > $$CDIR/$(SRCTAR); \
+	    echo Wrote: $$CDIR/$(SRCTAR); \
 	fi
 
 dist : default $(MANIFEST)

@@ -35,7 +35,7 @@ include $(TOPDIR)/include/builddefs
 
 SUBDIRS = man1 man2 man3 man5
 
-default install install-dev : $(SUBDIRS)
+default install install-dev install-lib: $(SUBDIRS)
 	$(SUBDIRS_MAKERULE)
 
 include $(BUILDRULES)

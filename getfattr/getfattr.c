@@ -8,17 +8,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <getopt.h>
 #include <regex.h>
-#include <xattr.h>
+#include <attr/xattr.h>
 #include "walk_tree.h"
 
 #include <locale.h>
 #include <libintl.h>
 #define _(String) gettext (String)
 
-#define CMD_LINE_OPTIONS "ade:hln:r:svR5LPV"
-#define CMD_LINE_SPEC "[-n name|-d] [-ahsvR5LPV] [-e en] [-r regex] path..."
+#define CMD_LINE_OPTIONS "ade:hln:r:vR5LPV"
+#define CMD_LINE_SPEC "[-n name|-d] [-ahvR5LPV] [-e en] [-r regex] path..."
 
 int opt_dump;
 int opt_symlink;
@@ -60,9 +61,7 @@ void help(void)
 
 int main(int argc, char *argv[])
 {
-	char	sys_pattern[] = "^system\\.|^user\\.";
-	char	usr_pattern[] = "^user\\.";
-	char	*pattern = usr_pattern;
+	char	*pattern = "^user\\.";
 	char	*name = NULL;
 
 	progname = basename(argv[0]);
@@ -99,12 +98,11 @@ int main(int argc, char *argv[])
 				name = optarg;
 				break;
 
-			case 'r':
-				pattern = optarg;
-				break;
-
-			case 's':
-				pattern = sys_pattern;
+			case 'r':  /* regular expression for filtering names */
+				if (!strcmp(optarg, "-"))
+					pattern = "";
+				else
+					pattern = optarg;
 				break;
 
 			case 'v':  /* get attribute values only */
@@ -335,17 +333,37 @@ syscall_failed:
 	return 0;
 }
 
+int well_enough_printable(const char *value, size_t size)
+{
+	size_t n, nonpr = 0;
+
+	for (n=0; n < size; n++)
+		if (!isprint(*value++))
+			nonpr++;
+
+	return (size >= nonpr*8);  /* no more than 1/8 non-printable */
+}
+
 const char *encode(const char *value, size_t *size)
 {
 	static char *encoded = NULL, *e;
+	char *enc;
 	
 	if (encoded)
 		free(encoded);
-	if (opt_encoding == NULL || strcmp(opt_encoding, "text") == 0) {
-		int n, extra = 0;
+	if (opt_encoding == NULL) {
+		if (well_enough_printable(value, *size))
+			enc = "text";
+		else
+			enc = "base64";
+	} else
+		enc = opt_encoding;
+
+	if (strcmp(enc, "text") == 0) {
+		size_t n, extra = 0;
 
 		for (e=(char *)value; e < value + *size; e++) {
-			if (*e < 32 || *e >= 127)
+			if (!isprint(*e))
 				extra += 4;
 			else if (*e == '\\' || *e == '"')
 				extra++;
@@ -359,7 +377,7 @@ const char *encode(const char *value, size_t *size)
 		e = encoded;
 		*e++='"';
 		for (n = 0; n < *size; n++, value++) {
-			if (*value < 32 || *value >= 127) {
+			if (!isprint(*value)) {
 				*e++ = '\\';
 				*e++ = '0' + ((unsigned char)*value >> 6);
 				*e++ = '0' + (((unsigned char)*value & 070) >> 3);
@@ -374,9 +392,9 @@ const char *encode(const char *value, size_t *size)
 		*e++ = '"';
 		*e = '\0';
 		*size = (e - encoded);
-	} else if (strcmp(opt_encoding, "hex") == 0) {
+	} else if (strcmp(enc, "hex") == 0) {
 		static const char *digits = "0123456789abcdef";
-		int n;
+		size_t n;
 
 		encoded = (char *)malloc(*size * 2 + 4);
 		if (!encoded) {
@@ -392,10 +410,10 @@ const char *encode(const char *value, size_t *size)
 		}
 		*e = '\0';
 		*size = (e - encoded);
-	} else if (strcmp(opt_encoding, "base64") == 0) {
+	} else if (strcmp(enc, "base64") == 0) {
 		static const char *digits = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdef"
 					    "ghijklmnopqrstuvwxyz0123456789+/";
-		int n;
+		size_t n;
 
 		encoded = (char *)malloc((*size + 2) / 3 * 4 + 1);
 		if (!encoded) {

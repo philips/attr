@@ -41,4 +41,4 @@ default:
 include $(BUILDRULES)
 
 install:
-install-dev:
+install-dev install-lib:

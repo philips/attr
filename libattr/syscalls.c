@@ -31,6 +31,11 @@
  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
  */
 
+/*
+ * The use of the syscall() function is an additional level of
+ * indirection. For now, this avoids the dependency on kernel sources, though.
+ */
+
 #include <unistd.h>
 
 #if defined(__i386__)

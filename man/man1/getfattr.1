@@ -1,12 +1,12 @@
 .TH GETFATTR 1 "Extended Attributes" "Dec 2001" "File Utilities"
 .SH NAME
-getfattr, aget \- get extended attributes of filesystem objects
+getfattr \- get extended attributes of filesystem objects
 .SH SYNOPSIS
 .nf
-\f3getfattr\f1 [\f3\-lvR5LP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
+\f3getfattr\f1 [\f3\-lvRLP\f1] \f3\-n name\f1 [\f3\-e en\f1] \c
 \f3pathname\f1...
-\f3getfattr\f1 [\f3\-lvR5LP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
-[\f3\-s\f1 | \f3\-r regex\f1] \f3pathname\f1...
+\f3getfattr\f1 [\f3\-lvRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
+[\f3\-r regex\f1] \f3pathname\f1...
 \f3getfattr\f1 [\f3\-Vh\f1]
 .fi
 .SH DESCRIPTION
@@ -15,11 +15,6 @@ For each file,
 displays the file name,
 and the set of extended attribute names (and optionally values) which
 are associated with that file.
-.PP
-.B aget
-is exactly the same as
-.BR getfattr ,
-and is installed for compatibility purposes.
 .PP
 The output format of
 .B "getfattr \-ds"
@@ -77,18 +72,9 @@ It defaults to "^user\\." if no
 is specified, which causes
 .B getfattr
 to operate on only extended attributes from the user namespace.
-.TP
-.I \-s
-Dump out both the "user" and "system" namespaces.
 Refer to
 .BR attr (5)
 for a more detailed discussion on namespaces.
-This option is useful for backing up extended attributes in a filesystem
-independent manner.
-It is implemented using a regular expression ("^user\\.|^system\\.")
-and so cannot be used in conjunction with the
-.I \-r
-option described earlier.
 .TP
 .I \-v
 Dump out the extended attribute value(s) only.

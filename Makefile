@@ -41,7 +41,7 @@ CONFIGURE = configure include/builddefs
 LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
 
 LDIRT = config.log config.status config.cache confdefs.h conftest* \
-	Logs/* built .census install.* install-dev.* *.gz
+	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
 SUBDIRS = include libattr attr getfattr setfattr test man doc debian build
 
@@ -68,7 +68,7 @@ install: default
 	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)
 	$(INSTALL) -m 644 README $(PKG_DOC_DIR)
 
-install-dev: default
+install-dev install-lib: default
 	$(SUBDIRS_MAKERULE)
 
 realclean distclean: clean

@@ -46,4 +46,4 @@ include $(BUILDRULES)
 install : default
 	$(INSTALL) -m 755 -d $(MAN_DEST)
 	$(INSTALL_MAN)
-install-dev:
+install-dev install-lib:

@@ -45,7 +45,9 @@ default: $(LTLIBRARY)
 
 include $(BUILDRULES)
 
-install: default
+install:
+
+install-lib: default
 	$(INSTALL_LTLIB)
 
 install-dev: default

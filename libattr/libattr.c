@@ -38,8 +38,8 @@
 #include <sys/types.h>
 #include <asm/types.h>
 
-#include <xattr.h>
-#include <attributes.h>
+#include <attr/xattr.h>
+#include <attr/attributes.h>
 
 #undef MAXNAMELEN
 #define MAXNAMELEN 256

@@ -52,4 +52,4 @@ else
 	$(INSTALL) -m 644 COPYING $(PKG_DOC_DIR)
 endif
 
-install-dev:
+install-dev install-lib:
