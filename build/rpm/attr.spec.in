@@ -1,4 +1,4 @@
-Summary: Utility for managing filesystem extended attributes.
+Summary: Utilities for managing filesystem extended attributes.
 Name: @pkg_name@
 Version: @pkg_version@
 Release: @pkg_release@
@@ -6,6 +6,7 @@ Distribution: @pkg_distribution@
 Packager: @pkg_builder@
 BuildRoot: @build_root@ 
 Prereq: /sbin/ldconfig
+Conflicts: xfsdump < 2.0.0
 Source: @pkg_name@-@pkg_version@.src.tar.gz
 Copyright: Copyright (C) 2000 Silicon Graphics, Inc.
 Vendor: Silicon Graphics, Inc.
@@ -13,23 +14,25 @@ URL: http://oss.sgi.com/projects/xfs/
 Group: System Environment/Base
 
 %description
-A utility for manipulating extended attributes on filesystem
-objects, compatible with the SGI IRIX tool of the same name.
+A set of tools for manipulating extended attributes on filesystem
+objects, in particular getfattr(1) and setfattr(1).
+An attr(1) command is also provided which is largely compatible
+with the SGI IRIX tool of the same name.
 
 %package devel
 Summary: Extended attribute static libraries and headers.
 Group: Development/Libraries
-Requires: @pkg_name@
+Requires: @pkg_name@ >= 2.0.0
 
 %description devel
 attr-devel contains the libraries and header files needed to
-develop programs which make use of extended attributes.  This
-interface is compatible with the SGI IRIX extended attribute
-interface, and makes use of an unofficial Linux system call.
+develop programs which make use of extended attributes.
+For Linux programs, the documented system call API is the
+recommended interface, but an SGI IRIX compatibility interface
+is also provided.
 
-Currently only XFS is supported, and the (experimental, unofficial)
-system call interface is likely to change in the future.  However,
-the API built above this system call is unlikely to change and is
+Currently only ext2, ext3 and XFS support extended attributes.
+The SGI IRIX compatibility API built above the Linux system calls is
 used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
 
 You should install attr-devel if you want to develop programs

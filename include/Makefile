@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+# Copyright (c) 2001 Silicon Graphics, Inc.  All Rights Reserved.
 # 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of version 2 of the GNU General Public License as
@@ -33,8 +33,8 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-HFILES = attributes.h
-LSRCFILES = builddefs.in buildrules attr_kern.h
+HFILES = attributes.h xattr.h
+LSRCFILES = builddefs.in buildrules
 
 default install :
 

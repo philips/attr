@@ -1,6 +1,6 @@
-.TH attr 1
+.TH ATTR 1 "Extended Attributes" "Dec 2001" "XFS Compatibility API"
 .SH NAME
-attr \- manipulate Extended Attributes on filesystem objects
+attr \- extended attributes on XFS filesystem objects
 .SH SYNOPSIS
 .nf
 \f3attr\f1 [ \f3\-LRq\f1 ] \f3\-s attrname\f1 [ \f3\-V attrvalue\f1 ] \c
@@ -10,33 +10,40 @@ attr \- manipulate Extended Attributes on filesystem objects
 .sp .8v
 \f3attr\f1 [ \f3\-LRq\f1 ] \f3\-r attrname pathname\f1
 .sp .8v
-\f3attr\f1 [ \f3\-LRq\f1 ] \f3\-l pathname\f1
-.sp .8v
 .fi
 .SH OVERVIEW
-Extended Attributes implement the ability for a user to attach
-name/value pairs to objects within the filesystem.
+Extended attributes implement the ability for a user to attach
+name:value pairs to objects within the XFS filesystem.
 .P
 They could be used to store meta-information about the file.
 For example "character-set=kanji" could tell a document browser to
 use the Kanji character set when displaying that document
 and "thumbnail=..." could provide a reduced resolution overview of a
 high resolution graphic image.
+.PP
+This document describes the
+.I attr
+command, which is mostly compatible with the IRIX command of the same name.
+It is thus aimed specifically at users of the XFS filesystem - for
+filesystem independent extended attribute manipulation, consult the
+.IR getfattr (1)
+and 
+.IR setfattr (1)
+documentation.
 .P
-The
+In the XFS filesystem, the
 .I names
 can be up to 256 bytes in length, terminated by the first 0 byte.
 The intent is that they be printable ASCII (or other character set)
 names for the attribute.
-.P
 The
 .I values
-can be up to 256KB of arbitrary binary data.
+can be up to 64KB of arbitrary binary data.
 .P
-Attributes can be attached to all types of inodes:
+Attributes can be attached to all types of XFS inodes:
 regular files, directories, symbolic links, device nodes, etc.
 .P
-There are 2 disjoint attribute name spaces associated with every
+XFS uses 2 disjoint attribute name spaces associated with every
 filesystem object.
 They are the
 .B root
@@ -58,7 +65,7 @@ the value of attributes on any particular file.
 .SH DESCRIPTION
 The
 .I attr
-utility allows the manipulation of Extended Attributes associated with
+utility allows the manipulation of extended attributes associated with
 filesystem objects from within shell scripts.
 .PP
 There are four main operations that
@@ -76,18 +83,6 @@ With the
 .B \-q
 flag, \f4stdout\fP will be exactly and only the value of the attribute,
 suitable for storage directly into a file or processing via a piped command.
-.TP
-.B LIST
-The
-.B \-l
-option tells
-.I attr
-to list the names of all the attributes that are associated with the object,
-and the number of bytes in the value of each of those attributes.
-With the
-.B \-q
-flag, \f4stdout\fP will be a simple list of only the attribute names,
-one per line, suitable for input into a script.
 .TP
 .B REMOVE
 The
@@ -148,17 +143,21 @@ The standard file interchange/archive programs
 .IR tar (1),
 and
 .IR cpio (1)
-will not archive or restore Extended Attributes,
+will not archive or restore extended attributes,
 while the
 .IR xfsdump (8)
 program will.
+.SH "CAVEATS"
+The list option present in the IRIX version of this command is not supported.
+.I getfattr
+provides a mechanism to retrieve all of the attribute names.
 .SH "SEE ALSO"
-attr_get(2), attr_getf(2),
-attr_list(2), attr_listf(2),
-attr_multi(2), attr_multif(2),
-attr_remove(2), attr_removef(2),
-attr_set(2), attr_setf(2),
+getfattr(1),
+setfattr(1),
+attr_get(3),
+attr_set(3),
+attr_multi(3),
+attr_remove(3),
+attr(5),
+and
 xfsdump(8).
-.SH BUGS
-The extended attributes system call used by this program is
-experimental and is currently only supported by the XFS filesystem.

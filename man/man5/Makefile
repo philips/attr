@@ -30,12 +30,19 @@
 # http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
 #
 
-TOPDIR = ..
+TOPDIR = ../..
 include $(TOPDIR)/include/builddefs
 
-SUBDIRS = man1 man2 man3 man5
+MAN_SECTION	= 5
 
-default install install-dev : $(SUBDIRS)
-	$(SUBDIRS_MAKERULE)
+MAN_PAGES	= $(shell echo *.$(MAN_SECTION))
+MAN_DEST	= $(PKG_MAN_DIR)/man$(MAN_SECTION)
+LSRCFILES	= $(MAN_PAGES)
+
+default install : $(MAN_PAGES)
 
 include $(BUILDRULES)
+
+install-dev : default
+	$(INSTALL) -m 755 -d $(MAN_DEST)
+	$(INSTALL_MAN)

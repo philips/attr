@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2000 Silicon Graphics, Inc.  All Rights Reserved.
+# Copyright (c) 2001 Silicon Graphics, Inc.  All Rights Reserved.
 # 
 # This program is free software; you can redistribute it and/or modify it
 # under the terms of version 2 of the GNU General Public License as
@@ -33,9 +33,12 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-SUBDIRS = man1 man2 man3 man5
+# ensure we pick these up in the source tarball
+LSRCFILES = attr.test run README
 
-default install install-dev : $(SUBDIRS)
-	$(SUBDIRS_MAKERULE)
+default:
 
 include $(BUILDRULES)
+
+install:
+install-dev:

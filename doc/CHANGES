@@ -1,20 +1,23 @@
-attr-1.1.4 (11 Jan 2002)
-	- bug fix in attr_multi(3), use of "count" was broken
+attr-2.0.0 (07 February 2002)
+	- initial introduction of the new system call interface
+	- synced up with the ext2 project, incorporated get/set tools
+	- new man pages for system calls, getfattr(1) and setfattr(1)
+	- made the attributes.h interface align properly with IRIX
 
-attr-1.1.3 (03 Aug 2001)
+attr-1.1.3 (03 August 2001)
 	- bug fix from Juer Lee, syscall use on non-i386 was broken
 	- tested on PowerPC and i386; code is simpler and works
 	- install an additional library symlink for ld, so that the
 	  shared lib is always found before the static lib at link time
 
-attr-1.1.2 (27 Jul 2001)
+attr-1.1.2 (27 July 2001)
 	- fixes for (hopefully) the last few nits in libtool usage
 
-attr-1.1.1 (23 Jul 2001)
+attr-1.1.1 (23 July 2001)
 	- install static libs and libtool archives into /usr/lib
 	- shared libraries are unchanged, however
 
-attr-1.1.0 (16 Jul 2001)
+attr-1.1.0 (16 July 2001)
 	- reworked Makefiles to use libtool
 	- rework some of the Debian packaging rules
 	- install attr command into /usr/bin, not /bin
@@ -22,7 +25,7 @@ attr-1.1.0 (16 Jul 2001)
 	  as it is needed by xfsdump and xfsrestore which must
 	  be available for recovery when only root is mounted
 
-attr-1.0.4 (02 Jul 2001)
+attr-1.0.4 (02 July 2001)
 	- work around syscall number collision on recent ia64 kernels
 
 attr-1.0.3 (18 May 2001)

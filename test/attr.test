@@ -1,0 +1,78 @@
+!
+! Tests for getting/setting extended file attributes with ext2/ext3
+! The initial size checks are ext2/ext3 specific, but the remainder
+! should work for any extended attributes filesystem (eg. XFS).
+!
+$ mkdir attr-test
+$ touch attr-test/f
+! Maximum attribute size for 1024 byte blocks = 1024 - (20+20+4) = 980
+$ aset -n user.name -v 968+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ attr-test/f
+! Attribute too big for 1024 byte blocks
+$ aset -n user.name -v 969++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ attr-test/f
+attr-test/f: No space left on device
+$ aset -n user.name attr-test/f
+$ aget -d attr-test/f
+# file: attr-test/f
+user.name
+
+$ aset -n user.name -v 0xbabe attr-test/f
+$ aset -n user.name2 -v 0xdeadbeef attr-test/f
+$ aset -n user.name3 -v 0xdeface attr-test/f
+!
+!
+$ aget -d -e hex attr-test/f
+# file: attr-test/f
+user.name=0xbabe
+user.name2=0xdeadbeef
+user.name3=0xdeface
+
+$ aget -d -e base64 attr-test/f
+# file: attr-test/f
+user.name=0sur4=
+user.name2=0s3q2+7w==
+user.name3=0s3vrO
+
+!
+! shrink value of existing attribute
+!
+$ aset -n user.name2 -v 0xdeaf attr-test/f
+$ aget -d -e hex attr-test/f
+# file: attr-test/f
+user.name=0xbabe
+user.name2=0xdeaf
+user.name3=0xdeface
+
+!
+! grow value of existing attribute
+!
+$ aset -n user.name2 -v 0xdecade attr-test/f
+$ aget -d -e hex attr-test/f
+# file: attr-test/f
+user.name=0xbabe
+user.name2=0xdecade
+user.name3=0xdeface
+
+!
+! empty value
+!
+$ aset -n user.name2 attr-test/f
+$ aget -d -n user.name2 attr-test/f
+# file: attr-test/f
+user.name2
+
+!
+! overwrite empty value
+!
+$ aset -n user.name2 -v 0xcafe attr-test/f
+$ aget -d -e hex -n user.name2 attr-test/f
+# file: attr-test/f
+user.name2=0xcafe
+
+!
+! remove attribute
+!
+$ aset -x user.name2 attr-test/f
+$ aget -d -n user.name2 attr-test/f
+attr-test/f: user.name2: No such attribute
+$ rm attr-test/f
+$ rmdir attr-test

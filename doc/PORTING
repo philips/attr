@@ -42,7 +42,7 @@
 
    	example using SUBDIRS :  attr/Makefile
         example static library:  attr/libattr/Makefile
-        example command       :  attr/attr/Makefile
+        example command       :  attr/getfattr/Makefile
 
    All Makefiles must define TOPDIR as the root of the project. This
    allows other stuff to be found relative to $(TOPDIR).

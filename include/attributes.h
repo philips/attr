@@ -1,33 +1,33 @@
 /*
- * Copyright (c) 1995-2001 Silicon Graphics, Inc.  All Rights Reserved.
- *
+ * Copyright (c) 2001 Silicon Graphics, Inc.  All Rights Reserved.
+ * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2.1 of the GNU Lesser General Public License
  * as published by the Free Software Foundation.
- *
+ * 
  * This program is distributed in the hope that it would be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
- *
+ * 
  * Further, this software is distributed without any warranty that it is
  * free of the rightful claim of any third person regarding infringement
  * or the like.  Any license provided herein, whether implied or
  * otherwise, applies only to this software file.  Patent licenses, if
  * any, provided herein do not apply to combinations of this program with
  * other software, or any other product whatsoever.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program; if not, write the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston MA 02111-1307,
  * USA.
- *
+ * 
  * Contact information: Silicon Graphics, Inc., 1600 Amphitheatre Pkwy,
  * Mountain View, CA  94043, or:
- *
- * http://www.sgi.com
- *
- * For further information regarding this notice, see:
- *
+ * 
+ * http://www.sgi.com 
+ * 
+ * For further information regarding this notice, see: 
+ * 
  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
  */
 #ifndef __ATTRIBUTES_H__
@@ -38,63 +38,33 @@ extern "C" {
 #endif
 
 /*
- *	An IRIX-compatible extended attributes API
+ *	An almost-IRIX-compatible extended attributes API
+ *	(the IRIX attribute "list" operation is missing).
  */
-
-/*
- * Valid command flags, may be used with all API calls.
- * Multiple flags should be bitwise OR'ed together.
- */
-#define ATTR_ROOT	0x0001	/* use attrs in root namespace, not user */
-#define ATTR_CREATE	0x0002	/* pure create: fail if attr already exists */
-#define ATTR_REPLACE	0x0004	/* pure set: fail if attr does not exist */
-#define ATTR_SHIFT	16	/* for supporting extensions */
-
-/*
- * Additional API specific opcodes & flags
- */
-#define ATTR_DONTFOLLOW	(0x0001	<< ATTR_SHIFT)	/* do not follow symlinks */
-#define ATTR_TRUST	(0x0002 << ATTR_SHIFT)
-	/* tell server we are trusted to properly handle extended attributes */
-
-#define ATTR_KERNOTIME  (0x0004 << ATTR_SHIFT)
-	/* don't update inode timestamps.
-	 * The DMI needs a way to update attributes without affecting the
-	 * inode timestamps.  Note that this flag is not set-able from user
-	 * mode - it is kernel internal only, but it must not conflict with
-	 * the user flags either.
-	 */
-
-/*
- * Generic extended attribute operation structure
- */
-typedef struct attr_op {
-	int	opcode;		/* which operation to perform */
-	int	error;		/* result (an errno) of this operation [out] */
-	char	*name;		/* attribute name */
-	char	*value;		/* attribute value [in/out] */
-	int	length;		/* value length [in/out] */
-	int	flags;		/* bitwise OR of #defines below */
-	void	*aux;		/* optional cmd specific data */
-} attr_op_t;
-
-/*
- * Valid attr_op, attr_multi_op opcodes
- */
-#define ATTR_OP_GET	1	/* return the indicated attr's value */
-#define ATTR_OP_SET	2	/* set/create the indicated attr/value pair */
-#define ATTR_OP_REMOVE	3	/* remove the indicated attr */
-#define ATTR_OP_LIST	4	/* list attributes associated with a file */
-
-#define ATTR_OP_EXT	32	/* for supporting extensions */
-#define ATTR_OP_IRIX_LIST (ATTR_OP_EXT + 0)	/* IRIX attr_list semantics */
 
 /*
  * The maximum size (into the kernel or returned from the kernel) of an
  * attribute value or the buffer used for an attr_list() call.  Larger
  * sizes will result in an E2BIG return code.
  */
-#define	ATTR_MAX_VALUELEN	(64*1024)	/* max length of a value */
+#define ATTR_MAX_VALUELEN	(64*1024)	/* max length of a value */
+
+
+/*
+ * Flags that can be used with any of the simple attribute calls.
+ * All desired flags should be bit-wise OR'ed together.
+ */
+#define ATTR_DONTFOLLOW	0x0001	/* do not follow symlinks for a pathname */
+#define ATTR_ROOT	0x0002	/* use root-defined attrs in op, not user */
+#define ATTR_TRUST	0x0004	/* tell server we can be trusted to properly
+				   handle extended attributes */
+
+/*
+ * Additional flags that can be used with the set() attribute call.
+ * All desired flags (from both lists) should be bit-wise OR'ed together.
+ */
+#define ATTR_CREATE	0x0010	/* pure create: fail if attr already exists */
+#define ATTR_REPLACE	0x0020	/* pure set: fail if attr does not exist */
 
 /*
  * Define how lists of attribute names are returned to the user from
@@ -103,9 +73,9 @@ typedef struct attr_op {
  * reference an attrlist_ent_t and pack the attrlist_ent_t's at the bottom.
  */
 typedef struct attrlist {
-	__s32	al_count;	/* number of entries in attrlist */
-	__s32	al_more;	/* T/F: more attrs (do call again) */
-	__s32	al_offset[1];	/* byte offsets of attrs [var-sized] */
+	int32_t		al_count;	/* number of entries in attrlist */
+	int32_t		al_more;	/* T/F: more attrs (do call again) */
+	int32_t		al_offset[1];	/* byte offsets of attrs [var-sized] */
 } attrlist_t;
 
 /*
@@ -113,8 +83,8 @@ typedef struct attrlist {
  * al_offset[i] entry points to.
  */
 typedef struct attrlist_ent {	/* data from attr_list() */
-	__u32	a_valuelen;	/* number bytes in value of attr */
-	char	a_name[1];	/* attr name (NULL terminated) */
+	u_int32_t	a_valuelen;	/* number bytes in value of attr */
+	char		a_name[1];	/* attr name (NULL terminated) */
 } attrlist_ent_t;
 
 /*
@@ -125,7 +95,6 @@ typedef struct attrlist_ent {	/* data from attr_list() */
 	((attrlist_ent_t *)			\
 	 &((char *)buffer)[ ((attrlist_t *)(buffer))->al_offset[index] ])
 
-
 /*
  * Implement a "cursor" for use in successive attr_list() calls.
  * It provides a way to find the last attribute that was returned in the
@@ -135,21 +104,28 @@ typedef struct attrlist_ent {	/* data from attr_list() */
  * operation on a cursor is to bzero() it.
  */
 typedef struct attrlist_cursor {
-	__u32	opaque[4];	/* an opaque cookie */
+	u_int32_t	opaque[4];	/* an opaque cookie */
 } attrlist_cursor_t;
 
 /*
  * Multi-attribute operation vector.
  */
 typedef struct attr_multiop {
-	int	am_opcode;	/* operation to perform (ATTR_OP_GET, etc.) */
-	int	am_error;	/* [out arg] result of this sub-op (an errno) */
+	int32_t	am_opcode;	/* operation to perform (ATTR_OP_GET, etc.) */
+	int32_t	am_error;	/* [out arg] result of this sub-op (an errno) */
 	char	*am_attrname;	/* attribute name to work with */
 	char	*am_attrvalue;	/* [in/out arg] attribute value (raw bytes) */
-	int	am_length;	/* [in/out arg] length of value */
-	int	am_flags;	/* bitwise OR of attr API flags defined above */
+	int32_t	am_length;	/* [in/out arg] length of value */
+	int32_t	am_flags;	/* flags (bit-wise OR of #defines above) */
 } attr_multiop_t;
 #define	ATTR_MAX_MULTIOPS	128	/* max number ops in an oplist array */
+
+/*
+ * Valid values of am_opcode.
+ */
+#define ATTR_OP_GET	1	/* return the indicated attr's value */
+#define ATTR_OP_SET	2	/* set/create the indicated attr/value pair */
+#define ATTR_OP_REMOVE	3	/* remove the indicated attr */
 
 /*
  * Get the value of an attribute.
@@ -180,19 +156,6 @@ extern int attr_setf (int __fd, const char *__attrname,
 extern int attr_remove (const char *__path, const char *__attrname,
 			int __flags);
 extern int attr_removef (int __fd, const char *__attrname, int __flags);
-
-/*
- * List the names and sizes of the values of all the attributes of an object.
- * "Cursor" must be allocated and zeroed before the first call, it is used
- * to maintain context between system calls if all the attribute names won't
- * fit into the buffer on the first system call.
- * The return value is -1 on error (w/errno set appropriately), 0 on success.
- */
-extern int attr_list (const char *__path, char *__buffer,
-			const int __buffersize, int __flags,
-			attrlist_cursor_t *__cursor);
-extern int attr_listf (int __fd, char *__buffer, const int __buffersize,
-			int __flags, attrlist_cursor_t *__cursor);
 
 /*
  * Operate on multiple attributes of the same object simultaneously.

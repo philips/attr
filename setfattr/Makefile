@@ -33,9 +33,18 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-SUBDIRS = man1 man2 man3 man5
+LTCOMMAND = setfattr
+CFILES = setfattr.c
 
-default install install-dev : $(SUBDIRS)
-	$(SUBDIRS_MAKERULE)
+LLDLIBS = $(LIBATTR)
+LTDEPENDENCIES = $(LIBATTR)
+
+default: $(LTCOMMAND)
 
 include $(BUILDRULES)
+
+install: default
+	$(INSTALL) -m 755 -d $(PKG_BIN_DIR)
+	$(LTINSTALL) -m 755 $(LTCOMMAND) $(PKG_BIN_DIR)
+	$(INSTALL) -S $(LTCOMMAND) $(PKG_BIN_DIR)/aset
+install-dev:

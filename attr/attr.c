@@ -30,7 +30,6 @@
  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
  */
 
-
 #include <asm/types.h>
 #include <sys/types.h>
 #include <sys/param.h>
@@ -47,7 +46,6 @@
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */
 #define	REMOVEOP	3		/* do a REMOVE operation */
-#define	LISTOP		4		/* do a LIST operation */
 
 static char *progname;
 
@@ -58,21 +56,17 @@ usage(void)
 "Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n"
 "       %s [-LRq] -g attrname pathname                 # get value\n"
 "       %s [-LRq] -r attrname pathname                 # remove attr\n"
-"       %s [-LRq] -l pathname                          # list attrs\n"
 "      -s reads a value from stdin and -g writes a value to stdout\n",
-		progname, progname, progname, progname);
+		progname, progname, progname);
 	exit(1);
 }
 
 int
 main(int argc, char **argv)
 {
-	char *attrname, *attrvalue, *filename, *buffer;
+	char *attrname, *attrvalue, *filename;
 	int attrlength;
-	int opflag, ch, error, follow, verbose, rootflag, i;
-	attrlist_t *alist;
-	attrlist_ent_t *aep;
-	attrlist_cursor_t cursor;
+	int opflag, ch, error, follow, verbose, rootflag;
 
 	progname = basename(argv[0]);
 
@@ -82,12 +76,12 @@ main(int argc, char **argv)
 	verbose = 1;
 	follow = opflag = rootflag = 0;
 	attrname = attrvalue = NULL;
-	while ((ch = getopt(argc, argv, "s:V:g:r:lqLR")) != EOF) {
+	while ((ch = getopt(argc, argv, "s:V:g:r:qLR")) != EOF) {
 		switch (ch) {
 		case 's':
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
-				    "Only one of -s, -g, -r, or -l allowed\n");
+				    "Only one of -s, -g, or -r allowed\n");
 				usage();
 			}
 			opflag = SETOP;
@@ -105,7 +99,7 @@ main(int argc, char **argv)
 		case 'g':
 			if (opflag) {
 				fprintf(stderr,
-				    "Only one of -s, -g, -r, or -l allowed\n");
+				    "Only one of -s, -g, or -r allowed\n");
 				usage();
 			}
 			opflag = GETOP;
@@ -114,19 +108,11 @@ main(int argc, char **argv)
 		case 'r':
 			if (opflag) {
 				fprintf(stderr,
-				    "Only one of -s, -g, -r, or -l allowed\n");
+				    "Only one of -s, -g, or -r allowed\n");
 				usage();
 			}
 			opflag = REMOVEOP;
 			attrname = optarg;
-			break;
-		case 'l':
-			if (opflag) {
-				fprintf(stderr,
-				    "Only one of -s, -g, -r, or -l allowed\n");
-				usage();
-			}
-			opflag = LISTOP;
 			break;
 		case 'L':
 			follow++;
@@ -223,44 +209,9 @@ main(int argc, char **argv)
 		}
 		break;
 
-	case LISTOP:
-		if ((buffer = malloc(ATTR_MAX_VALUELEN)) == NULL) {
-			perror("malloc");
-			exit(1);
-		}
-
-		memset((char *)&cursor, 0, sizeof(cursor));
-
-		do {
-			error = attr_list(filename, buffer, ATTR_MAX_VALUELEN,
-					    (!follow ? ATTR_DONTFOLLOW : 0) |
-					    (rootflag ? ATTR_ROOT : 0),
-					    &cursor);
-			if (error) {
-				perror("attr_list");
-				fprintf(stderr, "Could not list attributes for %s\n",
-						filename);
-				exit(1);
-			}
-
-			alist = (attrlist_t *)buffer;
-			for (i = 0; i < alist->al_count; i++) {
-				aep = (attrlist_ent_t *)&buffer[ alist->al_offset[i] ];
-				if (verbose) {
-					printf("Attribute \"%s\" has a %d byte value for %s\n",
-							    aep->a_name,
-							    aep->a_valuelen,
-							    filename);
-				} else { 
-					printf("%s\n", aep->a_name);
-				}
-			}
-		} while (alist->al_more);
-		break;
-
 	default:
 		fprintf(stderr,
-			"At least one of -s, -g, -r, or -l is required\n");
+			"At least one of -s, -g, or -r is required\n");
 		usage();
 		break;
 	}
