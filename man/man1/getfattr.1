@@ -7,7 +7,6 @@ getfattr \- get extended attributes of filesystem objects
 \f3pathname\f1...
 \f3getfattr\f1 [\f3\-hRLP\f1] \f3\-d\f1 [\f3\-e en\f1] \c
 [\f3\-m pattern\f1] \f3pathname\f1...
-\f3getfattr\f1 [\f3\-\-version\f1]
 .fi
 .SH DESCRIPTION
 For each file,
@@ -52,42 +51,47 @@ Encode values after retrieving them.
 Valid values of
 .I en
 are "text", "hex", and "base64".
+Values encoded as text strings are enclosed in double quotes ("),
+while strings encoded as hexidecimal and base64 are prefixed with
+0x and 0s, respectively.
 .TP
 .BR \-h ", " \-\-no-dereference
-Do not follow symlinks - if
+Do not follow symlinks.
+If
 .I pathname
-is a symbolic link, it is not followed, but is instead itself the
-inode being examined.
+is a symbolic link, the symbolic link itself is examined,
+rather than the file the link refers to.
 .TP
 .BR \-m " \f2pattern\f1, " \-\-match "=\f2pattern\f1"
+Only include attributes with names matching the regular expression
+.IR pattern .
+The default value for
 .I pattern
-is a regular expression pattern to apply to the set of extended
-attribute names being returned.
-It defaults to "^user\\." if no
+is "^user\\\\.", 
 .B \-m
-is specified, which causes
-.B getfattr
-to operate on only extended attributes from the user namespace.
+which includes all the attributes in the user namespace.
 Refer to
 .BR attr (5)
 for a more detailed discussion on namespaces.
 .TP
 .B \-\-absolute-names
-Suppress the stripping of leading '/' from an absolute
-.IR pathname .
+Do not strip leading slash characters ('/').
+The default behaviour is to strip leading slash characters.
 .TP
 .B \-\-only-values
 Dump out the extended attribute value(s) only.
 .TP
 .BR \-R ", " \-\-recursive
-Recurse into subdirectories, dumping extended attributes for each file
-encountered (breadth first).
+List the attributes of all files and directories recursively.
 .TP
 .BR \-L ", " \-\-logical
-Refines the \-R option - "logical walk" (do follow symbolic links).
+Logical walk, follow symbolic links.
+The default behaviour is to follow symbolic link arguments, and to 
+skip symbolic links encountered in subdirectories.
 .TP
 .BR \-P ", " \-\-physical
-Refines the \-R option - "physical walk" (do not follow symbolic links).
+Physical walk, skip all symbolic links.
+This also skips symbolic link arguments.
 .TP
 .B \-\-version
 Print the version of

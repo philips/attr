@@ -1,4 +1,4 @@
-attr (2.0.0-1) unstable; urgency=low
+attr (2.0.1-1) unstable; urgency=low
 
   * Major new upstream release
   * Uses the new official ext2/ext3/XFS extended attributes interfaces
@@ -8,7 +8,7 @@ attr (2.0.0-1) unstable; urgency=low
     for new POSIX ACL packages; this is in addition to the existing
     attr and attr-dev packages this source generates
 
- -- Nathan Scott <nathans@debian.org>  Thu,  7 Feb 2002 13:25:26 +1100
+ -- Nathan Scott <nathans@debian.org>  Tue, 26 Feb 2002 13:25:26 +1100
 
 attr (1.1.3-0) unstable; urgency=low
 
