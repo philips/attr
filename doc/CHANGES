@@ -1,3 +1,6 @@
+attr-2.1.1 (31 October 2002)
+	- Minor updates to the Debian packaging.
+
 attr-2.1.0 (19 October 2002)
 	- Change the devel .rpm and .deb package names so that they
 	  now use a lib prefix.

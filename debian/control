@@ -35,7 +35,7 @@ Description: Extended attribute static libraries and headers
 
 Package: libattr1
 Depends: ${shlibs:Depends}
-Section: utils
+Section: libs
 Priority: optional
 Conflicts: attr (<< 2.0.0)
 Architecture: any
