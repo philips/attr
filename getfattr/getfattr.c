@@ -305,12 +305,10 @@ int list_attributes(const char *path, int *header_printed)
 
 	length = do_listxattr(path, NULL, 0);
 	if (length < 0) {
-		if (errno != ENOTSUP || errno != ENOSYS) {
-			fprintf(stderr, "%s: %s: %s\n",
-				progname, path, strerror_ea(errno));
-			had_errors++;
-			return 1;
-		}
+		fprintf(stderr, "%s: %s: %s\n",
+			progname, path, strerror_ea(errno));
+		had_errors++;
+		return 1;
 	} else if (length == 0)
 		return 0;
 		
@@ -325,6 +323,9 @@ int list_attributes(const char *path, int *header_printed)
 	}
 
 	for (l = list; l != list + length; l = strchr(l, '\0')+1) {
+		if (*l == '\0')	/* not a name, kernel bug */
+			continue;
+
 		if (regexec(&name_regex, l, 0, NULL, 0) != 0)
 			continue;
 
