@@ -30,7 +30,6 @@
  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
  */
 
-#include <asm/types.h>
 #include <sys/types.h>
 #include <sys/param.h>
 #include <sys/stat.h>
@@ -43,6 +42,10 @@
 
 #include <attr/attributes.h>
 
+#include <locale.h>
+#include <libintl.h>
+#define _(String) gettext (String)
+
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */
 #define	REMOVEOP	3		/* do a REMOVE operation */
@@ -52,11 +55,11 @@ static char *progname;
 void
 usage(void)
 {
-	fprintf(stderr,
+	fprintf(stderr, _(
 "Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n"
 "       %s [-LRq] -g attrname pathname                 # get value\n"
 "       %s [-LRq] -r attrname pathname                 # remove attr\n"
-"      -s reads a value from stdin and -g writes a value to stdout\n",
+"      -s reads a value from stdin and -g writes a value to stdout\n"),
 		progname, progname, progname);
 	exit(1);
 }
@@ -81,7 +84,7 @@ main(int argc, char **argv)
 		case 's':
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
-				    "Only one of -s, -g, or -r allowed\n");
+				    _("Only one of -s, -g, or -r allowed\n"));
 				usage();
 			}
 			opflag = SETOP;
@@ -90,7 +93,7 @@ main(int argc, char **argv)
 		case 'V':
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
-				    "-V only allowed with -s\n");
+				    _("-V only allowed with -s\n"));
 				usage();
 			}
 			opflag = SETOP;
@@ -99,7 +102,7 @@ main(int argc, char **argv)
 		case 'g':
 			if (opflag) {
 				fprintf(stderr,
-				    "Only one of -s, -g, or -r allowed\n");
+				    _("Only one of -s, -g, or -r allowed\n"));
 				usage();
 			}
 			opflag = GETOP;
@@ -108,7 +111,7 @@ main(int argc, char **argv)
 		case 'r':
 			if (opflag) {
 				fprintf(stderr,
-				    "Only one of -s, -g, or -r allowed\n");
+				    _("Only one of -s, -g, or -r allowed\n"));
 				usage();
 			}
 			opflag = REMOVEOP;
@@ -124,13 +127,14 @@ main(int argc, char **argv)
 			verbose = 0;
 			break;
 		default:
-			fprintf(stderr, "Unrecognized option: %c\n", (char)ch);
+			fprintf(stderr,
+			    _("Unrecognized option: %c\n"), (char)ch);
 			usage();
 			break;
 		}
 	}
 	if (optind != argc-1) {
-		fprintf(stderr, "A filename to operate on is required\n");
+		fprintf(stderr, _("A filename to operate on is required\n"));
 		usage();
 	}
 	filename = argv[optind];
@@ -157,14 +161,13 @@ main(int argc, char **argv)
 					   (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_set");
-			fprintf(stderr, "Could not set \"%s\" for %s\n",
+			fprintf(stderr, _("Could not set \"%s\" for %s\n"),
 					attrname, filename);
 			exit(1);
 		}
 		if (verbose) {
-			printf("Attribute \"%s\" set to a %d byte value "
-			       "for %s:\n",
-			       attrname, attrlength, filename);
+			printf(_("Attribute \"%s\" set to a %d byte value "
+			       "for %s:\n"), attrname, attrlength, filename);
 			fwrite(attrvalue, 1, attrlength, stdout);
 			printf("\n");
 		}
@@ -183,13 +186,13 @@ main(int argc, char **argv)
 					   (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_get");
-			fprintf(stderr, "Could not get \"%s\" for %s\n",
+			fprintf(stderr, _("Could not get \"%s\" for %s\n"),
 					attrname, filename);
 			exit(1);
 		}
 		if (verbose) {
-			printf("Attribute \"%s\" had a %d byte value for %s:\n",
-				attrname, attrlength, filename);
+			printf(_("Attribute \"%s\" had a %d byte value "
+				"for %s:\n"), attrname, attrlength, filename);
 		}
 		fwrite(attrvalue, 1, attrlength, stdout);
 		if (verbose) {
@@ -203,7 +206,7 @@ main(int argc, char **argv)
 					      (rootflag ? ATTR_ROOT : 0));
 		if (error) {
 			perror("attr_remove");
-			fprintf(stderr, "Could not remove \"%s\" for %s\n",
+			fprintf(stderr, _("Could not remove \"%s\" for %s\n"),
 					attrname, filename);
 			exit(1);
 		}
@@ -211,7 +214,7 @@ main(int argc, char **argv)
 
 	default:
 		fprintf(stderr,
-			"At least one of -s, -g, or -r is required\n");
+			_("At least one of -s, -g, or -r is required\n"));
 		usage();
 		break;
 	}
