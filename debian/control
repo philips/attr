@@ -16,7 +16,7 @@ Description: Utilities for manipulating filesystem extended attributes
  with the SGI IRIX tool of the same name.
 
 Package: libattr1-dev
-Section: devel
+Section: libdevel
 Priority: extra
 Depends: libc6-dev, attr (>= 2.0.0)
 Provides: attr-dev
