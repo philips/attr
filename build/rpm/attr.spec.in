@@ -13,8 +13,8 @@ URL: http://oss.sgi.com/projects/xfs/
 Group: System Environment/Base
 
 %description
-An *experimental* command (attr) to manipulate extended attributes
-under Linux.
+A utility for manipulating extended attributes on filesystem
+objects, compatible with the SGI IRIX tool of the same name.
 
 %package devel
 Summary: Extended attribute static libraries and headers.
@@ -23,9 +23,14 @@ Requires: @pkg_name@
 
 %description devel
 attr-devel contains the libraries and header files needed to
-develop programs which make use of extended attributes.
-This is an *experimental* interface, currently only XFS is
-supported, and the interface may change.
+develop programs which make use of extended attributes.  This
+interface is compatible with the SGI IRIX extended attribute
+interface, and makes use of an unofficial Linux system call.
+
+Currently only XFS is supported, and the (experimental, unofficial)
+system call interface is likely to change in the future.  However,
+the API built above this system call is unlikely to change and is
+used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
 
 You should install attr-devel if you want to develop programs
 which make use of extended attributes.  If you install attr-devel,

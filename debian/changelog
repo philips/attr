@@ -1,8 +1,8 @@
-attr (1.0.0) unstable; urgency=low
+attr (1.0.2) unstable; urgency=low
 
   * Initial release.
 
- -- Nathan Scott <nathans@debian.org>  Thu,  4 Jan 2001 11:15:11 -0500
+ -- Nathan Scott <nathans@debian.org>  Wed, 25 Apr 2001 12:19:15 +1000
 
 Local variables:
 mode: debian-changelog

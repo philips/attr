@@ -37,15 +37,36 @@ extern "C" {
 #endif
 
 /*
- * The (experimental) Linux generic attribute syscall - attrctl(2)
+ *	An IRIX-compatible extended attributes API
  */
 
-typedef union attr_obj {
-	char	*path;
-	int	fd;
-	pid_t	pid;
-} attr_obj_t;
+/*
+ * Valid command flags, may be used with all API calls.
+ * Multiple flags should be bitwise OR'ed together.
+ */
+#define ATTR_ROOT	0x0001	/* use attrs in root namespace, not user */
+#define ATTR_CREATE	0x0002	/* pure create: fail if attr already exists */
+#define ATTR_REPLACE	0x0004	/* pure set: fail if attr does not exist */
+#define ATTR_SHIFT	16	/* for supporting extensions */
 
+/*
+ * Additional API specific opcodes & flags
+ */
+#define ATTR_DONTFOLLOW	(0x0001	<< ATTR_SHIFT)	/* do not follow symlinks */
+#define ATTR_TRUST	(0x0002 << ATTR_SHIFT)
+	/* tell server we are trusted to properly handle extended attributes */
+
+#define ATTR_KERNOTIME  (0x0004 << ATTR_SHIFT)
+	/* don't update inode timestamps.
+	 * The DMI needs a way to update attributes without affecting the
+	 * inode timestamps.  Note that this flag is not set-able from user
+	 * mode - it is kernel internal only, but it must not conflict with
+	 * the user flags either.
+	 */
+
+/*
+ * Generic extended attribute operation structure
+ */
 typedef struct attr_op {
 	int	opcode;		/* which operation to perform */
 	int	error;		/* result (an errno) of this operation [out] */
@@ -56,49 +77,16 @@ typedef struct attr_op {
 	void	*aux;		/* optional cmd specific data */
 } attr_op_t;
 
-extern int attrctl (attr_obj_t __obj, int __type, attr_op_t *__ops, int __count);
-
-/* 
- * attr_obj_t type identifiers
- */
-#define ATTR_TYPE_FD		1	/* file descriptor */
-#define ATTR_TYPE_PATH		2	/* path - follow symlinks */
-#define ATTR_TYPE_LPATH		3	/* path - don't follow symlinks */
-#define ATTR_TYPE_PID		4	/* process id */
-
 /*
- * attrctl(2) commands
+ * Valid attr_op, attr_multi_op opcodes
  */
 #define ATTR_OP_GET	1	/* return the indicated attr's value */
 #define ATTR_OP_SET	2	/* set/create the indicated attr/value pair */
 #define ATTR_OP_REMOVE	3	/* remove the indicated attr */
 #define ATTR_OP_LIST	4	/* list attributes associated with a file */
+
 #define ATTR_OP_EXT	32	/* for supporting extensions */
-
-/*
- * Valid command flags, may be used with all attrctl(2) commands.
- * Flags should be bitwise OR'ed together.
- */
-#define ATTR_ROOT	0x0001	/* use attrs in root namespace, not user */
-#define ATTR_CREATE	0x0002	/* pure create: fail if attr already exists */
-#define ATTR_REPLACE	0x0004	/* pure set: fail if attr does not exist */
-#define ATTR_SHIFT	16	/* for supporting extensions */
-
-/*
- * Additional API specific opcodes & flags
- */
-#define ATTR_OP_IRIX_LIST (ATTR_OP_EXT + 0)	/* IRIX: for supporting */
-						/* attr_list(f) API semantics */
-#define ATTR_DONTFOLLOW	(0x0001	<< ATTR_SHIFT)	/* IRIX: do not follow symlinks */
-#define ATTR_TRUST	(0x0002 << ATTR_SHIFT)	/* IRIX: tell server we can be */
-						/* trusted to properly handle */
-						/* extended attributes */
-
-/*
- *
- * The IRIX extended attributes API, fully implemented by XFS
- *
- */
+#define ATTR_OP_IRIX_LIST (ATTR_OP_EXT + 0)	/* IRIX attr_list semantics */
 
 /*
  * The maximum size (into the kernel or returned from the kernel) of an
@@ -109,23 +97,23 @@ extern int attrctl (attr_obj_t __obj, int __type, attr_op_t *__ops, int __count)
 
 /*
  * Define how lists of attribute names are returned to the user from
- * the attr_list() syscall.  A large, 32bit aligned, buffer is passed in
+ * the attr_list() call.  A large, 32bit aligned, buffer is passed in
  * along with its size.  We put an array of offsets at the top that each
  * reference an attrlist_ent_t and pack the attrlist_ent_t's at the bottom.
  */
 typedef struct attrlist {
-	__s32		al_count;	/* number of entries in attrlist */
-	__s32		al_more;	/* T/F: more attrs (do syscall again) */
-	__s32		al_offset[1];	/* byte offsets of attrs [var-sized] */
+	__s32	al_count;	/* number of entries in attrlist */
+	__s32	al_more;	/* T/F: more attrs (do call again) */
+	__s32	al_offset[1];	/* byte offsets of attrs [var-sized] */
 } attrlist_t;
 
 /*
  * Show the interesting info about one attribute.  This is what the
  * al_offset[i] entry points to.
  */
-typedef struct attrlist_ent {			/* data from attr_list() */
-	__u32		a_valuelen;	/* number bytes in value of attr */
-	char		a_name[1];	/* attr name (NULL terminated) */
+typedef struct attrlist_ent {	/* data from attr_list() */
+	__u32	a_valuelen;	/* number bytes in value of attr */
+	char	a_name[1];	/* attr name (NULL terminated) */
 } attrlist_ent_t;
 
 /*
@@ -138,27 +126,27 @@ typedef struct attrlist_ent {			/* data from attr_list() */
 
 
 /*
- * Implement a "cursor" for use in successive attr_list() system calls.
+ * Implement a "cursor" for use in successive attr_list() calls.
  * It provides a way to find the last attribute that was returned in the
- * last attr_list() syscall so that we can get the next one without missing
+ * last attr_list() call so that we can get the next one without missing
  * any.  This should be bzero()ed before use and whenever it is desired to
  * start over from the beginning of the attribute list.  The only valid
  * operation on a cursor is to bzero() it.
  */
 typedef struct attrlist_cursor {
-	__u32		opaque[4];	/* an opaque cookie */
+	__u32	opaque[4];	/* an opaque cookie */
 } attrlist_cursor_t;
 
 /*
  * Multi-attribute operation vector.
  */
 typedef struct attr_multiop {
-	int	am_opcode;	/* which operation to perform (ATTR_OP_GET etc.)*/
+	int	am_opcode;	/* operation to perform (ATTR_OP_GET, etc.) */
 	int	am_error;	/* [out arg] result of this sub-op (an errno) */
 	char	*am_attrname;	/* attribute name to work with */
 	char	*am_attrvalue;	/* [in/out arg] attribute value (raw bytes) */
 	int	am_length;	/* [in/out arg] length of value */
-	int	am_flags;	/* bitwise OR of attrctl(2) flags defined above */
+	int	am_flags;	/* bitwise OR of attr API flags defined above */
 } attr_multiop_t;
 #define	ATTR_MAX_MULTIOPS	128	/* max number ops in an oplist array */
 
@@ -168,10 +156,10 @@ typedef struct attr_multiop {
  * be set to the actual number of bytes used in the value buffer upon return.
  * The return value is -1 on error (w/errno set appropriately), 0 on success.
  */
-extern int attr_get (const char *path, const char *attrname, char *attrvalue,
-			int *valuelength, int flags);
-extern int attr_getf (int fd, const char *attrname, char *attrvalue,
-			int *valuelength, int flags);
+extern int attr_get (const char *__path, const char *__attrname,
+			char *__attrvalue, int *__valuelength, int __flags);
+extern int attr_getf (int __fd, const char *__attrname, char *__attrvalue,
+			int *__valuelength, int __flags);
 
 /*
  * Set the value of an attribute, creating the attribute if necessary.
@@ -226,31 +214,6 @@ extern int attr_multi (const char *__path, attr_multiop_t *__oplist,
 			int __count, int __flags);
 extern int attr_multif (int __fd, attr_multiop_t *__oplist,
 			int __count, int __flags);
-
-#ifdef __KERNEL__
-
-/*
- * The DMI needs a way to update attributes without affecting the inode
- * timestamps.  Note that this flag is not settable from user mode, it is
- * kernel internal only, but it must not conflict with the above flags either.
- */
-#define ATTR_KERNOTIME	(0x0004 << ATTR_SHIFT)	/* IRIX: don't update the inode */
-						/* timestamps */
-
-/*
- * Kernel-internal version of the attrlist cursor.
- */
-typedef struct attrlist_cursor_kern {
-	__u32		hashval;	/* hash value of next entry to add */
-	__u32		blkno;		/* block containing entry (suggestion)*/
-	__u32		offset;		/* offset in list of equal-hashvals */
-	__u16		pad1;		/* padding to match user-level */
-	__u8		pad2;		/* padding to match user-level */
-	__u8		initted;	/* T/F: cursor has been initialized */
-} attrlist_cursor_kern_t;
-
-#endif /* __KERNEL__ */
-
 
 #ifdef __cplusplus
 }

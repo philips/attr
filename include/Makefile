@@ -34,7 +34,7 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 HFILES = attributes.h
-LSRCFILES = builddefs.in buildrules
+LSRCFILES = builddefs.in buildrules attr_kern.h
 
 default install :
 

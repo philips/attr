@@ -30,25 +30,28 @@
  * http://oss.sgi.com/projects/GenInfo/SGIGPLNoticeExplan/
  */
 
-#include <stdio.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <asm/types.h>
-#include <unistd.h>
+
 #include <attributes.h>
+#include <attr_kern.h>
 
 
-/*
- * Function prototypes
- */
+/* Experimental system call interface for Linux */
+static int attrctl(attr_obj_t, int, attr_op_t *, int);
+
+/* Other local function prototypes */
 static int _attr_get(attr_obj_t, int, const char *, char *, int *, int);
 static int _attr_set(attr_obj_t, int, const char *, const char *, const int, int);
 static int _attr_remove(attr_obj_t, int, const char *, int);
 static int _attr_listf(attr_obj_t, int, char *, const int, int,
 		       attrlist_cursor_t *);
 static int _attr_multif(attr_obj_t, int, attr_multiop_t *, int, int);
+
 
 /*
  * Get the value of an attribute.
@@ -287,7 +290,7 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 
 
 /* 
- * attrctl(2) system call function definition.
+ * attrctl(2) experimental system call function definition.
  */
 
 #if __i386__
@@ -304,14 +307,13 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 #  define HAVE_ACL_SYSCALL 0
 #endif
 
-int
+static int
 attrctl(attr_obj_t obj, int type, attr_op_t *ops, int count)
 {
 #if HAVE_ACL_SYSCALL
 	return syscall(SYS__attrctl, * (long *) &obj, type, ops, count);
 #else
-	fprintf(stderr, "libattr: attrctl system call not defined "
-			"for this architecture\n");
-	return 0;
+	errno = ENOSYS;
+	return -1;
 #endif
 }

@@ -1,6 +1,10 @@
 
+attr-1.0.2 (24 April 2001)
+	- rearrange headers to make system call internals private
+	- update package descriptions
+
 attr-1.0.1 (30 January 2001)
-        - minor rpm and deb packaging work
+	- minor rpm and deb packaging work
 
 attr-1.0.0 (15 January 2001)
 	- extended attribute code abstracted from xfs-cmds package

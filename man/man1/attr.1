@@ -16,7 +16,6 @@ attr \- manipulate Extended Attributes on filesystem objects
 .SH OVERVIEW
 Extended Attributes implement the ability for a user to attach
 name/value pairs to objects within the filesystem.
-They are currently only supported in XFS filesystems.
 .P
 They could be used to store meta-information about the file.
 For example "character-set=kanji" could tell a document browser to
@@ -56,8 +55,6 @@ The
 address space is protected by the normal file permissions mechanism,
 so the owner of the file can decide who is able to see and/or modify
 the value of attributes on any particular file.
-.P
-Attributes are currently supported only in the XFS filesystem type.
 .SH DESCRIPTION
 The
 .I attr
@@ -149,9 +146,8 @@ but will not print status messages (to \f4stdout\fP).
 .SH "NOTES"
 The standard file interchange/archive programs
 .IR tar (1),
-.IR cpio (1),
 and
-.IR bru (1)
+.IR cpio (1)
 will not archive or restore Extended Attributes,
 while the
 .IR xfsdump (8)
@@ -163,3 +159,6 @@ attr_multi(2), attr_multif(2),
 attr_remove(2), attr_removef(2),
 attr_set(2), attr_setf(2),
 xfsdump(8).
+.SH BUGS
+The extended attributes system call used by this program is
+experimental and is currently only supported by the XFS filesystem.
