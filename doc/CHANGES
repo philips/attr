@@ -1,3 +1,6 @@
+attr-2.2.0 (30 November 2002)
+	- Complete the internationalisation support.
+
 attr-2.1.2 (22 November 2002)
 	- Add a description of trusted extended attributes to attr(5).
 

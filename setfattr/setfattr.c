@@ -25,13 +25,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <locale.h>
 #include <ctype.h>
 
 #include <attr/xattr.h>
-
-#include <locale.h>
-#include <libintl.h>
-#define _(String) gettext (String)
+#include "config.h"
 
 #define CMD_LINE_OPTIONS "n:x:v:h"
 #define CMD_LINE_SPEC "{-n name|-x name} [-v value] [-h] file..."
@@ -185,6 +183,10 @@ int main(int argc, char *argv[])
 	int opt;
 
 	progname = basename(argv[0]);
+
+	setlocale(LC_CTYPE, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	while ((opt = getopt_long(argc, argv, CMD_LINE_OPTIONS,
 		                  long_options, NULL)) != -1) {

@@ -39,12 +39,10 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <locale.h>
 
 #include <attr/attributes.h>
-
-#include <locale.h>
-#include <libintl.h>
-#define _(String) gettext (String)
+#include "config.h"
 
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */
@@ -72,6 +70,10 @@ main(int argc, char **argv)
 	int opflag, ch, error, follow, verbose, rootflag;
 
 	progname = basename(argv[0]);
+
+	setlocale(LC_CTYPE, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	/*
 	 * Pick up and validate the arguments.

@@ -33,18 +33,19 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-INCDIR = attr
-HFILES = attributes.h xattr.h
-LSRCFILES = builddefs.in buildmacros buildrules config.h.in
-LDIRT = $(INCDIR)
+# Currently LINGUAS is undefined, so buildmacros provides no targets.
+LINGUAS =
+LSRCFILES = $(LINGUAS:%=%.po) $(PKG_NAME).pot
 
-default:
-	rm -f $(INCDIR)
-	$(LN_S) . $(INCDIR)
+XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \
+		$(TOPDIR)/getfattr/getfattr.c \
+		$(TOPDIR)/setfattr/setfattr.c
+
+default: $(LINGUAS:%=%.mo)
 
 include $(BUILDRULES)
 
-install-dev: default
-	$(INSTALL) -m 755 -d $(PKG_INC_DIR)
-	$(INSTALL) -m 644 $(HFILES) $(PKG_INC_DIR)
-install install-lib:
+install: default
+	$(INSTALL_LINGUAS)
+
+install-dev install-lib:

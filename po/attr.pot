@@ -1,0 +1,105 @@
+#, c-format
+msgid ""
+"Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n"
+"       %s [-LRq] -g attrname pathname                 # get value\n"
+"       %s [-LRq] -r attrname pathname                 # remove attr\n"
+"      -s reads a value from stdin and -g writes a value to stdout\n"
+msgstr ""
+
+msgid "Only one of -s, -g, or -r allowed\n"
+msgstr ""
+
+msgid "-V only allowed with -s\n"
+msgstr ""
+
+#, c-format
+msgid "Unrecognized option: %c\n"
+msgstr ""
+
+msgid "A filename to operate on is required\n"
+msgstr ""
+
+#, c-format
+msgid "Could not set \"%s\" for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Attribute \"%s\" set to a %d byte value for %s:\n"
+msgstr ""
+
+#, c-format
+msgid "Could not get \"%s\" for %s\n"
+msgstr ""
+
+#, c-format
+msgid "Attribute \"%s\" had a %d byte value for %s:\n"
+msgstr ""
+
+#, c-format
+msgid "Could not remove \"%s\" for %s\n"
+msgstr ""
+
+msgid "At least one of -s, -g, or -r is required\n"
+msgstr ""
+
+msgid "No such attribute"
+msgstr ""
+
+#, c-format
+msgid "%s: Removing leading '/' from absolute path names\n"
+msgstr ""
+
+#, c-format
+msgid "%s %s -- get extended attributes\n"
+msgstr ""
+
+#, c-format
+msgid "Usage: %s %s\n"
+msgstr ""
+
+msgid ""
+"  -n, --name=name         get the named extended attribute value\n"
+"  -d, --dump              get all extended attribute values\n"
+"  -e, --encoding=...      encode values (as 'text', 'hex' or 'base64')\n"
+"      --match=pattern     only get attributes with names matching pattern\n"
+"      --only-values       print the bare values only\n"
+"  -h, --no-dereference    do not dereference symbolic links\n"
+"      --absolute-names    don't strip leading '/' in pathnames\n"
+"  -R, --recursive         recurse into subdirectories\n"
+"  -L, --logical           logical walk, follow symbolic links\n"
+"  -P  --physical          physical walk, do not follow symbolic links\n"
+"      --version           print version and exit\n"
+"      --help              this help text\n"
+msgstr ""
+
+#, c-format
+msgid "%s: invalid regular expression \"%s\"\n"
+msgstr ""
+
+#, c-format
+msgid ""
+"Usage: %s %s\n"
+"Try `%s --help' for more information.\n"
+msgstr ""
+
+#, c-format
+msgid "%s: %s: No filename found in line %d, aborting\n"
+msgstr ""
+
+#, c-format
+msgid "%s: No filename found inline %d of standard input, aborting\n"
+msgstr ""
+
+#, c-format
+msgid "%s %s -- set extended attributes\n"
+msgstr ""
+
+msgid ""
+"  -n, --name=name         set the value of the named extended attribute\n"
+"  -x, --remove=name       remove the named extended attribute\n"
+"  -v, --value=value       use value as the attribute value\n"
+"  -h, --no-dereference    do not dereference symbolic links\n"
+"      --restore=file      restore extended attributes\n"
+"      --version           print version and exit\n"
+"      --help              this help text\n"
+msgstr ""

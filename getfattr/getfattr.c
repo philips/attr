@@ -27,12 +27,11 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <regex.h>
-#include <attr/xattr.h>
 #include <ftw.h>
-
 #include <locale.h>
-#include <libintl.h>
-#define _(String) gettext (String)
+
+#include <attr/xattr.h>
+#include "config.h"
 
 #define CMD_LINE_OPTIONS "n:de:m:hRLP"
 #define CMD_LINE_SPEC "[-hRLP] [-n name|-d] [-e en] [-m pattern] path..."
@@ -410,7 +409,10 @@ int main(int argc, char *argv[])
 	int opt;
 
 	progname = basename(argv[0]);
-	setlocale(LC_ALL, "");
+
+	setlocale(LC_CTYPE, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
 
 	while ((opt = getopt_long(argc, argv, CMD_LINE_OPTIONS,
 		                  long_options, NULL)) != -1) {
