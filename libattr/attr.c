@@ -271,7 +271,7 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 		ops[i].flags = multiops[i].am_flags;
 	}
 
-	if (attrctl(obj, type, ops, 1) < 0) {
+	if (attrctl(obj, type, ops, count) < 0) {
 		error = -1;
 		goto free_mem;
 	}
