@@ -1,3 +1,8 @@
+attr-1.1.0 (16 Jul 2001)
+	- reworked Makefiles to use libtool
+	- rework some of the Debian packaging rules
+	- install attr command into /usr/bin, not /bin
+
 attr-1.0.4 (02 Jul 2001)
 	- work around syscall number collision on recent ia64 kernels
 

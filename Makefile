@@ -39,7 +39,9 @@ endif
 
 CONFIGURE = configure include/builddefs
 LSRCFILES = configure configure.in Makepkgs install-sh README VERSION
-LDIRT = config.* conftest* Logs/* built install.* install-dev.* *.gz
+
+LDIRT = config.log config.status config.cache confdefs.h conftest* \
+	Logs/* built .census install.* install-dev.* *.gz
 
 SUBDIRS = include libattr attr man doc debian build
 
@@ -56,10 +58,10 @@ else
 clean:	# if configure hasn't run, nothing to clean
 endif
 
-$(CONFIGURE): configure.in include/builddefs.in VERSION
-	rm -f config.cache
+$(CONFIGURE):
 	autoconf
 	./configure
+	touch .census
 
 install: default
 	$(SUBDIRS_MAKERULE)

@@ -1,3 +1,11 @@
+attr (1.1.0-1) unstable; urgency=low
+
+  * Reworked package slightly so that its not Debian native
+  * Debian-specific changes now documented in changelog.Debian.gz
+  * New upstream release (see /usr/share/doc/attr/changelog.gz)
+
+ -- Nathan Scott <nathans@debian.org>  Mon, 16 Jul 2001 18:14:56 +1000
+
 attr (1.0.4) unstable; urgency=low
 
   * Work around syscall number collision on recent ia64 kernels

@@ -58,15 +58,20 @@
 void
 usage(char *progname)
 {
-	fprintf(stderr, "usage:\t%s [-LRq] -s attrname [-V attrvalue] pathname\t# set value\n",
-			progname);
-	fprintf(stderr, "\t%s [-LRq] -g attrname pathname\t\t\t# get value\n",
-			progname);
-	fprintf(stderr, "\t%s [-LRq] -r attrname pathname\t\t\t# remove attr\n",
-			progname);
-	fprintf(stderr, "\t%s [-LRq] -l pathname\t\t\t\t# list attrs \n",
-			progname);
-	fprintf(stderr, "\t-s accepts a value from stdin and -g writes a value to stdout\n");
+	fprintf(stderr,
+	"Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n",
+		progname);
+	fprintf(stderr,
+	"       %s [-LRq] -g attrname pathname                 # get value\n",
+		progname);
+	fprintf(stderr,
+	"       %s [-LRq] -r attrname pathname                 # remove attr\n",
+		progname);
+	fprintf(stderr,
+	"       %s [-LRq] -l pathname                          # list attrs \n",
+		progname);
+	fprintf(stderr,
+	"      -s reads a value from stdin and -g writes a value to stdout\n");
 	exit(1);
 }
 
