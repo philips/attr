@@ -84,7 +84,7 @@ attr_get(const char *path, const char *attrname, char *attrvalue,
 			c = lgetxattr(path, name, attrvalue, *valuelength);
 		else
 			c =  getxattr(path, name, attrvalue, *valuelength);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
@@ -105,7 +105,7 @@ attr_getf(int fd, const char *attrname, char *attrvalue,
 		if ((c = api_convert(name, attrname, flags, compat)) < 0)
 			return c;
 		c = fgetxattr(fd, name, attrvalue, *valuelength);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
@@ -135,7 +135,7 @@ attr_set(const char *path, const char *attrname, const char *attrvalue,
 			c = lsetxattr(path, name, buffer, valuelength, lflags);
 		else
 			c = setxattr(path, name, buffer, valuelength, lflags);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
@@ -159,7 +159,7 @@ attr_setf(int fd, const char *attrname,
 		if ((c = api_convert(name, attrname, flags, compat)) < 0)
 			return c;
 		c = fsetxattr(fd, name, buffer, valuelength, lflags);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
@@ -179,7 +179,7 @@ attr_remove(const char *path, const char *attrname, int flags)
 			c = lremovexattr(path, name);
 		else
 			c = removexattr(path, name);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
@@ -196,7 +196,7 @@ attr_removef(int fd, const char *attrname, int flags)
 		if ((c = api_convert(name, attrname, flags, compat)) < 0)
 			return c;
 		c = fremovexattr(fd, name);
-		if (c < 0 && errno == ENOATTR)
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		break;
 	}
