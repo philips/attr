@@ -18,7 +18,7 @@ Description: Utilities for manipulating filesystem extended attributes
 Package: libattr1-dev
 Section: libdevel
 Priority: extra
-Depends: libc6-dev, attr (>= 2.0.0)
+Depends: libc6-dev, libattr1 (>= 2.0.0)
 Provides: attr-dev
 Replaces: attr-dev
 Conflicts: attr-dev, attr (<< 2.0.0)
