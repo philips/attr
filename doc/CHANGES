@@ -1,4 +1,7 @@
-attr-2.4.9 (04 August 2003)
+attr-2.4.10 (29 August 2003)
+	- Fix a bug in nftw worker routines' error handling code.
+
+attr-2.4.9 (27 August 2003)
 	- Fix issues in the libmisc quote routine (from Ben Escoto).
 
 attr-2.4.8 (04 August 2003)

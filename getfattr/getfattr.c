@@ -349,7 +349,7 @@ int do_print(const char *path, const struct stat *stat,
 {
 	int header_printed = 0;
 
-	if (flag & FTW_DNR) {
+	if (flag == FTW_DNR) {
 		/* Item is a directory which can't be read. */
 		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
 			strerror(errno));
