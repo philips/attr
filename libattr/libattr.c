@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2002 Silicon Graphics, Inc.  All Rights Reserved.
+ * Copyright (c) 2001-2003 Silicon Graphics, Inc.  All Rights Reserved.
  * 
  * This program is free software; you can redistribute it and/or modify it
  * under the terms of version 2.1 of the GNU Lesser General Public License
@@ -48,15 +48,11 @@
  * Convert IRIX API components into Linux/XFS API components
  */
 static int
-api_convert(char *name, const char *irixname, int irixflags)
+api_convert(char *name, const char *irixname, int irixflags, int compat)
 {
 	static const char *user_name = "user.";
 	static const char *trusted_name = "trusted.";
 	static const char *xfsroot_name = "xfsroot.";
-	static int compat = -1;
-
-	if (compat == -1)
-		compat = (getenv("COMPAT_XFSROOT") != NULL);
 
 	if (strlen(irixname) >= MAXNAMELEN) {
 		errno = EINVAL;
@@ -78,15 +74,20 @@ int
 attr_get(const char *path, const char *attrname, char *attrvalue,
 	 int *valuelength, int flags)
 {
-	int c;
+	int c, compat;
 	char name[MAXNAMELEN+16];
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	if (flags & ATTR_DONTFOLLOW)
-		c = lgetxattr(path, name, attrvalue, *valuelength);
-	else
-		c =  getxattr(path, name, attrvalue, *valuelength);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		if (flags & ATTR_DONTFOLLOW)
+			c = lgetxattr(path, name, attrvalue, *valuelength);
+		else
+			c =  getxattr(path, name, attrvalue, *valuelength);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
 	if (c < 0)
 		return c;
 	*valuelength = c;
@@ -97,12 +98,17 @@ int
 attr_getf(int fd, const char *attrname, char *attrvalue,
 	  int *valuelength, int flags)
 {
-	int c;
+	int c, compat;
 	char name[MAXNAMELEN+16];
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	c = fgetxattr(fd, name, attrvalue, *valuelength);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		c = fgetxattr(fd, name, attrvalue, *valuelength);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
 	if (c < 0)
 		return c;
 	*valuelength = c;
@@ -113,7 +119,7 @@ int
 attr_set(const char *path, const char *attrname, const char *attrvalue,
 	 const int valuelength, int flags)
 {
-	int c, lflags = 0;
+	int c, compat, lflags = 0;
 	char name[MAXNAMELEN+16];
 	void *buffer = (void *)attrvalue;
 
@@ -122,18 +128,25 @@ attr_set(const char *path, const char *attrname, const char *attrvalue,
 	else if (flags & ATTR_REPLACE)
 		lflags = XATTR_REPLACE;
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	if (flags & ATTR_DONTFOLLOW)
-		return lsetxattr(path, name, buffer, valuelength, lflags);
-	return setxattr(path, name, buffer, valuelength, lflags);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		if (flags & ATTR_DONTFOLLOW)
+			c = lsetxattr(path, name, buffer, valuelength, lflags);
+		else
+			c = setxattr(path, name, buffer, valuelength, lflags);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
+	return c;
 }
 
 int
 attr_setf(int fd, const char *attrname,
 	  const char *attrvalue, const int valuelength, int flags)
 {
-	int c, lflags = 0;
+	int c, compat, lflags = 0;
 	char name[MAXNAMELEN+16];
 	void *buffer = (void *)attrvalue;
 
@@ -142,33 +155,52 @@ attr_setf(int fd, const char *attrname,
 	else if (flags & ATTR_REPLACE)
 		lflags = XATTR_REPLACE;
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	return fsetxattr(fd, name, buffer, valuelength, lflags);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		c = fsetxattr(fd, name, buffer, valuelength, lflags);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
+	return c;
 }
 
 int
 attr_remove(const char *path, const char *attrname, int flags)
 {
-	int c;
+	int c, compat;
 	char name[MAXNAMELEN+16];
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	if (flags & ATTR_DONTFOLLOW)
-		return lremovexattr(path, name);
-	return removexattr(path, name);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		if (flags & ATTR_DONTFOLLOW)
+			c = lremovexattr(path, name);
+		else
+			c = removexattr(path, name);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
+	return c;
 }
 
 int
 attr_removef(int fd, const char *attrname, int flags)
 {
-	int c;
+	int c, compat;
 	char name[MAXNAMELEN+16];
 
-	if ((c = api_convert(name, attrname, flags)) < 0)
-		return c;
-	return fremovexattr(fd, name);
+	for (compat = 0; compat < 2; compat++) {
+		if ((c = api_convert(name, attrname, flags, compat)) < 0)
+			return c;
+		c = fremovexattr(fd, name);
+		if (c < 0 && errno == ENOATTR)
+			continue;
+		break;
+	}
+	return c;
 }
 
 

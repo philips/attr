@@ -1,3 +1,9 @@
+attr-2.4.2 (14 April 2003)
+	- Found a better way to handle the trusted/xfsroot namespace
+	  transition, from a suggestion from Andreas.  COMPAT_XFSROOT
+	  is no longer checked, we figure this out on-the-fly now.
+	- Fix configure tests that used AC_PATH_PROG incorrectly.
+
 attr-2.4.1 (27 March 2003)
 	- Cleanups to the build process, in particular the automatic
 	  rpm package generation Makefile and spec file template.
