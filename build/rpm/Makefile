@@ -35,7 +35,7 @@ TREEROOT = $(shell cd ${TOPDIR}; pwd)
 include $(TOPDIR)/include/builddefs
 
 SPECF = $(PKG_NAME).spec
-LDIRT = $(PKG_NAME)*.rpm $(SPECF) rpmmacros rpm-*.rc $(TOPDIR)/files*.rpm
+LDIRT = *.rpm $(SPECF) rpmmacros rpm-*.rc $(TOPDIR)/files*.rpm
 
 LSRCFILES = macros.template $(SPECF).in rpm-2.rc.template
 
