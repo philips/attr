@@ -1,4 +1,8 @@
-attr-2.4.4 (04 Junel 2003)
+attr-2.4.5 (03 July 2003)
+	- Tweak the build so we don't always run msgmerge,
+	  fix from Steve Langasek originally.
+
+attr-2.4.4 (04 June 2003)
 	- Some Debian-specific packaging updates.
 
 attr-2.4.3 (26 April 2003)

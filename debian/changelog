@@ -1,3 +1,10 @@
+attr (2.4.5-1) unstable; urgency=low
+
+  * New upstream release
+  * Removed the need to always run msgmerge during the build
+
+ -- Nathan Scott <nathans@debian.org>  Thu, 03 Jul 2003 12:47:44 +1000
+
 attr (2.4.4-1) unstable; urgency=low
 
   * New upstream release
