@@ -44,37 +44,25 @@
 
 #include <attributes.h>
 
-/*
- * Exercise the attribute storage mechanism in the kernel.
- */
-
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */
 #define	REMOVEOP	3		/* do a REMOVE operation */
 #define	LISTOP		4		/* do a LIST operation */
 
-#define	BUFSIZE		(64*1024)	/* buffer size for LIST operations */
+static char *progname;
 
 void
-usage(char *progname)
+usage(void)
 {
 	fprintf(stderr,
-	"Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n",
-		progname);
-	fprintf(stderr,
-	"       %s [-LRq] -g attrname pathname                 # get value\n",
-		progname);
-	fprintf(stderr,
-	"       %s [-LRq] -r attrname pathname                 # remove attr\n",
-		progname);
-	fprintf(stderr,
-	"       %s [-LRq] -l pathname                          # list attrs \n",
-		progname);
-	fprintf(stderr,
-	"      -s reads a value from stdin and -g writes a value to stdout\n");
+"Usage: %s [-LRq] -s attrname [-V attrvalue] pathname  # set value\n"
+"       %s [-LRq] -g attrname pathname                 # get value\n"
+"       %s [-LRq] -r attrname pathname                 # remove attr\n"
+"       %s [-LRq] -l pathname                          # list attrs\n"
+"      -s reads a value from stdin and -g writes a value to stdout\n",
+		progname, progname, progname, progname);
 	exit(1);
 }
-
 
 int
 main(int argc, char **argv)
@@ -85,6 +73,8 @@ main(int argc, char **argv)
 	attrlist_t *alist;
 	attrlist_ent_t *aep;
 	attrlist_cursor_t cursor;
+
+	progname = basename(argv[0]);
 
 	/*
 	 * Pick up and validate the arguments.
@@ -98,7 +88,7 @@ main(int argc, char **argv)
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
 				    "Only one of -s, -g, -r, or -l allowed\n");
-				usage(argv[0]);
+				usage();
 			}
 			opflag = SETOP;
 			attrname = optarg;
@@ -107,7 +97,7 @@ main(int argc, char **argv)
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
 				    "-V only allowed with -s\n");
-				usage(argv[0]);
+				usage();
 			}
 			opflag = SETOP;
 			attrvalue = optarg;
@@ -116,7 +106,7 @@ main(int argc, char **argv)
 			if (opflag) {
 				fprintf(stderr,
 				    "Only one of -s, -g, -r, or -l allowed\n");
-				usage(argv[0]);
+				usage();
 			}
 			opflag = GETOP;
 			attrname = optarg;
@@ -125,7 +115,7 @@ main(int argc, char **argv)
 			if (opflag) {
 				fprintf(stderr,
 				    "Only one of -s, -g, -r, or -l allowed\n");
-				usage(argv[0]);
+				usage();
 			}
 			opflag = REMOVEOP;
 			attrname = optarg;
@@ -134,7 +124,7 @@ main(int argc, char **argv)
 			if (opflag) {
 				fprintf(stderr,
 				    "Only one of -s, -g, -r, or -l allowed\n");
-				usage(argv[0]);
+				usage();
 			}
 			opflag = LISTOP;
 			break;
@@ -149,13 +139,13 @@ main(int argc, char **argv)
 			break;
 		default:
 			fprintf(stderr, "Unrecognized option: %c\n", (char)ch);
-			usage(argv[0]);
+			usage();
 			break;
 		}
 	}
 	if (optind != argc-1) {
 		fprintf(stderr, "A filename to operate on is required\n");
-		usage(argv[0]);
+		usage();
 	}
 	filename = argv[optind];
 
@@ -234,7 +224,7 @@ main(int argc, char **argv)
 		break;
 
 	case LISTOP:
-		if ((buffer = malloc(BUFSIZE)) == NULL) {
+		if ((buffer = malloc(ATTR_MAX_VALUELEN)) == NULL) {
 			perror("malloc");
 			exit(1);
 		}
@@ -242,7 +232,7 @@ main(int argc, char **argv)
 		memset((char *)&cursor, 0, sizeof(cursor));
 
 		do {
-			error = attr_list(filename, buffer, BUFSIZE,
+			error = attr_list(filename, buffer, ATTR_MAX_VALUELEN,
 					    (!follow ? ATTR_DONTFOLLOW : 0) |
 					    (rootflag ? ATTR_ROOT : 0),
 					    &cursor);
@@ -271,7 +261,7 @@ main(int argc, char **argv)
 	default:
 		fprintf(stderr,
 			"At least one of -s, -g, -r, or -l is required\n");
-		usage(argv[0]);
+		usage();
 		break;
 	}
 
