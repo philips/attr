@@ -301,7 +301,7 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 #elif __ia64__
 #  define HAVE_ACL_SYSCALL 1
 #  ifndef SYS__attrctl
-#    define SYS__attrctl       1215
+#    define SYS__attrctl       1260
 #  endif
 #else
 #  define HAVE_ACL_SYSCALL 0
