@@ -183,15 +183,15 @@ int do_listxattr(const char *path, char *list, size_t size)
 
 int high_water_alloc(void **buf, int *bufsize, int newsize)
 {
+#define CHUNK_SIZE	256
 	/*
 	 * Goal here is to avoid unnecessary memory allocations by
 	 * using static buffers which only grow when necessary.
 	 * Size is increased in fixed size chunks (CHUNK_SIZE).
 	 */
-#define CHUNK_SIZE	256
-	if (bufsize < newsize) {
+	if (*bufsize < newsize) {
 		newsize = (newsize + CHUNK_SIZE-1) & ~(CHUNK_SIZE-1);
-		*buf = realloc(newsize);
+		*buf = realloc(*buf, newsize);
 		if (!*buf) {
 			perror(progname);
 			had_errors++;
@@ -227,7 +227,7 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 			return 1;
 		}
 	} else if (listsize > 0) {
-		if (high_water_alloc(&list, &bufsize, listsize))
+		if (high_water_alloc((void **)&list, &bufsize, listsize))
 			return 1;
 
 		listsize = do_listxattr(path, list, bufsize);
@@ -242,7 +242,7 @@ int do_get_all(const char *path, struct stat *stat, void *dummy)
 				count++;
 		if (count) {
 			n = count * sizeof(char *);
-			if (high_water_alloc(&names, &ncount, n))
+			if (high_water_alloc((void **)&names, &ncount, n))
 				return 1;
 			n = 0;
 			for (v = list; v - list <= listsize; v += strlen(v)+1)
@@ -294,7 +294,7 @@ syscall_failed:
 			fprintf(stderr, "%s: %s: %s\n", path, name, strerr);
 			return 1;
 		}
-		if (high_water_alloc(&value, &vsize, error + 1))
+		if (high_water_alloc((void **)&value, &vsize, error + 1))
 			return 1;
 		error = do_getxattr(path, name, value, vsize);
 		if (error < 0)
