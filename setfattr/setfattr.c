@@ -33,7 +33,8 @@
 #include "misc.h"
 
 #define CMD_LINE_OPTIONS "n:x:v:h"
-#define CMD_LINE_SPEC "{-n name|-x name} [-v value] [-h] file..."
+#define CMD_LINE_SPEC1 "{-n name} [-v value] [-h] file..."
+#define CMD_LINE_SPEC2 "{-x name} [-h] file..."
 
 struct option long_options[] = {
 	{ "name",		1, 0, 'n' }, 
@@ -164,7 +165,8 @@ cleanup:
 void help(void)
 {
 	printf(_("%s %s -- set extended attributes\n"), progname, VERSION);
-	printf(_("Usage: %s %s\n"), progname, CMD_LINE_SPEC);
+	printf(_("Usage: %s %s\n"), progname, CMD_LINE_SPEC1);
+	printf(_("       %s %s\n"), progname, CMD_LINE_SPEC2);
 	printf(_(
 "  -n, --name=name         set the value of the named extended attribute\n"
 "  -x, --remove=name       remove the named extended attribute\n"
@@ -257,8 +259,9 @@ int main(int argc, char *argv[])
 
 synopsis:
 	fprintf(stderr, _("Usage: %s %s\n"
+			  "       %s %s\n"
 	                  "Try `%s --help' for more information.\n"),
-		progname, CMD_LINE_SPEC, progname);
+		progname, CMD_LINE_SPEC1, progname, CMD_LINE_SPEC2, progname);
 	return 2;
 }
 

@@ -1,3 +1,7 @@
+attr-2.4.17 (8 September 2004)
+	- Clarify setfattr usage information.
+	- Fix email address in manual pages.
+
 attr-2.4.16 (21 April 2004)
 	- Updated Debian packaging dependency information.
 
