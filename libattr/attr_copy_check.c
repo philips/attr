@@ -24,17 +24,17 @@ attr_copy_check_permissions(const char *name, struct error_context *ctx)
 {
 	/* Skip POSIX ACLs. */
 	if (strncmp(name, "system.posix_acl_", 17) == 0 &&
-	    (strcmp(name, "access") == 0 ||
-	     strcmp(name, "default") == 0))
+	    (strcmp(name+17, "access") == 0 ||
+	     strcmp(name+17, "default") == 0))
 		return 0;
 
 	/* Skip permissions attributes which are used on IRIX, and
 	   hence are part of the XFS ondisk format (incl. ACLs). */
 	if (strncmp(name, "trusted.SGI_", 12) == 0 &&
-	    (strcmp(name, "ACL_DEFAULT") == 0 ||
-	     strcmp(name, "ACL_FILE") == 0 ||
-	     strcmp(name, "CAP_FILE") == 0 ||
-	     strcmp(name, "MAC_FILE") == 0))
+	    (strcmp(name+12, "ACL_DEFAULT") == 0 ||
+	     strcmp(name+12, "ACL_FILE") == 0 ||
+	     strcmp(name+12, "CAP_FILE") == 0 ||
+	     strcmp(name+12, "MAC_FILE") == 0))
 		return 0;
 
 	/* The xfsroot namespace mirrored attributes, some of which
