@@ -1,3 +1,6 @@
+attr-2.0.7 (13 April 2002)
+	- Minor build system updates
+
 attr-2.0.6 (26 March 2002)
 	- Add MIPS/MIPS64 system call numbers
 	- Several man page updates
