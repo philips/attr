@@ -1,3 +1,6 @@
+attr-2.4.15 (02 February 2004)
+	- Included Polish message translations by Jakub Bogusz.
+
 attr-2.4.14 (14 January 2004)
 	- When attr_copy_file is used on a symlink, process the
 	  symlink instead of the file the symlink points to.

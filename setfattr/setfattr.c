@@ -123,7 +123,7 @@ int restore(const char *filename)
 				                  "in line %d, aborting\n"),
 					progname, filename, backup_line);
 			} else {
-				fprintf(stderr, _("%s: No filename found in"
+				fprintf(stderr, _("%s: No filename found in "
 			                          "line %d of standard input, "
 						  "aborting\n"),
 					  progname, backup_line);
