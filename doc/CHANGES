@@ -1,3 +1,6 @@
+[current]
+	- Add MIPS/MIPS64 system call numbers
+
 attr-2.0.5 (12 March 2002)
 	- Fix build for architectures which don't have syscalls yet
 	- Fix the syscall number used on Sparc for fremovexattr(2)
