@@ -1,3 +1,9 @@
+attr-2.1.0 (19 October 2002)
+	- Change the devel .rpm and .deb package names so that they
+	  now use a lib prefix.
+	- Several packaging changes related to this to ensure upgrades
+	  work and depenency information isn't lost.
+
 attr-2.0.12 (07 October 2002)
 	- Fix: the m68k architecture is identified by __mc68000__
 	  rather than by __m68k__.

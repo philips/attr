@@ -28,25 +28,26 @@ Prereq: /sbin/ldconfig
 This package contains the libattr.so dynamic library which contains
 the extended attribute system calls and library functions.
 
-%package -n attr-devel
+%package -n libattr-devel
 Summary: Extended attribute static libraries and headers.
 Group: Development/Libraries
 Requires: libattr
+Obsoletes: attr-devel
 
-%description -n attr-devel
+%description -n libattr-devel
 This package contains the libraries and header files needed to
 develop programs which make use of extended attributes.
 For Linux programs, the documented system call API is the
 recommended interface, but an SGI IRIX compatibility interface
 is also provided.
 
-Currently only ext2, ext3 and XFS support extended attributes.
+Currently only ext2, ext3, JFS and XFS support extended attributes.
 The SGI IRIX compatibility API built above the Linux system calls is
 used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
 
-You should install attr-devel if you want to develop programs
-which make use of extended attributes.  If you install attr-devel,
-you'll also want to install attr.
+You should install libattr-devel if you want to develop programs
+which make use of extended attributes.  If you install libattr-devel
+then you'll also want to install attr.
 
 %prep
 if [ -f .census ] ; then
@@ -102,6 +103,6 @@ rm -rf $RPM_BUILD_ROOT
 
 %files -f files.rpm
 
-%files -n attr-devel -f filesdevel.rpm
+%files -n libattr-devel -f filesdevel.rpm
 
 %files -n libattr -f fileslib.rpm

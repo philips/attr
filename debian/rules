@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 package = attr
-develop = $(package)-dev
+develop = lib$(package)1-dev
 library = lib$(package)1
 
 dirtmp = debian/tmp

@@ -1,3 +1,9 @@
+attr (2.1.0-1) unstable; urgency=low
+
+  * New upstream release, changing dev package name (closes: #141755)
+
+ -- Nathan Scott <nathans@debian.org>  Sat, 19 Oct 2002 08:40:38 +1000
+
 attr (2.0.12-1) unstable; urgency=low
 
   * New upstream release

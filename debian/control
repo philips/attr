@@ -15,11 +15,13 @@ Description: Utilities for manipulating filesystem extended attributes
  An attr(1) command is also provided which is largely compatible
  with the SGI IRIX tool of the same name.
 
-Package: attr-dev
+Package: libattr1-dev
 Section: devel
 Priority: extra
 Depends: libc6-dev, attr (>= 2.0.0)
-Conflicts: attr (<< 2.0.0)
+Provides: attr-dev
+Replaces: attr-dev
+Conflicts: attr-dev, attr (<< 2.0.0)
 Architecture: any
 Description: Extended attribute static libraries and headers
  attr-dev contains the libraries and header files needed to develop
@@ -27,7 +29,7 @@ Description: Extended attribute static libraries and headers
  the documented system call API is the recommended interface, but an
  SGI IRIX compatibility interface is also provided.
  .
- Currently only ext2, ext3 and XFS support extended attributes.
+ Currently only ext2, ext3, JFS and XFS support extended attributes.
  The SGI IRIX compatibility API built above the Linux system calls is
  used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
 

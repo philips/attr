@@ -34,7 +34,7 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 LSRCFILES = changelog control copyright rules
-DEV_DOC_DIR = $(PKG_DOC_DIR)/../$(PKG_NAME)-dev
+DEV_DOC_DIR = $(PKG_DOC_DIR)/../lib$(PKG_NAME)1-dev
 LIB_DOC_DIR = $(PKG_DOC_DIR)/../lib$(PKG_NAME)1
 
 default:
