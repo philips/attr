@@ -1,3 +1,4 @@
+attr-2.0.12 (07 October 2002)
 	- Fix: the m68k architecture is identified by __mc68000__
 	  rather than by __m68k__.
 	- Correction in the attr(5) manual page.
