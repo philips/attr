@@ -36,8 +36,8 @@ include $(TOPDIR)/include/builddefs
 LTCOMMAND = setfattr
 CFILES = setfattr.c
 
-LLDLIBS = $(LIBATTR)
-LTDEPENDENCIES = $(LIBATTR)
+LLDLIBS = $(LIBATTR) $(LIBMISC)
+LTDEPENDENCIES = $(LIBATTR) $(LIBMISC)
 
 default: $(LTCOMMAND)
 

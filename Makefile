@@ -44,7 +44,7 @@ LSRCFILES = configure configure.in aclocal.m4 Makepkgs install-sh exports \
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
-SUBDIRS = include libattr attr getfattr setfattr \
+SUBDIRS = include libmisc libattr attr getfattr setfattr \
 	  examples test m4 man doc po debian build
 
 default: $(CONFIGURE)

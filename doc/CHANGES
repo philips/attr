@@ -1,3 +1,10 @@
+attr-2.4.6 (21 July 2003)
+	- Add internal library for misc. functions: quote, unquote,
+	  high_water_alloc.
+	- Quote special characters in path names and attribute names.
+	- Use high_water_alloc everywhere instead of malloc/realloc.
+	- Update the test scripts.
+	
 attr-2.4.5 (03 July 2003)
 	- Tweak the build so we don't always run msgmerge,
 	  fix from Steve Langasek originally.

@@ -33,17 +33,13 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-LTCOMMAND = getfattr
-CFILES = getfattr.c
+LTLIBRARY = libmisc.la
+LTLDFLAGS =
 
-LLDLIBS = $(LIBATTR) $(LIBMISC)
-LTDEPENDENCIES = $(LIBATTR) $(LIBMISC)
+CFILES = quote.c unquote.c high_water_alloc.c
 
-default: $(LTCOMMAND)
+default: $(LTLIBRARY)
+install install-dev install-lib:
 
 include $(BUILDRULES)
 
-install: default
-	$(INSTALL) -m 755 -d $(PKG_BIN_DIR)
-	$(LTINSTALL) -m 755 $(LTCOMMAND) $(PKG_BIN_DIR)
-install-dev install-lib:

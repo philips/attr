@@ -32,6 +32,7 @@
 
 #include <attr/xattr.h>
 #include "config.h"
+#include "misc.h"
 
 #define CMD_LINE_OPTIONS "n:de:m:hRLP"
 #define CMD_LINE_SPEC "[-hRLP] [-n name|-d] [-e en] [-m pattern] path..."
@@ -80,31 +81,6 @@ int do_listxattr(const char *path, char *list, size_t size)
 	return (opt_deref ? listxattr : llistxattr)(path, list, size);
 }
 
-int high_water_alloc(void **buf, size_t *bufsize, size_t newsize)
-{
-#define CHUNK_SIZE	256
-	/*
-	 * Goal here is to avoid unnecessary memory allocations by
-	 * using static buffers which only grow when necessary.
-	 * Size is increased in fixed size chunks (CHUNK_SIZE).
-	 */
-	if (*bufsize < newsize) {
-		void *newbuf;
-
-		newsize = (newsize + CHUNK_SIZE-1) & ~(CHUNK_SIZE-1);
-		newbuf = realloc(*buf, newsize);
-		if (!newbuf) {
-			perror(progname);
-			had_errors++;
-			return 1;
-		}
-		
-		*buf = newbuf;
-		*bufsize = newsize;
-	}
-	return 0;
-}
-
 const char *strerror_ea(int err)
 {
 	if (err == ENODATA)
@@ -130,11 +106,10 @@ int well_enough_printable(const char *value, size_t size)
 
 const char *encode(const char *value, size_t *size)
 {
-	static char *encoded = NULL, *e;
-	char *enc;
+	static char *encoded;
+	static size_t encoded_size;
+	char *enc, *e;
 	
-	if (encoded)
-		free(encoded);
 	if (opt_encoding == NULL) {
 		if (well_enough_printable(value, *size))
 			enc = "text";
@@ -152,8 +127,8 @@ const char *encode(const char *value, size_t *size)
 			else if (*e == '\\' || *e == '"')
 				extra++;
 		}
-		encoded = (char *)malloc(*size + extra + 3);
-		if (!encoded) {
+		if (high_water_alloc((void **)&encoded, &encoded_size,
+				     *size + extra + 3)) {
 			perror(progname);
 			had_errors++;
 			return NULL;
@@ -180,8 +155,8 @@ const char *encode(const char *value, size_t *size)
 		static const char *digits = "0123456789abcdef";
 		size_t n;
 
-		encoded = (char *)malloc(*size * 2 + 4);
-		if (!encoded) {
+		if (high_water_alloc((void **)&encoded, &encoded_size,
+				     *size * 2 + 4)) {
 			perror(progname);
 			had_errors++;
 			return NULL;
@@ -199,8 +174,8 @@ const char *encode(const char *value, size_t *size)
 					    "ghijklmnopqrstuvwxyz0123456789+/";
 		size_t n;
 
-		encoded = (char *)malloc((*size + 2) / 3 * 4 + 1);
-		if (!encoded) {
+		if (high_water_alloc((void **)&encoded, &encoded_size,
+				     (*size + 2) / 3 * 4 + 1)) {
 			perror(progname);
 			had_errors++;
 			return NULL;
@@ -243,15 +218,20 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 	if (opt_dump || opt_value_only) {
 		length = do_getxattr(path, name, NULL, 0);
 		if (length < 0) {
-			fprintf(stderr, "%s: %s: %s\n", path, name,
+			fprintf(stderr, "%s: ", quote(path));
+			fprintf(stderr, "%s: %s\n", quote(name),
 				strerror_ea(errno));
 			return 1;
 		}
-		if (high_water_alloc((void **)&value, &value_size, length))
+		if (high_water_alloc((void **)&value, &value_size, length)) {
+			perror(progname);
+			had_errors++;
 			return 1;
+		}
 		length = do_getxattr(path, name, value, value_size);
 		if (length < 0) {
-			fprintf(stderr, "%s: %s: %s\n", path, name,
+			fprintf(stderr, "%s: ", quote(path));
+			fprintf(stderr, "%s: %s\n", quote(name),
 				strerror_ea(errno));
 			return 1;
 		}
@@ -275,7 +255,7 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 	}
 
 	if (!*header_printed && !opt_value_only) {
-		printf("# file: %s\n", path);
+		printf("# file: %s\n", quote(path));
 		*header_printed = 1;
 	}
 
@@ -285,9 +265,9 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 		const char *enc = encode(value, &length);
 		
 		if (enc)
-			printf("%s=%s\n", name, enc);
+			printf("%s=%s\n", quote(name), enc);
 	} else
-		puts(name);
+		puts(quote(name));
 
 	return 0;
 }
@@ -304,19 +284,22 @@ int list_attributes(const char *path, int *header_printed)
 
 	length = do_listxattr(path, NULL, 0);
 	if (length < 0) {
-		fprintf(stderr, "%s: %s: %s\n",
-			progname, path, strerror_ea(errno));
+		fprintf(stderr, "%s: %s: %s\n", progname, quote(path),
+			strerror_ea(errno));
 		had_errors++;
 		return 1;
 	} else if (length == 0)
 		return 0;
 		
-	if (high_water_alloc((void **)&list, &list_size, length))
+	if (high_water_alloc((void **)&list, &list_size, length)) {
+		perror(progname);
+		had_errors++;
 		return 1;
+	}
 
 	length = do_listxattr(path, list, list_size);
 	if (length < 0) {
-		perror(path);
+		perror(quote(path));
 		had_errors++;
 		return 1;
 	}
@@ -330,8 +313,11 @@ int list_attributes(const char *path, int *header_printed)
 
 		if (names_size < (num_names+1) * sizeof(*names)) {
 			if (high_water_alloc((void **)&names, &names_size,
-				             (num_names+1) * sizeof(*names)))
+				             (num_names+1) * sizeof(*names))) {
+				perror(progname);
+				had_errors++;
 				return 1;
+			}
 		}
 
 		names[num_names++] = l;
@@ -355,8 +341,8 @@ int do_print(const char *path, const struct stat *stat,
 
 	if (flag & FTW_DNR) {
 		/* Item is a directory which can't be read. */
-		fprintf(stderr, "%s: %s: %s\n",
-			progname, path, strerror(errno));
+		fprintf(stderr, "%s: %s: %s\n", progname, quote(path),
+			strerror(errno));
 		return 0;
 	}
 

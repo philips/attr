@@ -30,6 +30,7 @@
 
 #include <attr/xattr.h>
 #include "config.h"
+#include "misc.h"
 
 #define CMD_LINE_OPTIONS "n:x:v:h"
 #define CMD_LINE_SPEC "{-n name|-x name} [-v value] [-h] file..."
@@ -82,8 +83,10 @@ int do_removexattr(const char *path, const char *name)
 
 int restore(const char *filename)
 {
+	static char *path;
+	static size_t path_size;
 	FILE *file;
-	char *path = NULL, *l;
+	char *l;
 	int line = 0, backup_line, status = 0;
 	
 	if (strcmp(filename, "-") == 0)
@@ -119,10 +122,9 @@ int restore(const char *filename)
 			goto cleanup;
 		} else
 			l += 8;
-		if (path)
-			free(path);
-		path = (char *)malloc(strlen(l) + 1);
-		if (!path) {
+		l = unquote(l);
+		if (high_water_alloc((void **)&path, &path_size, strlen(l)+1)) {
+			perror(progname);
 			status = 1;
 			goto cleanup;
 		}
@@ -133,7 +135,7 @@ int restore(const char *filename)
 			line++;
 			if (value)
 				*value++ = '\0';
-			status = do_set(path, name, value);
+			status = do_set(path, unquote(name), value);
 		}
 		if (l != NULL)
 			line++;
@@ -237,7 +239,7 @@ int main(int argc, char *argv[])
 		goto synopsis;
 
 	while (optind < argc) {
-		do_set(argv[optind], opt_name, opt_value);
+		do_set(argv[optind], unquote(opt_name), opt_value);
 		optind++;
 	}
 
@@ -268,7 +270,7 @@ int do_set(const char *path, const char *name, const char *value)
 
 	if (error < 0) {
 		fprintf(stderr, "%s: %s: %s\n",
-			progname, path, strerror_ea(errno));
+			progname, quote(path), strerror_ea(errno));
 		had_errors++;
 		return 1;
 	}
@@ -277,23 +279,21 @@ int do_set(const char *path, const char *name, const char *value)
 
 const char *decode(const char *value, size_t *size)
 {
-	static char *decoded = NULL;
+	static char *decoded;
+	static size_t decoded_size;
 
-	if (decoded != NULL) {
-		free(decoded);
-		decoded = NULL;
-	}
 	if (value[0] == '0' && (value[1] == 'x' || value[1] == 'X')) {
 		const char *v = value+2, *end = value + *size;
 		char *d;
 
-		decoded = d = (char *)malloc(*size / 2);
-		if (!decoded) {
+		if (high_water_alloc((void **)&decoded, &decoded_size,
+				     *size / 2)) {
 			fprintf(stderr, "%s: %s\n",
 				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
+		d = decoded;
 		while (v < end) {
 			int d1, d0;
 
@@ -321,13 +321,14 @@ const char *decode(const char *value, size_t *size)
 		int d0, d1, d2, d3;
 		char *d;
 
-		decoded = d = (char *)malloc(*size / 4 * 3);
-		if (!decoded) {
+		if (high_water_alloc((void **)&decoded, &decoded_size,
+				     *size / 4 * 3)) {
 			fprintf(stderr, "%s: %s\n",
 				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
+		d = decoded;
 		for(;;) {
 			while (v < end && isspace(*v))
 				v++;
@@ -393,13 +394,13 @@ const char *decode(const char *value, size_t *size)
 			end--;
 		}
 
-		decoded = d = (char *)malloc(*size);
-		if (!decoded) {
+		if (high_water_alloc((void **)&decoded, &decoded_size, *size)) {
 			fprintf(stderr, "%s: %s\n",
 				progname, strerror_ea(errno));
 			had_errors++;
 			return NULL;
 		}
+		d = decoded;
 
 		while (v < end) {
 			if (v[0] == '\\') {

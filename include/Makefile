@@ -34,7 +34,8 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 INCDIR = attr
-HFILES = attributes.h xattr.h error_context.h libattr.h
+INST_HFILES = attributes.h xattr.h error_context.h libattr.h
+HFILES = $(INST_HFILES) misc.h
 LSRCFILES = builddefs.in buildmacros buildrules config.h.in
 LDIRT = $(INCDIR)
 
@@ -46,5 +47,5 @@ include $(BUILDRULES)
 
 install-dev: default
 	$(INSTALL) -m 755 -d $(PKG_INC_DIR)
-	$(INSTALL) -m 644 $(HFILES) $(PKG_INC_DIR)
+	$(INSTALL) -m 644 $(INST_HFILES) $(PKG_INC_DIR)
 install install-lib:
