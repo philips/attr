@@ -6,11 +6,11 @@ attr_get, attr_getf \- get the value of a user attribute of a filesystem object
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_get (const char **\f2path\f3, const char **\f2attrname\f3, "
-.B "              char **\f2attrvalue\f3, int **\f2valuelength\f3, int \f2flags\f3);"
+.B "int attr_get (const char *\f2path\f3, const char *\f2attrname\f3, "
+.B "              char *\f2attrvalue\f3, int *\f2valuelength\f3, int \f2flags\f3);"
 .PP
-.B "int attr_getf (int \f2fd\f3, const char **\f2attrname\f3, "
-.B "               char **\f2attrvalue\f3, int **\f2valuelength\f3, int \f2flags\f3);"
+.B "int attr_getf (int \f2fd\f3, const char *\f2attrname\f3, "
+.B "               char *\f2attrvalue\f3, int *\f2valuelength\f3, int \f2flags\f3);"
 .Op
 .SH DESCRIPTION
 The

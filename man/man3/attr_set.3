@@ -7,12 +7,12 @@ attr_set, attr_setf \- set the value of a user attribute of a filesystem object
 .nf
 .B #include <attr/attributes.h>
 .sp
-.B "int attr_set (const char **\f2path\f3, const char **\f2attrname\f3, "
-.B "              const char **\f2attrvalue\f3, const int \f2valuelength\f3,"
+.B "int attr_set (const char *\f2path\f3, const char *\f2attrname\f3, "
+.B "              const char *\f2attrvalue\f3, const int \f2valuelength\f3,"
 .B "              int \f2flags\f3);"
 .PP
-.B "int attr_setf (int \f2fd\f3, const char **\f2attrname\f3, "
-.B "               const char **\f2attrvalue\f3, const int \f2valuelength\f3,"
+.B "int attr_setf (int \f2fd\f3, const char *\f2attrname\f3, "
+.B "               const char *\f2attrvalue\f3, const int \f2valuelength\f3,"
 .B "               int \f2flags\f3);"
 .Op
 .SH DESCRIPTION
