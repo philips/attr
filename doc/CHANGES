@@ -1,3 +1,6 @@
+attr-2.4.18 (21 September 2004)
+	- Add Dutch translation (thanks to Luk Claes)
+
 attr-2.4.17 (8 September 2004)
 	- Clarify setfattr usage information.
 	- Fix email address in manual pages.

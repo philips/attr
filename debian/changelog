@@ -1,8 +1,9 @@
-attr (2.4.17-1) unstable; urgency=low
+attr (2.4.18-1) unstable; urgency=low
 
   * New upstream release
+  * Added Dutch language translation from Luk Claes (closes: #272482)
 
- -- Nathan Scott <nathans@debian.org>  Fri, 10 Sep 2004 10:51:19 +1000
+ -- Nathan Scott <nathans@debian.org>  Tue, 21 Sep 2004 10:38:28 +1000
 
 attr (2.4.16-1) unstable; urgency=low
 
