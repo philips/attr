@@ -5,6 +5,8 @@ AC_CONFIG_HEADER(include/config.h)
 pkg_name="attr"
 AC_SUBST(pkg_name)
 
+AC_PREFIX_DEFAULT(/usr)
+
 #
 # Note: the following environment variables may be set to override the
 # defaults (to change paths and/or executables, build parameters, etc):

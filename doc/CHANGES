@@ -2,6 +2,7 @@ attr-2.4.1 (27 March 2003)
 	- Cleanups to the build process, in particular the automatic
 	  rpm package generation Makefile and spec file template.
 	- Makepkgs script can now propagate failures back from make.
+	- Change default --prefix to /usr.
 
 attr-2.4.0 (26 February 2003)
 	- Add symbol level versioning to libattr. This improves link
