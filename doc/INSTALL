@@ -29,7 +29,7 @@ attribute library and utility from source, and how to install them.
        # make configure  (or run autoconf; ./configure)
        # make
        # su root
-       # make install
+       # make install install-lib
 
    Note that there are so many "install" variants out there that we
    wrote our own script (see "install-sh" in the top level directory).
@@ -45,4 +45,4 @@ attribute library and utility from source, and how to install them.
 2. How to Contribute
 
    See the README file in this directory for details about how to
-   contribute to the XFS project.
+   contribute to the Linux extended attributes project.
