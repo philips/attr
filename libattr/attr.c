@@ -56,9 +56,10 @@ attr_get(const char *path, const char *attrname, char *attrvalue,
 	 int *valuelength, int flags )
 {
 	attr_obj_t obj;
+	int follow;
 	obj.path = (char *) path;
-	return _attr_get(obj, ATTR_TYPE_PATH, attrname, attrvalue,
-			 valuelength, flags);
+	follow = (flags & ATTR_DONTFOLLOW) ? ATTR_TYPE_LPATH : ATTR_TYPE_PATH;
+	return _attr_get(obj, follow, attrname, attrvalue, valuelength, flags);
 }
 
 int
@@ -99,9 +100,10 @@ attr_set(const char *path, const char *attrname, const char *attrvalue,
 	 const int valuelength, int flags)
 {
 	attr_obj_t obj;
+	int follow;
 	obj.path = (char *) path;
-	return _attr_set(obj, ATTR_TYPE_PATH, attrname, attrvalue,
-			 valuelength, flags);
+	follow = (flags & ATTR_DONTFOLLOW) ? ATTR_TYPE_LPATH : ATTR_TYPE_PATH;
+	return _attr_set(obj, follow, attrname, attrvalue, valuelength, flags);
 }
 
 int
@@ -140,8 +142,10 @@ int
 attr_remove(const char *path, const char *attrname, int flags)
 {
 	attr_obj_t obj;
+	int follow;
 	obj.path = (char *) path;
-	return _attr_remove(obj, ATTR_TYPE_PATH, attrname, flags);
+	follow = (flags & ATTR_DONTFOLLOW) ? ATTR_TYPE_LPATH : ATTR_TYPE_PATH;
+	return _attr_remove(obj, follow, attrname, flags);
 }
 
 int
@@ -176,9 +180,10 @@ attr_list(const char *path, char *buffer, const int buffersize,
 	  int flags, attrlist_cursor_t *cursor)
 {
 	attr_obj_t obj;
+	int follow;
 	obj.path = (char *) path;
-	return _attr_listf(obj, ATTR_TYPE_PATH, buffer, buffersize,
-			   flags, cursor);
+	follow = (flags & ATTR_DONTFOLLOW) ? ATTR_TYPE_LPATH : ATTR_TYPE_PATH;
+	return _attr_listf(obj, follow, buffer, buffersize, flags, cursor);
 }
 
 int
@@ -216,8 +221,10 @@ int
 attr_multi(const char *path, attr_multiop_t *multiops, int count, int flags)
 {
 	attr_obj_t obj;
+	int follow;
 	obj.path = (char *) path;
-	return _attr_multif(obj, ATTR_TYPE_PATH, multiops, count, flags);
+	follow = (flags & ATTR_DONTFOLLOW) ? ATTR_TYPE_LPATH : ATTR_TYPE_PATH;
+	return _attr_multif(obj, follow, multiops, count, flags);
 }
 
 int
@@ -235,7 +242,17 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 	int		i;
 	int		error = 0;
 	attr_op_t	*ops;
-		
+
+	/* From the manpage: "attr_multi will fail if ... A bit other than */
+	/* ATTR_DONTFOLLOW was set in the flag argument." flags must be */
+	/* checked here as they are not passed into the kernel. */
+	/* All other flags are checked in the kernel (linvfs_attrctl). */
+
+	if ((flags & ATTR_DONTFOLLOW) != flags) {
+		errno = EINVAL;
+		return -1;
+	}
+
 	if (! (ops = malloc(count * sizeof (attr_op_t)))) {
 		errno = ENOMEM;
 		return -1;
@@ -246,7 +263,7 @@ _attr_multif(attr_obj_t obj, int type, attr_multiop_t *multiops, int count,
 		ops[i].name = multiops[i].am_attrname;
 		ops[i].value = multiops[i].am_attrvalue;
 		ops[i].length = multiops[i].am_length;
-		ops[i].flags = flags | multiops[i].am_flags;	/* check these semantics */
+		ops[i].flags = multiops[i].am_flags;
 	}
 
 	if (attrctl(obj, type, ops, 1) < 0) {

@@ -87,10 +87,9 @@ extern int attrctl (attr_obj_t __obj, int __type, attr_op_t *__ops, int __count)
 /*
  * Additional API specific opcodes & flags
  */
-#define ATTR_OP_IRIX_LIST (ATTR_OP_EXT + 0)	/* IRIX: for supporting strange */
+#define ATTR_OP_IRIX_LIST (ATTR_OP_EXT + 0)	/* IRIX: for supporting */
 						/* attr_list(f) API semantics */
 #define ATTR_DONTFOLLOW	(0x0001	<< ATTR_SHIFT)	/* IRIX: do not follow symlinks */
-						/* (now redundant) */
 #define ATTR_TRUST	(0x0002 << ATTR_SHIFT)	/* IRIX: tell server we can be */
 						/* trusted to properly handle */
 						/* extended attributes */
