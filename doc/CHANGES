@@ -1,3 +1,6 @@
+attr-2.4.8 (04 August 2003)
+	- Make quote/unquote return NULL if passed NULL. 
+
 attr-2.4.7 (29 July 2003)
 	- Make quote return NULL if out of memory instead of exiting. 
 

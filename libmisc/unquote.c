@@ -27,6 +27,9 @@ char *unquote(char *str)
 {
 	unsigned char *s, *t;
 
+	if (!str)
+		return str;
+
 	for (s = (unsigned char *)str; *s != '\0'; s++)
 		if (*s == '\\')
 			break;
