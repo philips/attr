@@ -3,7 +3,7 @@
   (Linux Extended Attributes)
 
   Copyright (C) 2001-2002 Andreas Gruenbacher <a.gruenbacher@computer.org>
-  Copyright (C) 2001-2002 SGI XFS development <linux-xfs@oss.sgi.com>
+  Copyright (C) 2001-2002 Silicon Graphics, Inc.  All Rights Reserved.
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU Library General Public
