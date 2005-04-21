@@ -224,28 +224,30 @@ int print_attribute(const char *path, const char *name, int *header_printed)
 {
 	static char *value;
 	static size_t value_size;
-	ssize_t length = 0;
+	int rval = 0;
+	size_t length = 0;
 
 	if (opt_dump || opt_value_only) {
-		length = do_getxattr(path, name, NULL, 0);
-		if (length < 0) {
+		rval = do_getxattr(path, name, NULL, 0);
+		if (rval < 0) {
 			fprintf(stderr, "%s: ", xquote(path));
 			fprintf(stderr, "%s: %s\n", xquote(name),
 				strerror_ea(errno));
 			return 1;
 		}
-		if (high_water_alloc((void **)&value, &value_size, length)) {
+		if (high_water_alloc((void **)&value, &value_size, rval)) {
 			perror(progname);
 			had_errors++;
 			return 1;
 		}
-		length = do_getxattr(path, name, value, value_size);
-		if (length < 0) {
+		rval = do_getxattr(path, name, value, value_size);
+		if (rval < 0) {
 			fprintf(stderr, "%s: ", xquote(path));
 			fprintf(stderr, "%s: %s\n", xquote(name),
 				strerror_ea(errno));
 			return 1;
 		}
+		length = rval;
 	}
 
 	if (opt_strip_leading_slash) {
