@@ -1,3 +1,8 @@
+attr-2.4.23 (3 June 2005)
+	- attr_copy_{fd,file}: Reduce verboseness for ENOTSUP errors.
+	  ENOTSUPP is common when copying between xattr enabled and
+	  xattr disabled file systems.
+
 attr-2.4.22 (21 February 2005)
 	- Allocate the line buffer dynamically when reading from a file.
 	  This mainly fixes restoring of large attributes.

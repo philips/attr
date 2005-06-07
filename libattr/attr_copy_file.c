@@ -67,6 +67,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
   	int ret = 0;
 	ssize_t size;
 	char *names = NULL, *end_names, *name, *value = NULL;
+	unsigned int setxattr_ENOTSUP = 0;
 
 	/* ignore acls by default */
 	if (check == NULL)
@@ -135,23 +136,34 @@ attr_copy_file(const char *src_path, const char *dst_path,
 			quote_free (ctx, qpath);
 			ret = -1;
 		}
-		if (lsetxattr (dst_path, name, value, size, 0) != 0)
-		{
-			const char *qpath = quote (ctx, dst_path);
-			if (errno == ENOSYS) {
-				error (ctx, _("setting attributes for %s"),
-				       qpath);
-				ret = -1;
-				break;  /* no hope of getting any further */
-			} else {
-				const char *qname = quote (ctx, name);
-				error (ctx, _("setting attribute %s for %s"),
-				       qname, qpath);
-				quote_free (ctx, qname);
-				ret = -1;
+		if (lsetxattr (dst_path, name, value, size, 0) != 0) {
+			if (errno == ENOTSUP)
+				setxattr_ENOTSUP++;
+			else {
+				const char *qpath = quote (ctx, dst_path);
+				if (errno == ENOSYS) {
+					error (ctx, _("setting attributes for "
+					       "%s"), qpath);
+					ret = -1;
+					/* no hope of getting any further */
+					break;
+				} else {
+					const char *qname = quote (ctx, name);
+					error (ctx, _("setting attribute %s for"
+					       "%s"), qname, qpath);
+					quote_free (ctx, qname);
+					ret = -1;
+				}
+				quote_free (ctx, qpath);
 			}
-			quote_free (ctx, qpath);
 		}
+	}
+	if (setxattr_ENOTSUP) {
+		const char *qpath = quote (ctx, dst_path);
+		errno = ENOTSUP;
+		error (ctx, _("setting attributes for %s"), qpath);
+		ret = -1;
+		quote_free (ctx, qpath);
 	}
 getout:
 	free (value);
