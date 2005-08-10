@@ -1,3 +1,7 @@
+attr-2.4.24 (10 August 2005)
+	- Fix botched error reporting in attr_copy_file.c
+	- Updated polish translation (both thanks to Jakub Bogusz)
+
 attr-2.4.23 (3 June 2005)
 	- attr_copy_{fd,file}: Reduce verboseness for ENOTSUP errors.
 	  ENOTSUPP is common when copying between xattr enabled and

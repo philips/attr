@@ -149,7 +149,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 					break;
 				} else {
 					const char *qname = quote (ctx, name);
-					error (ctx, _("setting attribute %s for"
+					error (ctx, _("setting attribute %s for "
 					       "%s"), qname, qpath);
 					quote_free (ctx, qname);
 					ret = -1;
