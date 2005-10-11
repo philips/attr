@@ -1,3 +1,7 @@
+attr-2.4.25 (11 October 2005)
+	- Add French translation from the debian-l10n-french folks
+	  (thanks to Guilhelm Panaget)
+
 attr-2.4.24 (10 August 2005)
 	- Fix botched error reporting in attr_copy_file.c
 	- Updated polish translation (both thanks to Jakub Bogusz)

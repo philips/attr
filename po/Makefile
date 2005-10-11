@@ -33,7 +33,7 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-LINGUAS = de nl pl
+LINGUAS = de fr nl pl
 LSRCFILES = $(LINGUAS:%=%.po) $(PKG_NAME).pot
 
 XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \

@@ -1,8 +1,9 @@
-attr (2.4.24-1) unstable; urgency=low
+attr (2.4.25-1) unstable; urgency=low
 
   * New upstream release
+  * Added French translation (closes: #333177)
 
- -- Nathan Scott <nathans@debian.org>  Wed, 10 Aug 2005 10:23:56 +1000
+ -- Nathan Scott <nathans@debian.org>  Tue, 11 Oct 2005 06:47:13 +1000
 
 attr (2.4.21-1) unstable; urgency=low
 
