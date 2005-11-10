@@ -1,3 +1,7 @@
+attr-2.4.26 (10 November 2005)
+	- Sync up build system (m4 macros, etc) with other projects
+	- Update SGI copyright/licence notices
+
 attr-2.4.25 (11 October 2005)
 	- Add French translation from the debian-l10n-french folks
 	  (thanks to Guilhelm Panaget)
@@ -62,10 +66,10 @@ attr-2.4.9 (27 August 2003)
 	- Fix issues in the libmisc quote routine (from Ben Escoto).
 
 attr-2.4.8 (04 August 2003)
-	- Make quote/unquote return NULL if passed NULL. 
+	- Make quote/unquote return NULL if passed NULL.
 
 attr-2.4.7 (29 July 2003)
-	- Make quote return NULL if out of memory instead of exiting. 
+	- Make quote return NULL if out of memory instead of exiting.
 
 attr-2.4.6 (21 July 2003)
 	- Add internal library for misc. functions: quote, unquote,
@@ -73,7 +77,7 @@ attr-2.4.6 (21 July 2003)
 	- Quote special characters in path names and attribute names.
 	- Use high_water_alloc everywhere instead of malloc/realloc.
 	- Update the test scripts.
-	
+
 attr-2.4.5 (03 July 2003)
 	- Tweak the build so we don't always run msgmerge,
 	  fix from Steve Langasek originally.
