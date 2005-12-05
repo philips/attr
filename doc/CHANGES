@@ -1,3 +1,7 @@
+attr-2.4.27 (05 December 2005)
+	- Revert xattr.h/attributes.h to stating "Lesser GPL",
+	  accidentally marked "GPL" in previous version.
+
 attr-2.4.26 (10 November 2005)
 	- Sync up build system (m4 macros, etc) with other projects
 	- Update SGI copyright/licence notices
