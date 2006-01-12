@@ -2,6 +2,7 @@
 .SH NAME
 attr_get, attr_getf \- get the value of a user attribute of a filesystem object
 .SH C SYNOPSIS
+.PP
 .sp
 .nf
 .B #include <attr/attributes.h>
@@ -20,7 +21,7 @@ and
 functions provide a way to retrieve the value of an attribute.
 .P
 .I Path\^
-points to a path name for a filesystem object, and 
+points to a path name for a filesystem object, and
 .I fd\^
 refers to the file descriptor associated with a file.
 If the attribute
@@ -32,7 +33,7 @@ The
 .I valuelength
 argument is an input/output argument that on the call to
 .B attr_get
-should contain the maximum size of attribute value the 
+should contain the maximum size of attribute value the
 process is willing to accept.
 On return, the
 .I valuelength
@@ -171,6 +172,7 @@ On success, zero is returned.  On error, \-1 is returned, and
 is set appropriately.
 .SH "SEE ALSO"
 .BR attr (1),
+.BR attr_list (3),
 .BR attr_multi (3),
 .BR attr_remove (3),
 and

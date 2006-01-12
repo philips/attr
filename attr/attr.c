@@ -33,6 +33,9 @@
 #define	SETOP		1		/* do a SET operation */
 #define	GETOP		2		/* do a GET operation */
 #define	REMOVEOP	3		/* do a REMOVE operation */
+#define	LISTOP		4		/* do a LIST operation */
+
+#define	BUFSIZE		(60*1024)	/* buffer size for LIST operations */
 
 static char *progname;
 
@@ -43,17 +46,21 @@ usage(void)
 "Usage: %s [-LRSq] -s attrname [-V attrvalue] pathname  # set value\n"
 "       %s [-LRSq] -g attrname pathname                 # get value\n"
 "       %s [-LRSq] -r attrname pathname                 # remove attr\n"
+"       %s [-LRq]  -l pathname                          # list attrs \n"
 "      -s reads a value from stdin and -g writes a value to stdout\n"),
-		progname, progname, progname);
+		progname, progname, progname, progname);
 	exit(1);
 }
 
 int
 main(int argc, char **argv)
 {
-	char *attrname, *attrvalue, *filename;
-	int attrlength;
-	int opflag, ch, error, follow, verbose, rootflag, secureflag;
+	char *attrname, *attrvalue, *filename, *buffer;
+	int attrlength, attrflags;
+	int opflag, i, ch, error, follow, verbose, rootflag, secureflag;
+	attrlist_t *alist;
+	attrlist_ent_t *aep;
+	attrlist_cursor_t cursor;
 
 	progname = basename(argv[0]);
 
@@ -68,12 +75,12 @@ main(int argc, char **argv)
 	verbose = 1;
 	follow = opflag = rootflag = secureflag = 0;
 	attrname = attrvalue = NULL;
-	while ((ch = getopt(argc, argv, "s:V:g:r:qLRS")) != EOF) {
+	while ((ch = getopt(argc, argv, "s:V:g:r:lqLRS")) != EOF) {
 		switch (ch) {
 		case 's':
 			if ((opflag != 0) && (opflag != SETOP)) {
 				fprintf(stderr,
-				    _("Only one of -s, -g, or -r allowed\n"));
+				  _("Only one of -s, -g, -r, or -l allowed\n"));
 				usage();
 			}
 			opflag = SETOP;
@@ -81,8 +88,7 @@ main(int argc, char **argv)
 			break;
 		case 'V':
 			if ((opflag != 0) && (opflag != SETOP)) {
-				fprintf(stderr,
-				    _("-V only allowed with -s\n"));
+				fprintf(stderr, _("-V only allowed with -s\n"));
 				usage();
 			}
 			opflag = SETOP;
@@ -91,7 +97,7 @@ main(int argc, char **argv)
 		case 'g':
 			if (opflag) {
 				fprintf(stderr,
-				    _("Only one of -s, -g, or -r allowed\n"));
+				  _("Only one of -s, -g, -r, or -l allowed\n"));
 				usage();
 			}
 			opflag = GETOP;
@@ -100,11 +106,19 @@ main(int argc, char **argv)
 		case 'r':
 			if (opflag) {
 				fprintf(stderr,
-				    _("Only one of -s, -g, or -r allowed\n"));
+				  _("Only one of -s, -g, -r, or -l allowed\n"));
 				usage();
 			}
 			opflag = REMOVEOP;
 			attrname = optarg;
+			break;
+		case 'l':
+			if (opflag) {
+				fprintf(stderr,
+				  _("Only one of -s, -g, -r, or -l allowed\n"));
+				usage();
+			}
+			opflag = LISTOP;
 			break;
 		case 'L':
 			follow++;
@@ -119,8 +133,8 @@ main(int argc, char **argv)
 			verbose = 0;
 			break;
 		default:
-			fprintf(stderr,
-			    _("Unrecognized option: %c\n"), (char)ch);
+			fprintf(stderr, _("Unrecognized option: %c\n"),
+				(char)ch);
 			usage();
 			break;
 		}
@@ -131,6 +145,9 @@ main(int argc, char **argv)
 	}
 	filename = argv[optind];
 
+	attrflags = ((!follow ? ATTR_DONTFOLLOW : 0) |
+		     (secureflag ? ATTR_SECURE : 0) |
+		     (rootflag ? ATTR_ROOT : 0));
 	/*
 	 * Break out into option-specific processing.
 	 */
@@ -148,10 +165,7 @@ main(int argc, char **argv)
 			attrlength = strlen(attrvalue);
 		}
 		error = attr_set(filename, attrname, attrvalue,
-					   attrlength,
-					   (!follow ? ATTR_DONTFOLLOW : 0) |
-					   (secureflag ? ATTR_SECURE : 0) |
-					   (rootflag ? ATTR_ROOT : 0));
+					   attrlength, attrflags);
 		if (error) {
 			perror("attr_set");
 			fprintf(stderr, _("Could not set \"%s\" for %s\n"),
@@ -174,10 +188,7 @@ main(int argc, char **argv)
 		}
 		attrlength = ATTR_MAX_VALUELEN;
 		error = attr_get(filename, attrname, attrvalue,
-					   &attrlength,
-					   (!follow ? ATTR_DONTFOLLOW : 0) |
-					   (secureflag ? ATTR_SECURE : 0) |
-					   (rootflag ? ATTR_ROOT : 0));
+					   &attrlength, attrflags);
 		if (error) {
 			perror("attr_get");
 			fprintf(stderr, _("Could not get \"%s\" for %s\n"),
@@ -195,10 +206,7 @@ main(int argc, char **argv)
 		break;
 
 	case REMOVEOP:
-		error = attr_remove(filename, attrname,
-					      (!follow ? ATTR_DONTFOLLOW : 0) |
-					      (secureflag ? ATTR_SECURE : 0) |
-					      (rootflag ? ATTR_ROOT : 0));
+		error = attr_remove(filename, attrname, attrflags);
 		if (error) {
 			perror("attr_remove");
 			fprintf(stderr, _("Could not remove \"%s\" for %s\n"),
@@ -207,9 +215,41 @@ main(int argc, char **argv)
 		}
 		break;
 
+	case LISTOP:
+		if ((buffer = malloc(BUFSIZE)) == NULL) {
+			perror("malloc");
+			exit(1);
+		}
+		bzero((char *)&cursor, sizeof(cursor));
+		do {
+			error = attr_list(filename, buffer, BUFSIZE,
+					  attrflags, &cursor);
+			if (error) {
+				perror("attr_list");
+				fprintf(stderr,
+					_("Could not list \"%s\" for %s\n"),
+					attrname, filename);
+				exit(1);
+			}
+
+			alist = (attrlist_t *)buffer;
+			for (i = 0; i < alist->al_count; i++) {
+				aep = (attrlist_ent_t *)&buffer[ alist->al_offset[i] ];
+				if (verbose) {
+					printf(
+			_("Attribute \"%s\" has a %d byte value for %s\n"),
+						aep->a_name, aep->a_valuelen,
+						filename);
+				} else {
+					printf("%s\n", aep->a_name);
+				}
+			}
+		} while (alist->al_more);
+		break;
+
 	default:
 		fprintf(stderr,
-			_("At least one of -s, -g, or -r is required\n"));
+			_("At least one of -s, -g, -r, or -l is required\n"));
 		usage();
 		break;
 	}

@@ -22,10 +22,10 @@ functions provide a way to operate on multiple attributes of a
 filesystem object at once.
 .P
 .I Path
-points to a path name for a filesystem object, and 
+points to a path name for a filesystem object, and
 .I fd
 refers to the file descriptor associated with a file.
-The 
+The
 .I oplist
 is an array of \f4attr_multiop_t\fP structures.
 Each element in that array describes a single attribute operation
@@ -133,7 +133,7 @@ If the process has appropriate priviledges,
 the ROOT namespace will be searched for the named attribute,
 otherwise the USER namespace will be searched.
 The \f4ATTR_CREATE\fP and the \f4ATTR_REPLACE\fP flags
-may also be set in the 
+may also be set in the
 .I am_flags
 field (but not simultaneously).
 If the \f4ATTR_CREATE\fP flag is set,
@@ -257,7 +257,7 @@ is set appropriately.
 Note that the individual operations listed in the
 .I oplist
 array each have their own error return fields.
-The 
+The
 .I errno
 variable only records the result of the
 .I attr_multi
@@ -265,6 +265,7 @@ call itself, not the result of any of the sub-operations.
 .SH "SEE ALSO"
 .BR attr (1),
 .BR attr_get (3),
+.BR attr_list (3),
 .BR attr_remove (3),
 and
 .BR attr_set (3).

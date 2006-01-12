@@ -31,3 +31,10 @@ ATTR_1.1 {
 	attr_copy_file;
 	attr_copy_check_permissions;
 } ATTR_1.0;
+
+ATTR_1.2 {
+    global:
+	# Additional SGI Irix compatibility extensions
+	attr_list;
+	attr_listf;
+} ATTR_1.1;

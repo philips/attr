@@ -144,6 +144,18 @@ extern int attr_remove (const char *__path, const char *__attrname,
 extern int attr_removef (int __fd, const char *__attrname, int __flags);
 
 /*
+ * List the names and sizes of the values of all the attributes of an object.
+ * "Cursor" must be allocated and zeroed before the first call, it is used
+ * to maintain context between system calls if all the attribute names won't
+ * fit into the buffer on the first system call.
+ * The return value is -1 on error (w/errno set appropriately), 0 on success.
+ */
+int attr_list(const char *__path, char *__buffer, const int __buffersize,
+		int __flags, attrlist_cursor_t *__cursor);
+int attr_listf(int __fd, char *__buffer, const int __buffersize,
+		int __flags, attrlist_cursor_t *__cursor);
+
+/*
  * Operate on multiple attributes of the same object simultaneously.
  *
  * This call will save on system call overhead when many attributes are

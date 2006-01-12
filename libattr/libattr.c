@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2001-2003 Silicon Graphics, Inc.
+ * Copyright (c) 2001-2003,2005 Silicon Graphics, Inc.
  * All Rights Reserved.
  *
  * This program is free software; you can redistribute it and/or
@@ -27,18 +27,24 @@
 
 #undef MAXNAMELEN
 #define MAXNAMELEN 256
+#undef MAXLISTLEN
+#define MAXLISTLEN 65536
+
+#undef roundup
+#define roundup(x,y) ((((x)+((y)-1))/(y))*(y))
+
+static const char *user_name = "user.";
+static const char *secure_name = "security.";
+static const char *trusted_name = "trusted.";
+static const char *xfsroot_name = "xfsroot.";
 
 /*
- * Convert IRIX API components into Linux/XFS API components
+ * Convert IRIX API components into Linux/XFS API components,
+ * and vice-versa.
  */
 static int
 api_convert(char *name, const char *irixname, int irixflags, int compat)
 {
-	static const char *user_name = "user.";
-	static const char *secure_name = "security.";
-	static const char *trusted_name = "trusted.";
-	static const char *xfsroot_name = "xfsroot.";
-
 	if (strlen(irixname) >= MAXNAMELEN) {
 		errno = EINVAL;
 		return -1;
@@ -56,6 +62,43 @@ api_convert(char *name, const char *irixname, int irixflags, int compat)
 	strcat(name, irixname);
 	return 0;
 }
+
+static int
+api_unconvert(char *name, const char *linuxname, int irixflags)
+{
+	int type, length;
+
+	length = strlen(user_name);
+	if (strncmp(linuxname, user_name, length) == 0) {
+		type = 0; /*ATTR_USER*/
+		goto found;
+	}
+	length = strlen(secure_name);
+	if (strncmp(linuxname, secure_name, length) == 0) {
+		type = ATTR_SECURE;
+		goto found;
+	}
+	length = strlen(trusted_name);
+	if (strncmp(linuxname, trusted_name, length) == 0) {
+		type = ATTR_ROOT;
+		goto found;
+	}
+	length = strlen(xfsroot_name);
+	if (strncmp(linuxname, xfsroot_name, length) == 0) {
+		type = ATTR_ROOT;
+		goto found;
+	}
+	return 1;
+
+found:
+	if ((irixflags & ATTR_SECURE) != 0 && (type != ATTR_SECURE))
+		return 1;
+	if ((irixflags & ATTR_ROOT) != 0 && (type != ATTR_ROOT))
+		return 1;
+	strcpy(name, linuxname + length);
+	return 0;
+}
+
 
 int
 attr_get(const char *path, const char *attrname, char *attrvalue,
@@ -192,6 +235,122 @@ attr_removef(int fd, const char *attrname, int flags)
 
 
 /*
+ * Helper routine for attr_list functions.
+ */
+
+static int
+attr_list_pack(const char *name, const int valuelen,
+		char *buffer, const int buffersize,
+		int *start_offset, int *end_offset)
+{
+	attrlist_ent_t *aentp;
+	attrlist_t *alist = (attrlist_t *)buffer;
+	int size = roundup(strlen(name) + 1 + sizeof(aentp->a_valuelen), 8);
+
+	if ((*end_offset - size) < (*start_offset + sizeof(alist->al_count))) {
+		alist->al_more = 1;
+		return 1;
+	}
+
+	*end_offset -= size;
+	aentp = (attrlist_ent_t *)&buffer[ *end_offset ];
+	aentp->a_valuelen = valuelen;
+	strncpy(aentp->a_name, name, size - sizeof(aentp->a_valuelen));
+
+	*start_offset += sizeof(alist->al_offset);
+	alist->al_offset[alist->al_count] = *end_offset;
+	alist->al_count++;
+	return 0;
+}
+
+int
+attr_list(const char *path, char *buffer, const int buffersize, int flags,
+	  attrlist_cursor_t *cursor)
+{
+	const char *l;
+	int length, count = 0;
+	char lbuf[MAXLISTLEN];
+	char name[MAXNAMELEN+16];
+	unsigned int start_offset, end_offset;
+
+	if (buffersize < sizeof(attrlist_t)) {
+		errno = EINVAL;
+		return -1;
+	}
+	bzero(buffer, sizeof(attrlist_t));
+
+	if (flags & ATTR_DONTFOLLOW)
+		length = llistxattr(path, lbuf, sizeof(lbuf));
+	else
+		length = listxattr(path, lbuf, sizeof(lbuf));
+	if (length <= 0)
+		return length;
+
+	start_offset = sizeof(attrlist_t);
+	end_offset = buffersize & ~(8-1);	/* 8 byte align */
+
+	for (l = lbuf; l != lbuf + length; l = strchr(l, '\0') + 1) {
+		if (api_unconvert(name, l, flags))
+			continue;
+		if (flags & ATTR_DONTFOLLOW)
+			length = lgetxattr(path, l, NULL, 0);
+		else
+			length =  getxattr(path, l, NULL, 0);
+		if (length < 0 && (errno == ENOATTR || errno == ENOTSUP))
+			continue;
+		if (count++ < cursor->opaque[0])
+			continue;
+		if (attr_list_pack(name, length, buffer, buffersize,
+				   &start_offset, &end_offset)) {
+			cursor->opaque[0] = count;
+			break;
+		}
+	}
+	return 0;
+}
+
+int
+attr_listf(int fd, char *buffer, const int buffersize, int flags,
+	   attrlist_cursor_t *cursor)
+{
+	const char *l;
+	int c, count = 0;
+	char lbuf[MAXLISTLEN];
+	char name[MAXNAMELEN+16];
+	unsigned int start_offset, end_offset;
+
+	if (buffersize < sizeof(attrlist_t)) {
+		errno = EINVAL;
+		return -1;
+	}
+	bzero(buffer, sizeof(attrlist_t));
+
+	c = flistxattr(fd, lbuf, sizeof(lbuf));
+	if (c < 0)
+		return c;
+
+	start_offset = sizeof(attrlist_t);
+	end_offset = buffersize & ~(8-1);	/* 8 byte align */
+
+	for (l = lbuf; l != lbuf + c; l = strchr(l, '\0') + 1) {
+		if (api_unconvert(name, l, flags))
+			continue;
+		c = fgetxattr(fd, l, NULL, 0);
+		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
+			continue;
+		if (count++ < cursor->opaque[0])
+			continue;
+		if (attr_list_pack(name, c, buffer, buffersize,
+				   &start_offset, &end_offset)) {
+			cursor->opaque[0] = count;
+			break;
+		}
+	}
+	return 0;
+}
+
+
+/*
  * Helper routines for the attr_multi functions.  In IRIX, the
  * multi routines are a single syscall - in Linux, we break em
  * apart in userspace and make individual syscalls for each.
@@ -235,7 +394,7 @@ attr_singlef(const int fd, attr_multiop_t *op, int flags)
 
 /*
  * Operate on multiple attributes of the same object simultaneously
- * 
+ *
  * From the manpage: "attr_multi will fail if ... a bit other than
  * ATTR_DONTFOLLOW was set in the flag argument." flags must be
  * checked here as they are not passed into the kernel.

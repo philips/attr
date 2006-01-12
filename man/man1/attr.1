@@ -3,12 +3,14 @@
 attr \- extended attributes on XFS filesystem objects
 .SH SYNOPSIS
 .nf
-\f3attr\f1 [ \f3\-LRq\f1 ] \f3\-s attrname\f1 [ \f3\-V attrvalue\f1 ] \c
+\f3attr\f1 [ \f3\-LRSq\f1 ] \f3\-s attrname\f1 [ \f3\-V attrvalue\f1 ] \c
 \f3pathname\f1
 .sp .8v
-\f3attr\f1 [ \f3\-LRq\f1 ] \f3\-g attrname pathname\f1
+\f3attr\f1 [ \f3\-LRSq\f1 ] \f3\-g attrname pathname\f1
 .sp .8v
-\f3attr\f1 [ \f3\-LRq\f1 ] \f3\-r attrname pathname\f1
+\f3attr\f1 [ \f3\-LRSq\f1 ] \f3\-r attrname pathname\f1
+.sp .8v
+\f3attr\f1 [ \f3\-LRSq\f1 ] \f3\-l pathname\f1
 .sp .8v
 .fi
 .SH OVERVIEW
@@ -84,6 +86,18 @@ With the
 flag, \f4stdout\fP will be exactly and only the value of the attribute,
 suitable for storage directly into a file or processing via a piped command.
 .TP
+.B LIST
+The
+.B \-l
+option tells
+.I attr
+to list the names of all the attributes that are associated with the object,
+and the number of bytes in the value of each of those attributes.
+With the
+.B \-q
+flag, \f4stdout\fP will be a simple list of only the attribute names,
+one per line, suitable for input into a script.
+.TP
 .B REMOVE
 The
 .B \-r attrname
@@ -129,6 +143,12 @@ operate in the
 .I root
 attribute namespace rather that the
 .I USER
+attribute namespace.
+.PP
+The
+.B \-S
+option is similar, except it specifies use of the
+.I security
 attribute namespace.
 .PP
 When the
