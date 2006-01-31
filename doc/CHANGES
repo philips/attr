@@ -1,3 +1,7 @@
+attr-2.4.29 (31 January 2006)
+	- Updated Polish translation.
+	  Thanks to Jakub Bogusz <qboosh@pld-linux.org> for this.
+
 attr-2.4.28 (13 January 2006)
 	- Implement the IRIX list_attr interfaces in libattr.so,
 	  the final piece of the IRIX attr compatibility API.

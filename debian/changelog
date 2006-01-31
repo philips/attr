@@ -1,8 +1,9 @@
-attr (2.4.28-1) unstable; urgency=low
+attr (2.4.29-1) unstable; urgency=low
 
   * New upstream release
+  * Updated Polish translation.
 
- -- Nathan Scott <nathans@debian.org>  Fri, 13 Jan 2006 10:44:06 +1100
+ -- Nathan Scott <nathans@debian.org>  Tue, 31 Jan 2006 13:35:39 +1100
 
 attr (2.4.25-1) unstable; urgency=low
 
