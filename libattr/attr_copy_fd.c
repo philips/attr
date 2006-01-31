@@ -96,7 +96,6 @@ attr_copy_fd(const char *src_path, int src_fd,
 		const char *qpath = quote (ctx, src_path);
 		error (ctx, _("listing attributes of %s"), qpath);
 		quote_free (ctx, qpath);
-		my_free (names);
 		ret = -1;
 		goto getout;
 	} else {
