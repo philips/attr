@@ -2,6 +2,7 @@ attr (2.4.29-1) unstable; urgency=low
 
   * New upstream release
   * Updated Polish translation.
+  * Initial Swedish translation (closes: #349234)
 
  -- Nathan Scott <nathans@debian.org>  Tue, 31 Jan 2006 13:35:39 +1100
 

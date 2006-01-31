@@ -1,6 +1,8 @@
 attr-2.4.29 (31 January 2006)
 	- Updated Polish translation.
 	  Thanks to Jakub Bogusz <qboosh@pld-linux.org> for this.
+	- Initial Swedish Translation, from the Debian translators.
+	  Thanks to Daniel Nylander <yeager@lidkoping.net> for this.
 	- Fixed rpm specfile with respect to INSTALL_{USER,GROUP}.
 	- Fixed a couple of double frees in libattr attr copy
 	  routines, thanks to Andreas.
