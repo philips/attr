@@ -1,10 +1,11 @@
-attr (2.4.29-1) unstable; urgency=low
+attr (2.4.30-1) unstable; urgency=low
 
   * New upstream release
   * Updated Polish translation.
   * Initial Swedish translation (closes: #349234)
+  * Switched from debmake to debhelper.
 
- -- Nathan Scott <nathans@debian.org>  Tue, 31 Jan 2006 13:35:39 +1100
+ -- Nathan Scott <nathans@debian.org>  Wed, 15 Feb 2006 20:43:49 +1100
 
 attr (2.4.25-1) unstable; urgency=low
 

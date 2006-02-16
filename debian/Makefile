@@ -6,7 +6,7 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 LIBPKG = lib$(PKG_NAME)1
-LSRCFILES = changelog control copyright rules shlibs.$(LIBPKG)
+LSRCFILES = changelog control copyright rules
 DEV_DOC_DIR = $(PKG_DOC_DIR)/../$(LIBPKG)-dev
 LIB_DOC_DIR = $(PKG_DOC_DIR)/../$(LIBPKG)
 

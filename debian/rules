@@ -4,10 +4,10 @@ package = attr
 develop = lib$(package)1-dev
 library = lib$(package)1
 
-dirtmp = debian/tmp
+dirme  = debian/$(package)
 dirdev = debian/$(develop)
 dirlib = debian/$(library)
-pkgtmp = DIST_ROOT=`pwd`/$(dirtmp); export DIST_ROOT;
+pkgme  = DIST_ROOT=`pwd`/$(dirme);  export DIST_ROOT;
 pkgdev = DIST_ROOT=`pwd`/$(dirdev); export DIST_ROOT;
 pkglib = DIST_ROOT=`pwd`/$(dirlib); export DIST_ROOT;
 stdenv = @GZIP=-q; export GZIP;
@@ -15,6 +15,7 @@ stdenv = @GZIP=-q; export GZIP;
 options = export DEBUG=-DNDEBUG DISTRIBUTION=debian \
 	  INSTALL_USER=root INSTALL_GROUP=root ;
 checkdir = test -f debian/rules
+checkver = rm -f debian/compat && echo 5 > debian/compat
 
 build: built
 built: config
@@ -34,36 +35,34 @@ clean:
 	$(checkdir)
 	-rm -f built .census
 	$(MAKE) distclean
-	-rm -rf $(dirtmp) $(dirdev) $(dirlib) debian/*substvars debian/files*
+	-rm -rf $(dirme) $(dirdev) $(dirlib)
+	-rm -f debian/*substvars debian/files* debian/*.debhelper debian/compat
 
 binary-indep:
-
-# Note1: dev pkg with .so symlinks to base pkg confuses debstd;
-#        so the .so 'Dangling symlink' message is benign, as is
-#        the message about not having executables/libraries.
-# Note2: absolute symlinks (required by policy) confuse debstd;
-#        so we'll filter out symlink messages entirely now.
-fixup_messages = egrep -v 'Dangling symlink|No executables or libraries'
 
 binary-arch: checkroot built
 	@echo "== dpkg-buildpackage: binary-arch" 1>&2
 	$(checkdir)
-	-rm -rf $(dirtmp) $(dirdev) $(dirlib)
-	$(pkgtmp) $(MAKE) -C . install
+	$(checkver)
+	-rm -rf $(dirme) $(dirdev) $(dirlib)
+	$(pkgme)  $(MAKE) -C . install
 	$(pkgdev) $(MAKE) -C . install-dev
 	$(pkglib) $(MAKE) -C . install-lib
-	$(pkgtmp) $(MAKE) -C build src-manifest
-	@echo "== dpkg-buildpackage: debstd" 1>&2
-	$(stdenv) debstd -m | $(fixup_messages)
-	dpkg-gencontrol -isp -p$(package) -P$(dirtmp) -Tdebian/substvars
-	dpkg-gencontrol -isp -p$(develop) -P$(dirdev)
-	dpkg-gencontrol -isp -p$(library) -P$(dirlib) -Tdebian/$(library).substvars
-	cp debian/shlibs.$(library) $(dirlib)/DEBIAN/shlibs
-	chown -R root.root $(dirtmp) $(dirdev) $(dirlib)
-	chmod -R go=rX $(dirtmp) $(dirdev) $(dirlib)
-	dpkg --build $(dirtmp) .. 
-	dpkg --build $(dirdev) ..
-	dpkg --build $(dirlib) ..
+	$(pkgme)  $(MAKE) -C build src-manifest
+
+	dh_installdocs
+	dh_installchangelogs
+	dh_strip
+	dh_compress
+	dh_fixperms
+	dh_makeshlibs -N $(library)
+	dh_makeshlibs -p $(library) -V 'libattr1 (>= 2.4.4-1)'
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+
+	dh_md5sums
+	dh_builddeb
 
 binary: binary-indep binary-arch
 
