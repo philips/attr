@@ -30,12 +30,15 @@ attr_copy_check_permissions(const char *name, struct error_context *ctx)
 		return 0;
 
 	/* Skip permissions attributes which are used on IRIX, and
-	   hence are part of the XFS ondisk format (incl. ACLs). */
+	   hence are part of the XFS ondisk format (incl. ACLs).
+	   Also skip SGI DMF attributes as they are inappropriate
+	   targets for copying over as well. */
 	if (strncmp(name, "trusted.SGI_", 12) == 0 &&
 	    (strcmp(name+12, "ACL_DEFAULT") == 0 ||
 	     strcmp(name+12, "ACL_FILE") == 0 ||
 	     strcmp(name+12, "CAP_FILE") == 0 ||
-	     strcmp(name+12, "MAC_FILE") == 0))
+	     strcmp(name+12, "MAC_FILE") == 0 ||
+	     strncmp(name+12, "DMI_", 4) == 0))
 		return 0;
 
 	/* The xfsroot namespace mirrored attributes, some of which
