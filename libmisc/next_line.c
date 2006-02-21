@@ -1,7 +1,10 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <unistd.h>
 #include "misc.h"
+
+#define LINE_SIZE getpagesize()
 
 char *next_line(FILE *file)
 {
@@ -11,7 +14,7 @@ char *next_line(FILE *file)
 	int eol = 0;
 
 	if (!line) {
-		if (high_water_alloc((void **)&line, &line_size, PATH_MAX))
+		if (high_water_alloc((void **)&line, &line_size, LINE_SIZE))
 			return NULL;
 	}
 	c = line;
