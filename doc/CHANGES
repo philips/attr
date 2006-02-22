@@ -1,7 +1,7 @@
 attr-2.4.30 (15 February 2006)
 	- Debian packaging updates (debmake out, debhelper in).
 	- Skip SGI DMF attributes when copying attrs between files.
-	- Fix GNU/Hurd builds (no PATH_MAX macro).
+	- Fix GNU/Hurd builds (no PATH_MAX macro, dodge syscalls.c).
 
 attr-2.4.29 (31 January 2006)
 	- Updated Polish translation.
