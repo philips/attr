@@ -268,7 +268,7 @@ attr_list(const char *path, char *buffer, const int buffersize, int flags,
 	  attrlist_cursor_t *cursor)
 {
 	const char *l;
-	int length, count = 0;
+	int length, vlength, count = 0;
 	char lbuf[MAXLISTLEN];
 	char name[MAXNAMELEN+16];
 	unsigned int start_offset, end_offset;
@@ -293,14 +293,14 @@ attr_list(const char *path, char *buffer, const int buffersize, int flags,
 		if (api_unconvert(name, l, flags))
 			continue;
 		if (flags & ATTR_DONTFOLLOW)
-			length = lgetxattr(path, l, NULL, 0);
+			vlength = lgetxattr(path, l, NULL, 0);
 		else
-			length =  getxattr(path, l, NULL, 0);
-		if (length < 0 && (errno == ENOATTR || errno == ENOTSUP))
+			vlength =  getxattr(path, l, NULL, 0);
+		if (vlength < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		if (count++ < cursor->opaque[0])
 			continue;
-		if (attr_list_pack(name, length, buffer, buffersize,
+		if (attr_list_pack(name, vlength, buffer, buffersize,
 				   &start_offset, &end_offset)) {
 			cursor->opaque[0] = count;
 			break;
@@ -314,7 +314,7 @@ attr_listf(int fd, char *buffer, const int buffersize, int flags,
 	   attrlist_cursor_t *cursor)
 {
 	const char *l;
-	int c, count = 0;
+	int length, vlength, count = 0;
 	char lbuf[MAXLISTLEN];
 	char name[MAXNAMELEN+16];
 	unsigned int start_offset, end_offset;
@@ -325,22 +325,22 @@ attr_listf(int fd, char *buffer, const int buffersize, int flags,
 	}
 	bzero(buffer, sizeof(attrlist_t));
 
-	c = flistxattr(fd, lbuf, sizeof(lbuf));
-	if (c < 0)
-		return c;
+	length = flistxattr(fd, lbuf, sizeof(lbuf));
+	if (length < 0)
+		return length;
 
 	start_offset = sizeof(attrlist_t);
 	end_offset = buffersize & ~(8-1);	/* 8 byte align */
 
-	for (l = lbuf; l != lbuf + c; l = strchr(l, '\0') + 1) {
+	for (l = lbuf; l != lbuf + length; l = strchr(l, '\0') + 1) {
 		if (api_unconvert(name, l, flags))
 			continue;
-		c = fgetxattr(fd, l, NULL, 0);
-		if (c < 0 && (errno == ENOATTR || errno == ENOTSUP))
+		vlength = fgetxattr(fd, l, NULL, 0);
+		if (vlength < 0 && (errno == ENOATTR || errno == ENOTSUP))
 			continue;
 		if (count++ < cursor->opaque[0])
 			continue;
-		if (attr_list_pack(name, c, buffer, buffersize,
+		if (attr_list_pack(name, vlength, buffer, buffersize,
 				   &start_offset, &end_offset)) {
 			cursor->opaque[0] = count;
 			break;
