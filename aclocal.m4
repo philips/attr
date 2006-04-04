@@ -1,7 +1,7 @@
-# generated automatically by aclocal 1.7.9 -*- Autoconf -*-
+# generated automatically by aclocal 1.9.6 -*- Autoconf -*-
 
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002
-# Free Software Foundation, Inc.
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+# 2005  Free Software Foundation, Inc.
 # This file is free software; the Free Software Foundation
 # gives unlimited permission to copy and/or distribute it,
 # with or without modifications, as long as this notice is preserved.
@@ -10,6 +10,68 @@
 # but WITHOUT ANY WARRANTY, to the extent permitted by law; without
 # even the implied warranty of MERCHANTABILITY or FITNESS FOR A
 # PARTICULAR PURPOSE.
+
+# 
+# Find format of installed man pages.
+# Always gzipped on Debian, but not Redhat pre-7.0.
+# We don't deal with bzip2'd man pages, which Mandrake uses,
+# someone will send us a patch sometime hopefully. :-)
+# 
+AC_DEFUN([AC_MANUAL_FORMAT],
+  [ have_zipped_manpages=false
+    for d in ${prefix}/share/man ${prefix}/man ; do
+        if test -f $d/man1/man.1.gz
+        then
+            have_zipped_manpages=true
+            break
+        fi
+    done
+    AC_SUBST(have_zipped_manpages)
+  ])
+
+# The AC_MULTILIB macro was extracted and modified from 
+# gettext-0.15's AC_LIB_PREPARE_MULTILIB macro in the lib-prefix.m4 file
+# so that the correct paths can be used for 64-bit libraries.
+#
+dnl Copyright (C) 2001-2005 Free Software Foundation, Inc.
+dnl This file is free software; the Free Software Foundation
+dnl gives unlimited permission to copy and/or distribute it,
+dnl with or without modifications, as long as this notice is preserved.
+dnl From Bruno Haible.
+
+dnl AC_MULTILIB creates a variable libdirsuffix, containing
+dnl the suffix of the libdir, either "" or "64".
+dnl Only do this if enable param is yes.
+AC_DEFUN([AC_MULTILIB],
+[
+  dnl There is no formal standard regarding lib and lib64. The current
+  dnl practice is that on a system supporting 32-bit and 64-bit instruction
+  dnl sets or ABIs, 64-bit libraries go under $prefix/lib64 and 32-bit
+  dnl libraries go under $prefix/lib. We determine the compiler's default
+  dnl mode by looking at the compiler's library search path. If at least
+  dnl of its elements ends in /lib64 or points to a directory whose absolute
+  dnl pathname ends in /lib64, we assume a 64-bit ABI. Otherwise we use the
+  dnl default, namely "lib".
+  enable_lib64="$1"
+  libdirsuffix=""
+  searchpath=`(LC_ALL=C $CC -print-search-dirs) 2>/dev/null | sed -n -e 's,^libraries: ,,p' | sed -e 's,^=,,'`
+  if test "$enable_lib64" = "yes" -a -n "$searchpath"; then
+    save_IFS="${IFS= 	}"; IFS=":"
+    for searchdir in $searchpath; do
+      if test -d "$searchdir"; then
+        case "$searchdir" in
+          */lib64/ | */lib64 ) libdirsuffix=64 ;;
+          *) searchdir=`cd "$searchdir" && pwd`
+             case "$searchdir" in
+               */lib64 ) libdirsuffix=64 ;;
+             esac ;;
+        esac
+      fi
+    done
+    IFS="$save_IFS"
+  fi
+  AC_SUBST(libdirsuffix)
+])
 
 # 
 # Generic macro, sets up all of the global packaging variables.
@@ -40,12 +102,12 @@ AC_DEFUN([AC_PACKAGE_GLOBALS],
     malloc_lib="$MALLOCLIB"
     AC_SUBST(malloc_lib)
 
-    PKG_USER=${INSTALL_USER:-'root'}
-    pkg_user="$PKG_USER"
+    pkg_user=`id -u`
+    test -z "$INSTALL_USER" || pkg_user="$INSTALL_USER"
     AC_SUBST(pkg_user)
 
-    PKG_GROUP=${INSTALL_GROUP:-'root'}
-    pkg_group="$PKG_GROUP"
+    pkg_group=`id -g`
+    test -z "$INSTALL_GROUP" || pkg_group="$INSTALL_GROUP"
     AC_SUBST(pkg_group)
 
     pkg_distribution=`uname -s`
@@ -183,23 +245,5 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
         rpmbuild=$RPM
     fi
     AC_SUBST(rpmbuild)
-  ])
-
-# 
-# Find format of installed man pages.
-# Always gzipped on Debian, but not Redhat pre-7.0.
-# We don't deal with bzip2'd man pages, which Mandrake uses,
-# someone will send us a patch sometime hopefully. :-)
-# 
-AC_DEFUN([AC_MANUAL_FORMAT],
-  [ have_zipped_manpages=false
-    for d in ${prefix}/share/man ${prefix}/man ; do
-        if test -f $d/man1/man.1.gz
-        then
-            have_zipped_manpages=true
-            break
-        fi
-    done
-    AC_SUBST(have_zipped_manpages)
   ])
 
