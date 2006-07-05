@@ -41,7 +41,7 @@ dnl From Bruno Haible.
 
 dnl AC_MULTILIB creates a variable libdirsuffix, containing
 dnl the suffix of the libdir, either "" or "64".
-dnl Only do this if enable param is yes.
+dnl Only do this if the given enable parameter is "yes".
 AC_DEFUN([AC_MULTILIB],
 [
   dnl There is no formal standard regarding lib and lib64. The current
@@ -121,7 +121,7 @@ AC_DEFUN([AC_PACKAGE_GLOBALS],
 
 #
 # Check for specified utility (env var) - if unset, fail.
-# 
+#
 AC_DEFUN([AC_PACKAGE_NEED_UTILITY],
   [ if test -z "$2"; then
         echo
@@ -135,7 +135,7 @@ AC_DEFUN([AC_PACKAGE_NEED_UTILITY],
 # Generic macro, sets up all of the global build variables.
 # The following environment variables may be set to override defaults:
 #  CC MAKE LIBTOOL TAR ZIP MAKEDEPEND AWK SED ECHO SORT
-#  MSGFMT MSGMERGE RPM
+#  MSGFMT MSGMERGE XGETTEXT RPM
 #
 AC_DEFUN([AC_PACKAGE_UTILITIES],
   [ AC_PROG_CC
@@ -222,6 +222,13 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
         msgmerge=$MSGMERGE
         AC_SUBST(msgmerge)
         AC_PACKAGE_NEED_UTILITY($1, "$msgmerge", msgmerge, gettext)
+
+        if test -z "$XGETTEXT"; then
+                AC_PATH_PROG(XGETTEXT, xgettext,, /usr/bin:/usr/local/bin:/usr/freeware/bin)
+        fi
+        xgettext=$XGETTEXT
+        AC_SUBST(xgettext)
+        AC_PACKAGE_NEED_UTILITY($1, "$xgettext", xgettext, gettext)
     fi
 
     if test -z "$RPM"; then

@@ -5,8 +5,10 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
+POTHEAD = $(PKG_NAME).pot
 LINGUAS = de fr nl pl sv
-LSRCFILES = $(LINGUAS:%=%.po) $(PKG_NAME).pot
+LSRCFILES = $(LINGUAS:%=%.po) $(POTHEAD)
+LDIRT = $(POTHEAD)
 
 XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \
 		$(TOPDIR)/getfattr/getfattr.c \
@@ -14,7 +16,7 @@ XGETTEXTFILES =	$(TOPDIR)/attr/attr.c \
 		$(TOPDIR)/libattr/attr_copy_fd.c \
 		$(TOPDIR)/libattr/attr_copy_file.c
 
-default: $(LINGUAS:%=%.mo)
+default: $(POTHEAD) $(LINGUAS:%=%.mo)
 
 include $(BUILDRULES)
 

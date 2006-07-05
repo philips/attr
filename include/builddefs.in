@@ -17,6 +17,7 @@ LIBMISC = $(TOPDIR)/libmisc/libmisc.la
 
 prefix = @prefix@
 exec_prefix = @exec_prefix@
+datarootdir = @datarootdir@
 
 PKG_NAME	= @pkg_name@
 PKG_USER	= @pkg_user@
@@ -48,6 +49,7 @@ MAKEDEPEND	= @makedepend@
 
 MSGFMT		= @msgfmt@
 MSGMERGE	= @msgmerge@
+XGETTEXT	= @xgettext@
 
 RPM		= @rpm@
 RPMBUILD	= @rpmbuild@
