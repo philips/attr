@@ -1,3 +1,6 @@
+attr-2.4.34 (14 July 2006)
+	- Fix issues with makedepend on libtool libraries.
+
 attr-2.4.33 (03 July 2006)
 	- Update translation Makefile to work better with the Ubuntu
 	  translation system.  Thanks to feedback from Martin Pitt.
