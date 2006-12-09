@@ -1,3 +1,8 @@
+attr-2.4.35 (8 December 2006)
+	- Remove system call stubs from libattr, we always defer to
+	  the libc interfaces in this day and age.  Removes a SIGILL
+	  delivery from the ARM EABI, reported by Lennert Buytenhek.
+
 attr-2.4.34 (14 July 2006)
 	- Fix issues with makedepend on libtool libraries.
 
