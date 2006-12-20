@@ -15,6 +15,12 @@ LT_AGE = 1
 CFILES = libattr.c attr_copy_fd.c attr_copy_file.c attr_copy_check.c
 HFILES = libattr.h
 
+ifeq ($(PKG_PLATFORM),linux)
+CFILES += syscalls.c
+else
+LSRCFILES = syscalls.c
+endif
+
 LCFLAGS = -include libattr.h
 
 default: $(LTLIBRARY)

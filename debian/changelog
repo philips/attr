@@ -1,3 +1,11 @@
+attr (2.4.36-1) unstable; urgency=high
+
+  * New upstream release
+  * Reinstate xattr syscall entry points (closes: #403585)
+  * Fix ARM EABI issue differently, thanks to Lennert Buytenhek.
+
+ -- Nathan Scott <nathans@debian.org>  Tue, 19 Dec 2006 09:46:05 +1100
+
 attr (2.4.35-1) unstable; urgency=low
 
   * New upstream release
