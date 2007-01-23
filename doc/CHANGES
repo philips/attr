@@ -1,3 +1,6 @@
+attr-2.4.37 (23 January 2007)
+	- Fix cross-compile issues. Thanks to Diego 'Flameeyes' Pettenò.
+	
 attr-2.4.36 (19 December 2006)
 	- Reinstate xattr syscall entry points (these symbols are
 	  explicitly exported from the library - d'oh!).
