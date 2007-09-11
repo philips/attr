@@ -1,10 +1,13 @@
+attr-2.4.39 (11 September 2007)
+	- Fix symlink handling with getfattr, thanks to Utako Usaka.
+
 attr-2.4.38 (30 March 2007)
 	- Add Spanish and Galician translation
 	  (thanks to Antonio Trueba)
 
 attr-2.4.37 (23 January 2007)
-	- Fix cross-compile issues. Thanks to Diego 'Flameeyes' Pettenò.
-	
+	- Fix cross-compile issues. Thanks to Diego 'Flameeyes' Pettenï¿½
+
 attr-2.4.36 (19 December 2006)
 	- Reinstate xattr syscall entry points (these symbols are
 	  explicitly exported from the library - d'oh!).
