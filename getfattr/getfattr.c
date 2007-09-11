@@ -410,6 +410,38 @@ void help(void)
 "      --help              this help text\n"));
 }
 
+char *resolve_symlinks(const char *file)
+{
+	static char buffer[4096];
+	struct stat stat;
+	char *path = NULL;
+
+	if (lstat(file, &stat) == -1)
+		return path;
+
+	if (S_ISLNK(stat.st_mode) && !opt_walk_physical)
+		path = realpath(file, buffer);
+	else
+		path = (char *)file;    /* not a symlink, use given path */
+
+	return path;
+}
+
+int walk_tree(const char *file)
+{
+	const char *p;
+
+	if ((p = resolve_symlinks(file)) == NULL) {
+		fprintf(stderr, "%s: %s: %s\n", progname,
+			xquote(file), strerror(errno));
+		return 1;
+	} else if (nftw(p, do_print, 0, opt_walk_logical? 0 : FTW_PHYS) < 0) {
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(file),
+			strerror(errno));
+		return 1;
+	}
+	return 0;
+}
 
 int main(int argc, char *argv[])
 {
@@ -499,12 +531,7 @@ int main(int argc, char *argv[])
 	}
 
 	while (optind < argc) {
-		if (nftw(argv[optind], do_print, 0,
-			 opt_walk_physical * FTW_PHYS) < 0) {
-			fprintf(stderr, "%s: %s: %s\n", progname, argv[optind],
-			        strerror_ea(errno));
-			had_errors++;
-		}
+		had_errors += walk_tree(argv[optind]);
 		optind++;
 	}
 
