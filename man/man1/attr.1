@@ -16,12 +16,6 @@ attr \- extended attributes on XFS filesystem objects
 .SH OVERVIEW
 Extended attributes implement the ability for a user to attach
 name:value pairs to objects within the XFS filesystem.
-.P
-They could be used to store meta-information about the file.
-For example "character-set=kanji" could tell a document browser to
-use the Kanji character set when displaying that document
-and "thumbnail=..." could provide a reduced resolution overview of a
-high resolution graphic image.
 .PP
 This document describes the
 .I attr
@@ -32,7 +26,13 @@ filesystem independent extended attribute manipulation, consult the
 and 
 .IR setfattr (1)
 documentation.
-.P
+.PP
+Extended attributes can be used to store meta-information about the file.
+For example "character-set=kanji" could tell a document browser to
+use the Kanji character set when displaying that document
+and "thumbnail=..." could provide a reduced resolution overview of a
+high resolution graphic image.
+.PP
 In the XFS filesystem, the
 .I names
 can be up to 256 bytes in length, terminated by the first 0 byte.
@@ -41,10 +41,10 @@ names for the attribute.
 The
 .I values
 can be up to 64KB of arbitrary binary data.
-.P
+.PP
 Attributes can be attached to all types of XFS inodes:
 regular files, directories, symbolic links, device nodes, etc.
-.P
+.PP
 XFS uses 2 disjoint attribute name spaces associated with every
 filesystem object.
 They are the
