@@ -271,7 +271,7 @@ attr_list(const char *path, char *buffer, const int buffersize, int flags,
 	int length, vlength, count = 0;
 	char lbuf[MAXLISTLEN];
 	char name[MAXNAMELEN+16];
-	unsigned int start_offset, end_offset;
+	int start_offset, end_offset;
 
 	if (buffersize < sizeof(attrlist_t)) {
 		errno = EINVAL;
@@ -317,7 +317,7 @@ attr_listf(int fd, char *buffer, const int buffersize, int flags,
 	int length, vlength, count = 0;
 	char lbuf[MAXLISTLEN];
 	char name[MAXNAMELEN+16];
-	unsigned int start_offset, end_offset;
+	int start_offset, end_offset;
 
 	if (buffersize < sizeof(attrlist_t)) {
 		errno = EINVAL;

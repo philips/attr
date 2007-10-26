@@ -1,3 +1,6 @@
+attr-2.4.40
+	- Address compilation warning about signedness in libattr.c
+
 attr-2.4.39 (11 September 2007)
 	- Fix symlink handling with getfattr, thanks to Utako Usaka.
 
