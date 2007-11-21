@@ -8,8 +8,8 @@ include $(TOPDIR)/include/builddefs
 LTCOMMAND = setfattr
 CFILES = setfattr.c
 
-LLDLIBS = $(LIBATTR) $(LIBMISC)
-LTDEPENDENCIES = $(LIBATTR) $(LIBMISC)
+LLDLIBS = $(LIBMISC) $(LIBATTR)
+LTDEPENDENCIES = $(LIBMISC) $(LIBATTR)
 
 default: $(LTCOMMAND)
 

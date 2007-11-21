@@ -28,11 +28,11 @@
 #include <ctype.h>
 #include <getopt.h>
 #include <regex.h>
-#include <ftw.h>
 #include <locale.h>
 
 #include <attr/xattr.h>
 #include "config.h"
+#include "walk_tree.h"
 #include "misc.h"
 
 #define CMD_LINE_OPTIONS "n:de:m:hRLP"
@@ -54,11 +54,8 @@ struct option long_options[] = {
 	{ NULL,			0, 0, 0 }
 };
 
-int opt_recursive;  /* recurse into sub-directories? */
-int opt_walk_logical;  /* always follow symbolic links */
-int opt_walk_physical;  /* never follow symbolic links */
+int walk_flags = WALK_TREE_DEREFERENCE;
 int opt_dump;  /* dump attribute values (or only list the names) */
-int opt_deref = 1;  /* dereference symbolic links */
 char *opt_name;  /* dump named attributes */
 char *opt_name_pattern = "^user\\.";  /* include only matching names */
 char *opt_encoding;  /* encode values automatically (NULL), or as "text",
@@ -84,12 +81,14 @@ static const char *xquote(const char *str)
 
 int do_getxattr(const char *path, const char *name, void *value, size_t size)
 {
-	return (opt_deref ? getxattr : lgetxattr)(path, name, value, size);
+	return ((walk_flags & WALK_TREE_DEREFERENCE) ?
+		getxattr : lgetxattr)(path, name, value, size);
 }
 
 int do_listxattr(const char *path, char *list, size_t size)
 {
-	return (opt_deref ? listxattr : llistxattr)(path, list, size);
+	return ((walk_flags & WALK_TREE_DEREFERENCE) ?
+		listxattr : llistxattr)(path, list, size);
 }
 
 const char *strerror_ea(int err)
@@ -347,22 +346,14 @@ int list_attributes(const char *path, int *header_printed)
 	return 0;
 }
 
-int do_print(const char *path, const struct stat *stat,
-             int flag, struct FTW *ftw)
+int do_print(const char *path, const struct stat *stat, int walk_flags, void *unused)
 {
-	int saved_errno = errno;
 	int header_printed = 0;
 
-	/*
-	 * Process the target of a symbolic link, and traverse the
-	 * link, only if doing a logical walk, or if the symbolic link
-	 * was specified on the command line. Always skip symbolic
-	 * links if doing a physical walk.
-	 */
-
-	if (S_ISLNK(stat->st_mode) &&
-	    (opt_walk_physical || (ftw->level > 0 && !opt_walk_logical)))
-		return 0;
+	if (walk_flags & WALK_TREE_FAILED) {
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path), strerror(errno));
+		return 1;
+	}
 
 	if (opt_name)
 		print_attribute(path, opt_name, &header_printed);
@@ -371,21 +362,6 @@ int do_print(const char *path, const struct stat *stat,
 
 	if (header_printed)
 		puts("");
-
-	if (flag == FTW_DNR && opt_recursive) {
-		/* Item is a directory which can't be read. */
-		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
-			strerror(saved_errno));
-		return 0;
-	}
-
-	/*
-	 * We also get here in non-recursive mode. In that case,
-	 *  return something != 0 to abort nftw.
-	 */
-
-	if (!opt_recursive)
-		return 1;
 	return 0;
 }
 
@@ -408,39 +384,6 @@ void help(void)
 "  -P  --physical          physical walk, do not follow symbolic links\n"
 "      --version           print version and exit\n"
 "      --help              this help text\n"));
-}
-
-char *resolve_symlinks(const char *file)
-{
-	static char buffer[4096];
-	struct stat stat;
-	char *path = NULL;
-
-	if (lstat(file, &stat) == -1)
-		return path;
-
-	if (S_ISLNK(stat.st_mode) && !opt_walk_physical)
-		path = realpath(file, buffer);
-	else
-		path = (char *)file;    /* not a symlink, use given path */
-
-	return path;
-}
-
-int walk_tree(const char *file)
-{
-	const char *p;
-
-	if ((p = resolve_symlinks(file)) == NULL) {
-		fprintf(stderr, "%s: %s: %s\n", progname,
-			xquote(file), strerror(errno));
-		return 1;
-	} else if (nftw(p, do_print, 0, opt_walk_logical? 0 : FTW_PHYS) < 0) {
-		fprintf(stderr, "%s: %s: %s\n", progname, xquote(file),
-			strerror(errno));
-		return 1;
-	}
-	return 0;
 }
 
 int main(int argc, char *argv[])
@@ -478,7 +421,7 @@ int main(int argc, char *argv[])
 				return 0;
 
 			case 'h': /* do not dereference symlinks */
-				opt_deref = 0;
+				walk_flags &= ~WALK_TREE_DEREFERENCE;
 				break;
 
 			case 'n':  /* get named attribute */
@@ -497,17 +440,17 @@ int main(int argc, char *argv[])
 				break;
 
 			case 'L':
-				opt_walk_logical = 1;
-				opt_walk_physical = 0;
+				walk_flags |= WALK_TREE_LOGICAL;
+				walk_flags &= ~WALK_TREE_PHYSICAL;
 				break;
 
 			case 'P':
-				opt_walk_logical = 0;
-				opt_walk_physical = 1;
+				walk_flags |= WALK_TREE_PHYSICAL;
+				walk_flags &= ~WALK_TREE_LOGICAL;
 				break;
 
 			case 'R':
-				opt_recursive = 1;
+				walk_flags |= WALK_TREE_RECURSIVE;
 				break;
 
 			case 'V':
@@ -531,7 +474,7 @@ int main(int argc, char *argv[])
 	}
 
 	while (optind < argc) {
-		had_errors += walk_tree(argv[optind]);
+		had_errors += walk_tree(argv[optind], walk_flags, do_print, NULL);
 		optind++;
 	}
 
