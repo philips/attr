@@ -5,8 +5,6 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-SUBDIRS = ea-conv
-
 LSRCFILES = INSTALL PORTING CHANGES COPYING
 LDIRT = *.gz
 

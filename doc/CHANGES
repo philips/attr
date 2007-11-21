@@ -1,3 +1,6 @@
+attr-2.4.41
+	- remove outdated doc/ea-conv thanks to Andreas Gruenbacher
+
 attr-2.4.40 (21 November 2007)
 	- Address compilation warning about signedness in libattr.c
 	- A number of changes from Andreas Gruenbacher:
