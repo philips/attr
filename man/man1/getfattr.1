@@ -56,11 +56,8 @@ while strings encoded as hexidecimal and base64 are prefixed with
 0x and 0s, respectively.
 .TP
 .BR \-h ", " \-\-no-dereference
-Do not follow symlinks.
-If
-.I pathname
-is a symbolic link, the symbolic link itself is examined,
-rather than the file the link refers to.
+Do not dereference symlinks. Instead of the file a symlink refers to, the
+symlink itself is examined.
 .TP
 .BR \-m " \f2pattern\f1, " \-\-match "=\f2pattern\f1"
 Only include attributes with names matching the regular expression
@@ -84,13 +81,15 @@ Dump out the extended attribute value(s) only.
 List the attributes of all files and directories recursively.
 .TP
 .BR \-L ", " \-\-logical
-Logical walk, follow symbolic links.
+Logical walk, follow symbolic links to directories.
 The default behaviour is to follow symbolic link arguments, and to 
 skip symbolic links encountered in subdirectories.
+Only effective in combination with \-R.
 .TP
 .BR \-P ", " \-\-physical
-Physical walk, skip all symbolic links.
+Physical walk, do not follow symbolic links to directories.
 This also skips symbolic link arguments.
+Only effective in combination with \-R.
 .TP
 .B \-\-version
 Print the version of

@@ -1,5 +1,7 @@
 attr-2.4.41
 	- remove outdated doc/ea-conv thanks to Andreas Gruenbacher
+	- Update getfattr man page for symlink related options
+	  thanks to Andreas G.
 
 attr-2.4.40 (21 November 2007)
 	- Address compilation warning about signedness in libattr.c
