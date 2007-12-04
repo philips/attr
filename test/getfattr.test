@@ -4,48 +4,119 @@
 	$ touch f
 	$ setfattr -n user.test -v test f
 	$ ln -s f l
+	$ setfattr -h -n trusted.test -v test l
 
 This case should be obvious:
-	$ getfattr -d f
+	$ getfattr -m- -d f
 	> # file: f
 	> user.test="test"
 	>
 
-If a symlink is explicitly specified on the command line, follow it
-(-H behavior):
-	$ getfattr -d l
+Without -h, we dereference symlinks:
+	$ getfattr -m- -d l
 	> # file: l
 	> user.test="test"
 	>
 
-Unless we are explicitly told not to dereference symlinks:
-	$ getfattr -hd l
+With -h, we do not dereference symlinks:
+	$ getfattr -m- -hd l
+	> # file: l
+	> trusted.test="test"
+	>
 
-When walking a tree, it does not make sense to follow symlinks. We should
-only see f's attributes here -- that's a bug:
-	$ getfattr -Rd .
+Do the same for symlinks we find in a directory hierarchy:
+	$ getfattr -m- -Rd .
 	> # file: f
 	> user.test="test"
 	>
-
-This case works as expected:
-	$ getfattr -Rhd .
-	> # file: f
+	> # file: l
 	> user.test="test"
 	>
 
-In these two cases, getfattr should dereference the symlink passed on the
-command line, but not l. This doesn't work correctly, either; it's the same
-bug:
+	$ getfattr -m- -Rhd .
+	> # file: f
+	> user.test="test"
+	>
+	> # file: l
+	> trusted.test="test"
+	>
+
+Make sure we follow symlinks on the command line only when we should:
 	$ ln -s . here
-	$ getfattr -Rd here
+	$ getfattr -m- -Rd here
 	> # file: here/f
 	> user.test="test"
 	>
+	> # file: here/l
+	> user.test="test"
+	>
 
-	$ getfattr -Rhd here
+	$ getfattr -m- -Rhd here
 	> # file: here/f
 	> user.test="test"
+	>
+	> # file: here/l
+	> trusted.test="test"
+	>
+
+	$ getfattr -m- -RLhd here
+	> # file: here/f
+	> user.test="test"
+	>
+	> # file: here/l
+	> trusted.test="test"
+	>
+
+	$ getfattr -m- -RPhd here
+
+Make sure we recurse into sub-directories:
+	$ mkdir sub
+	$ mv f l sub
+	$ getfattr -m- -Rd .
+	> # file: sub/f
+	> user.test="test"
+	>
+	> # file: sub/l
+	> user.test="test"
+	>
+
+	$ getfattr -m- -Rhd .
+	> # file: sub/f
+	> user.test="test"
+	>
+	> # file: sub/l
+	> trusted.test="test"
+	>
+
+Make sure we follow symlinks to directories only when we should:
+	$ mkdir sub2
+	$ ln -s ../sub sub2/to-sub
+	$ getfattr -m- -Rhd sub2
+
+	$ getfattr -m- -RLhd sub2
+	> # file: sub2/to-sub/f
+	> user.test="test"
+	>
+	> # file: sub2/to-sub/l
+	> trusted.test="test"
+	>
+
+	$ getfattr -m- -RPhd sub2
+
+Symlink loop detection:
+	$ ln -s .. sub/up
+	$ getfattr -m- -RLhd .
+	> # file: sub2/to-sub/f
+	> user.test="test"
+	>
+	> # file: sub2/to-sub/l
+	> trusted.test="test"
+	>
+	> # file: sub/f
+	> user.test="test"
+	>
+	> # file: sub/l
+	> trusted.test="test"
 	>
 
 	$ cd ..

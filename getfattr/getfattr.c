@@ -346,12 +346,14 @@ int list_attributes(const char *path, int *header_printed)
 	return 0;
 }
 
-int do_print(const char *path, const struct stat *stat, int walk_flags, void *unused)
+int do_print(const char *path, const struct stat *stat, int walk_flags,
+	     void *unused)
 {
 	int header_printed = 0;
 
 	if (walk_flags & WALK_TREE_FAILED) {
-		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path), strerror(errno));
+		fprintf(stderr, "%s: %s: %s\n", progname, xquote(path),
+			strerror(errno));
 		return 1;
 	}
 
@@ -474,7 +476,8 @@ int main(int argc, char *argv[])
 	}
 
 	while (optind < argc) {
-		had_errors += walk_tree(argv[optind], walk_flags, do_print, NULL);
+		had_errors += walk_tree(argv[optind], walk_flags, 0,
+					do_print, NULL);
 		optind++;
 	}
 
