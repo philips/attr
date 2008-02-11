@@ -6,7 +6,7 @@ TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
 INCDIR = attr
-INST_HFILES = attributes.h xattr.h error_context.h libattr.h
+INST_HFILES = attributes.h xattr.h error_context.h libattr.h walk_tree.h
 HFILES = $(INST_HFILES) misc.h
 LSRCFILES = builddefs.in buildmacros buildrules config.h.in
 LDIRT = $(INCDIR)
