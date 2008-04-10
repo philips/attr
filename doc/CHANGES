@@ -1,3 +1,6 @@
+attr-2.4.x
+	- Add Czech translation (thanks to Petr Pisar).
+
 attr-2.4.41 (4 December 2007)
 	- A number of changes from Andreas Gruenbacher:
 	    - remove outdated doc/ea-conv
