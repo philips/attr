@@ -1,3 +1,43 @@
+attr (1:2.4.42-1) unstable; urgency=low
+
+  * New upstream release
+  * Updated debian/changelog
+
+ -- Anibal Monsalve Salazar <anibal@debian.org>  Mon, 28 Apr 2008 16:27:59 +1000
+
+attr (1:2.4.41-1) unstable; urgency=low
+
+  * New upstream release
+  * Add myself to Uploaders
+  * Remove /usr/share/doc/attr (closes: #405106, #445903)
+  * Bump dependency of attr to libattr1 (>= 2.4.41), might be too high but
+    good enough. (closes: #377700)
+  * Upstream closed bugs:
+     Manpage updated (closes: #446877)
+  * Closing old bugs:
+     2.4.36: (closes: #299095)
+  * Bump Standards Versions, no changes were needed.
+  * Bump DH_COMPAT.
+
+ -- Niv Sardi <xaiki@debian.org>  Mon, 11 Feb 2008 17:45:43 +1100
+  
+attr (1:2.4.39-1) unstable; urgency=low
+
+  * New upstream release
+  * debian/control:
+    - Added homepage
+    - Added myself as comaintainer
+    - Set Standards-Version to 3.7.2
+    - libattr1-dev depends on libattr1 (= ${binary:Version})
+    - attr and libattr1 depend on ${misc:Depends}
+  * debian/watch: Added
+  * include/buildrules: Drop --omit-header from xgettext call, so that the
+    generated POT file becomes valid.
+  * debian/rules: Rebuild POT file so that Ubuntu's Rosetta can always
+    import an up to date version.
+
+ -- Anibal Monsalve Salazar <anibal@debian.org>  Sun, 16 Sep 2007 09:14:11 +1000
+
 attr (2.4.36-1) unstable; urgency=high
 
   * New upstream release
@@ -17,6 +57,23 @@ attr (2.4.33-1) unstable; urgency=low
   * New upstream release
 
  -- Nathan Scott <nathans@debian.org>  Mon, 03 Jul 2006 10:08:43 +1000
+
+attr (1:2.4.32-1.2) unstable; urgency=low
+
+  * Non-maintainer upload (porter NMU).
+  * add armel support, Closes: #421627
+  * fix kfreebsd build, Closes: #414232
+
+ -- Riku Voipio <riku.voipio@iki.fi>  Wed, 25 Jul 2007 23:33:58 +0300
+
+attr (1:2.4.32-1.1) unstable; urgency=emergency
+
+  * Non-maintainer upload.
+  * Reupload previous version and fix breackage of ls -la, cp -a and other
+    essential utilities.
+    Closes: #403601, #403592, #403585, #403590, #403599 and probably more.
+
+ -- Andreas Barth <aba@not.so.argh.org>  Mon, 18 Dec 2006 13:42:31 +0000
 
 attr (2.4.32-1) unstable; urgency=low
 

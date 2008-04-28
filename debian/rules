@@ -15,12 +15,13 @@ stdenv = @GZIP=-q; export GZIP;
 options = export DEBUG=-DNDEBUG DISTRIBUTION=debian \
 	  INSTALL_USER=root INSTALL_GROUP=root ;
 checkdir = test -f debian/rules
-checkver = rm -f debian/compat && echo 5 > debian/compat
 
 build: built
 built: config
 	@echo "== dpkg-buildpackage: build" 1>&2
 	$(MAKE) default
+	rm -f po/attr.pot
+	$(MAKE) -C po attr.pot
 	touch built
 
 config: .census
@@ -35,20 +36,22 @@ clean:
 	$(checkdir)
 	-rm -f built .census
 	$(MAKE) distclean
-	-rm -rf $(dirme) $(dirdev) $(dirlib)
-	-rm -f debian/*substvars debian/files* debian/*.debhelper debian/compat
+	-rm -rf $(dirme) $(dirdev) $(dirlib) debian/tmp
+	-rm -f debian/*substvars debian/files* debian/*.debhelper
 
 binary-indep:
 
 binary-arch: checkroot built
 	@echo "== dpkg-buildpackage: binary-arch" 1>&2
 	$(checkdir)
-	$(checkver)
 	-rm -rf $(dirme) $(dirdev) $(dirlib)
 	$(pkgme)  $(MAKE) -C . install
 	$(pkgdev) $(MAKE) -C . install-dev
 	$(pkglib) $(MAKE) -C . install-lib
 	$(pkgme)  $(MAKE) -C build src-manifest
+
+	-rm -rf $(dirdev)/usr/share/doc/attr
+	-rm -rf $(dirlib)/usr/share/doc/attr
 
 	dh_installdocs
 	dh_installchangelogs
@@ -56,7 +59,7 @@ binary-arch: checkroot built
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs -N $(library)
-	dh_makeshlibs -p $(library) -V 'libattr1 (>= 2.4.4-1)'
+	dh_makeshlibs -p $(library) -V 'libattr1 (>= 2.4.41-1)'
 	dh_installdeb
 	dh_shlibdeps
 	dh_gencontrol

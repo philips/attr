@@ -2,12 +2,13 @@ Source: attr
 Section: utils
 Priority: optional
 Maintainer: Nathan Scott <nathans@debian.org>
-Uploaders: Anibal Monsalve Salazar <anibal@debian.org>, Niv Sardi <xaiki@debian.org>
+Uploaders: Niv Sardi <xaiki@debian.org>, Anibal Monsalve Salazar <anibal@debian.org>
 Build-Depends: autoconf, debhelper (>= 5), gettext, libtool
-Standards-Version: 3.5.9
+Standards-Version: 3.7.3
+Homepage: http://oss.sgi.com/projects/xfs/
 
 Package: attr
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Conflicts: xfsdump (<< 2.0.0)
 Architecture: any
 Description: Utilities for manipulating filesystem extended attributes
@@ -19,7 +20,7 @@ Description: Utilities for manipulating filesystem extended attributes
 Package: libattr1-dev
 Section: libdevel
 Priority: extra
-Depends: libc6-dev | libc-dev, libattr1 (>= 2.0.0)
+Depends: libc6-dev | libc-dev, libattr1 (= ${binary:Version})
 Provides: attr-dev
 Replaces: attr-dev
 Conflicts: attr-dev, attr (<< 2.0.0)
@@ -35,7 +36,7 @@ Description: Extended attribute static libraries and headers
  used by programs such as xfsdump(8), xfsrestore(8) and xfs_fsr(8).
 
 Package: libattr1
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Section: libs
 Priority: required
 Conflicts: attr (<< 2.0.0)
