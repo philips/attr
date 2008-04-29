@@ -1,7 +1,7 @@
 attr (1:2.4.42-1) unstable; urgency=low
 
   * New upstream release
-  * Updated debian/changelog
+  * Updated debian/watch
 
  -- Anibal Monsalve Salazar <anibal@debian.org>  Mon, 28 Apr 2008 16:27:59 +1000
 
