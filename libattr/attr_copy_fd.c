@@ -119,7 +119,7 @@ attr_copy_fd(const char *src_path, int src_fd,
 			quote_free (ctx, qname);
 			quote_free (ctx, qpath);
 			ret = -1;
-			continue;  /* may not have permission to access */
+			continue;
 		}
 		value = (char *) realloc (old_value = value, size);
 		if (size != 0 && value == NULL) {
@@ -136,6 +136,7 @@ attr_copy_fd(const char *src_path, int src_fd,
 			quote_free (ctx, qname);
 			quote_free (ctx, qpath);
 			ret = -1;
+			continue;
 		}
 		if (fsetxattr (dst_fd, name, value, size, 0) != 0) {
 			if (errno == ENOTSUP)

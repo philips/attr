@@ -14,8 +14,13 @@ extern int attr_copy_fd (const char *, int, const char *, int,
 			 int (*) (const char *, struct error_context *),
 			 struct error_context *);
 
-/* The default check function used by attr_copy_{fd,file}. */
+/* Keep this function for backwards compatibility. */
 extern int attr_copy_check_permissions(const char *, struct error_context *);
+
+#define ATTR_ACTION_SKIP	1
+#define ATTR_ACTION_PERMISSIONS	2
+
+extern int attr_copy_action(const char *, struct error_context *);
 
 #ifdef __cplusplus
 }

@@ -117,7 +117,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 			quote_free (ctx, qname);
 			quote_free (ctx, qpath);
 			ret = -1;
-			continue;  /* may not have permission to access */
+			continue;
 		}
 		value = (char *) realloc (old_value = value, size);
 		if (size != 0 && value == NULL) {
@@ -134,6 +134,7 @@ attr_copy_file(const char *src_path, const char *dst_path,
 			quote_free (ctx, qname);
 			quote_free (ctx, qpath);
 			ret = -1;
+			continue;
 		}
 		if (lsetxattr (dst_path, name, value, size, 0) != 0) {
 			if (errno == ENOTSUP)

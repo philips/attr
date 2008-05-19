@@ -12,7 +12,7 @@ LT_CURRENT = 2
 LT_REVISION = 0
 LT_AGE = 1
 
-CFILES = libattr.c attr_copy_fd.c attr_copy_file.c attr_copy_check.c
+CFILES = libattr.c attr_copy_fd.c attr_copy_file.c attr_copy_check.c attr_copy_action.c
 HFILES = libattr.h
 
 ifeq ($(PKG_PLATFORM),linux)
