@@ -1,4 +1,8 @@
-attr-2.4.42 (14 April 2007)
+attr-2.4.43 (20 June 2008)
+	- Added configurable attr exception list for xattr copy, thanks to
+	  Andreas Gruenbacher.
+
+attr-2.4.42 (14 April 2008)
 	- Add Czech translation (thanks to Petr Pisar).
 
 attr-2.4.41 (4 December 2007)
