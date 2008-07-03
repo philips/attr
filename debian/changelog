@@ -1,9 +1,10 @@
-attr (1:2.4.42-1) unstable; urgency=low
+attr (1:2.4.43-1) unstable; urgency=low
 
   * New upstream release
   * Updated debian/watch
+  * Standards version is 3.8.0
 
- -- Anibal Monsalve Salazar <anibal@debian.org>  Mon, 28 Apr 2008 16:27:59 +1000
+ -- Anibal Monsalve Salazar <anibal@debian.org>  Thu, 03 Jul 2008 13:49:43 +1000
 
 attr (1:2.4.41-1) unstable; urgency=low
 
