@@ -93,8 +93,15 @@ static int walk_tree_rec(const char *path, int walk_flags,
 		have_dir_stat = 1;
 	}
 	err = func(path, &st, flags, arg);
-	if ((flags & WALK_TREE_RECURSIVE) &&
-	    (S_ISDIR(st.st_mode) || (S_ISLNK(st.st_mode) && follow_symlinks))) {
+
+	/*
+	 * Recurse if WALK_TREE_RECURSIVE and the path is:
+	 *      a dir not from a symlink
+	 *      a link and follow_symlinks
+	 */
+        if ((flags & WALK_TREE_RECURSIVE) &&
+	   (!(flags & WALK_TREE_SYMLINK) && S_ISDIR(st.st_mode)) ||
+	   ((flags & WALK_TREE_SYMLINK) && follow_symlinks)) {
 		struct dirent *entry;
 
 		/*
