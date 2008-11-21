@@ -7,7 +7,21 @@ include $(TOPDIR)/include/builddefs
 
 SUBDIRS = man1 man2 man3 man5
 
-default install install-dev install-lib: $(SUBDIRS)
-	$(SUBDIRS_MAKERULE)
+default : $(SUBDIRS)
+
+install : $(addsuffix -install,$(SUBDIRS))
+
+install-dev : $(addsuffix -install-dev,$(SUBDIRS))
+
+install-lib : $(addsuffix -install-lib,$(SUBDIRS))
+
+%-install:
+	$(MAKE) -C $* install
+
+%-install-dev:
+	$(MAKE) -C $* install-dev
+
+%-install-lib:
+	$(MAKE) -C $* install-lib
 
 include $(BUILDRULES)

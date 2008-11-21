@@ -16,15 +16,22 @@ LSRCFILES = configure configure.in aclocal.m4 Makepkgs install-sh exports \
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
 	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
-SUBDIRS = include libmisc libattr attr getfattr setfattr \
-	  examples test m4 man doc po debian build
+LIB_SUBDIRS = include libmisc libattr
+TOOL_SUBDIRS = attr getfattr setfattr examples test m4 man doc po debian build
 
-default: $(CONFIGURE)
+SUBDIRS = $(LIB_SUBDIRS) $(TOOL_SUBDIRS)
+
+default: include/builddefs include/config.h
 ifeq ($(HAVE_BUILDDEFS), no)
 	$(MAKE) -C . $@
 else
-	$(SUBDIRS_MAKERULE)
+	$(MAKE) $(SUBDIRS)
 endif
+
+# tool/lib dependencies
+libattr: include
+getfattr setfattr: libmisc libattr
+attr: libattr
 
 ifeq ($(HAVE_BUILDDEFS), yes)
 include $(BUILDRULES)
@@ -32,7 +39,7 @@ else
 clean:	# if configure hasn't run, nothing to clean
 endif
 
-$(CONFIGURE):
+include/builddefs:
 	autoconf
 	./configure \
 		--prefix=/ \
@@ -48,16 +55,32 @@ $(CONFIGURE):
 		$$LOCAL_CONFIGURE_OPTIONS
 	touch .census
 
+include/config.h: include/builddefs
+## Recover from the removal of $@
+	@if test -f $@; then :; else \
+		rm -f include/builddefs; \
+		$(MAKE) $(AM_MAKEFLAGS) include/builddefs; \
+	fi
+
 aclocal.m4::
 	aclocal --acdir=`pwd`/m4 --output=$@
 
-install: default
-	$(SUBDIRS_MAKERULE)
+install: default $(addsuffix -install,$(SUBDIRS))
 	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)
 	$(INSTALL) -m 644 README $(PKG_DOC_DIR)
 
-install-dev install-lib: default
-	$(SUBDIRS_MAKERULE)
+install-dev: default $(addsuffix -install-dev,$(SUBDIRS))
+
+install-lib: install $(addsuffix -install-lib,$(SUBDIRS))
+
+%-install:
+	$(MAKE) -C $* install
+
+%-install-dev:
+	$(MAKE) -C $* install-dev
+
+%-install-lib:
+	$(MAKE) -C $* install-lib
 
 realclean distclean: clean
 	rm -f $(LDIRT) $(CONFIGURE)
