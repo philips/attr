@@ -127,22 +127,26 @@
 # define __NR_removexattr	(__NR_SYSCALL_BASE+235)
 # define __NR_lremovexattr	(__NR_SYSCALL_BASE+236)
 # define __NR_fremovexattr	(__NR_SYSCALL_BASE+237)
-#elif defined (__mips64__)
+#elif defined (__mips64)
 # define HAVE_XATTR_SYSCALLS 1
-# define __NR_Linux 5000
-# define __NR_setxattr		(__NR_Linux + 217)
-# define __NR_lsetxattr		(__NR_Linux + 218)
-# define __NR_fsetxattr		(__NR_Linux + 219)
-# define __NR_getxattr		(__NR_Linux + 220)
-# define __NR_lgetxattr		(__NR_Linux + 221)
-# define __NR_fgetxattr		(__NR_Linux + 222)
-# define __NR_listxattr		(__NR_Linux + 223)
-# define __NR_llistxattr	(__NR_Linux + 224)
-# define __NR_flistxattr	(__NR_Linux + 225)
-# define __NR_removexattr	(__NR_Linux + 226)
-# define __NR_lremovexattr	(__NR_Linux + 227)
-# define __NR_fremovexattr	(__NR_Linux + 228)
-#elif defined (__mips__)
+# ifdef __LP64__ /* mips64 using n64 ABI */
+#  define __NR_Linux 5000
+# else /* mips64 using n32 ABI */
+#  define __NR_Linux 6000
+# endif
+# define __NR_setxattr		(__NR_Linux + 180)
+# define __NR_lsetxattr		(__NR_Linux + 181)
+# define __NR_fsetxattr		(__NR_Linux + 182)
+# define __NR_getxattr		(__NR_Linux + 183)
+# define __NR_lgetxattr		(__NR_Linux + 184)
+# define __NR_fgetxattr		(__NR_Linux + 185)
+# define __NR_listxattr		(__NR_Linux + 186)
+# define __NR_llistxattr	(__NR_Linux + 187)
+# define __NR_flistxattr	(__NR_Linux + 188)
+# define __NR_removexattr	(__NR_Linux + 189)
+# define __NR_lremovexattr	(__NR_Linux + 190)
+# define __NR_fremovexattr	(__NR_Linux + 191)
+#elif defined (__mips__) /* mips32, or mips64 using o32 ABI */
 # define HAVE_XATTR_SYSCALLS 1
 # define __NR_Linux 4000
 # define __NR_setxattr		(__NR_Linux + 224)
