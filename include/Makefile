@@ -11,13 +11,15 @@ HFILES = $(INST_HFILES) misc.h walk_tree.h
 LSRCFILES = builddefs.in buildmacros buildrules config.h.in
 LDIRT = $(INCDIR)
 
-default:
-	rm -f $(INCDIR)
-	$(LN_S) . $(INCDIR)
+$(INCDIR):
+	$(LN_S) . $@
+
+default: $(INCDIR)
 
 include $(BUILDRULES)
 
 install-dev: default
 	$(INSTALL) -m 755 -d $(PKG_INC_DIR)
 	$(INSTALL) -m 644 $(INST_HFILES) $(PKG_INC_DIR)
+
 install install-lib:
