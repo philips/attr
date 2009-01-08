@@ -11,10 +11,10 @@ HFILES = $(INST_HFILES) misc.h walk_tree.h
 LSRCFILES = builddefs.in buildmacros buildrules config.h.in
 LDIRT = $(INCDIR)
 
+default: $(INCDIR)
+
 $(INCDIR):
 	$(LN_S) . $@
-
-default: $(INCDIR)
 
 include $(BUILDRULES)
 
