@@ -5,12 +5,26 @@
 TOPDIR = ..
 include $(TOPDIR)/include/builddefs
 
-# ensure we pick these up in the source tarball
-LSRCFILES = attr.test run README
+TEST = $(wildcard *.test)
+EXT = $(wildcard ext/*.test)
 
-default:
+# ensure we pick these up in the source tarball
+LSRCFILES = $(TEST) $(EXT) run README
+
+default install install-dev install-lib:
 
 include $(BUILDRULES)
 
-install:
-install-dev install-lib:
+PATH := $(abspath ../getfattr/):$(abspath ../setfattr):$(abspath ../chattr):$(PATH)
+
+tests: $(TEST)
+ext-tests: $(EXT)
+
+$(TEST):
+	@echo "*** $@ ***"; perl run $@
+
+$(EXT):
+	@echo "EXT specific tests"; @echo "*** $@ ***"; perl run $@
+
+.PHONY: $(TEST) $(EXT)
+.NOTPARALLEL:
