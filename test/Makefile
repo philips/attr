@@ -7,6 +7,7 @@ include $(TOPDIR)/include/builddefs
 
 TEST = $(wildcard *.test)
 EXT = $(wildcard ext/*.test)
+ROOT = $(wildcard root/*.test)
 
 # ensure we pick these up in the source tarball
 LSRCFILES = $(TEST) $(EXT) run README
@@ -19,6 +20,7 @@ PATH := $(abspath ../getfattr/):$(abspath ../setfattr):$(abspath ../chattr):$(PA
 
 tests: $(TEST)
 ext-tests: $(EXT)
+root-tests: $(ROOT)
 
 $(TEST):
 	@echo "*** $@ ***"; perl run $@
@@ -26,5 +28,8 @@ $(TEST):
 $(EXT):
 	@echo "EXT specific tests"; @echo "*** $@ ***"; perl run $@
 
-.PHONY: $(TEST) $(EXT)
+$(ROOT):
+	@echo "Note: Tests must run as root"; @echo "*** $@ ***"; perl run $@
+
+.PHONY: $(TEST) $(EXT) $(ROOT)
 .NOTPARALLEL:
