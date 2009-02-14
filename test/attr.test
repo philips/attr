@@ -253,3 +253,119 @@ Tests for attribute names that contains special characters
 
 	$ cd ..
 	$ rm -rf d
+
+Tests for proper path recursion reported by Tony Ernst <tee@sgi.com> bnc#457660
+
+	$ mkdir -p 1/2/3
+	$ setfattr -n "user.9" 1
+	$ setfattr -n "user.a" 1
+	$ setfattr -n "user.9" 1/2
+	$ setfattr -n "user.a" 1/2
+	$ setfattr -n "user.9" 1/2/3
+	$ setfattr -n "user.a" 1/2/3
+
+	$ getfattr -h -L -R -m '.' -e hex 1
+	> # file: 1
+	> user.9
+	> user.a
+	>
+	> # file: 1/2
+	> user.9
+	> user.a
+	>
+	> # file: 1/2/3
+	> user.9
+	> user.a
+	>
+
+	$ getfattr -h -P -R -m '.' -e hex 1/2
+	> # file: 1/2
+	> user.9
+	> user.a
+	>
+	> # file: 1/2/3
+	> user.9
+	> user.a
+	>
+
+	$ rm -R 1
+
+Test for proper recursion of directory structures with -L -P -R
+
+	$ mkdir -p 1/sub
+	$ mkdir 1/link
+	$ touch 1/link/link-file
+	$ touch 1/sub/sub-file
+	$ ln -s `pwd`/1/link 1/sub/link
+	$ setfattr -n "user.a" 1
+	$ setfattr -n "user.a" 1/link/link-file
+	$ setfattr -n "user.a" 1/link
+	$ setfattr -n "user.a" 1/sub/sub-file
+	$ setfattr -n "user.a" 1/sub
+	$ getfattr -P -R 1
+	> # file: 1
+	> user.a
+	>
+	> # file: 1/sub
+	> user.a
+	>
+	> # file: 1/sub/link
+	> user.a
+	>
+	> # file: 1/sub/sub-file
+	> user.a
+	>
+	> # file: 1/link
+	> user.a
+	>
+	> # file: 1/link/link-file
+	> user.a
+	>
+	$ getfattr -R -P 1/sub
+	> # file: 1/sub
+	> user.a
+	>
+	> # file: 1/sub/link
+	> user.a
+	>
+	> # file: 1/sub/sub-file
+	> user.a
+	>
+	$ getfattr -L -R 1
+	> # file: 1
+	> user.a
+	>
+	> # file: 1/sub
+	> user.a
+	>
+	> # file: 1/sub/link
+	> user.a
+	>
+	> # file: 1/sub/link/link-file
+	> user.a
+	>
+	> # file: 1/sub/sub-file
+	> user.a
+	>
+	> # file: 1/link
+	> user.a
+	>
+	> # file: 1/link/link-file
+	> user.a
+	>
+	$ getfattr -R 1/sub/link
+	> # file: 1/sub/link
+	> user.a
+	>
+	> # file: 1/sub/link/link-file
+	> user.a
+	>
+	$ getfattr -L -R 1/sub/link
+	> # file: 1/sub/link
+	> user.a
+	>
+	> # file: 1/sub/link/link-file
+	> user.a
+	>
+
+	$ rm -R 1
