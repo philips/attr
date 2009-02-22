@@ -10,7 +10,7 @@ EXT = $(wildcard ext/*.test)
 ROOT = $(wildcard root/*.test)
 
 # ensure we pick these up in the source tarball
-LSRCFILES = $(TEST) $(EXT) run README
+LSRCFILES = $(TEST) $(EXT) $(ROOT) run README
 
 default install install-dev install-lib:
 
