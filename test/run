@@ -53,6 +53,9 @@ if (isatty(fileno(STDOUT))) {
 	$FAILED = "\033[31m\033[1m" . $FAILED . "\033[m";
 }
 
+$ENV{"TUSER"} = getpwuid($>);
+$ENV{"TGROUP"} = getgrgid($));
+
 sub exec_test($$);
 sub process_test($$$$);
 
