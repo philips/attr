@@ -25,59 +25,99 @@ With -h, we do not dereference symlinks:
 	>
 
 Do the same for symlinks we find in a directory hierarchy:
-	$ getfattr -m- -Rd . | grep file: | sort
+	$ getfattr -m- -Rd .
 	> # file: f
+	> user.test="test"
+	>
 	> # file: l
+	> user.test="test"
+	>
 
-	$ getfattr -m- -Rhd . | grep file: | sort
+	$ getfattr -m- -Rhd .
 	> # file: f
+	> user.test="test"
+	>
 	> # file: l
+	> trusted.test="test"
+	>
 
 Make sure we follow symlinks on the command line only when we should:
 	$ ln -s . here
-	$ getfattr -m- -Rd here | grep file: | sort
+	$ getfattr -m- -Rd here
 	> # file: here/f
+	> user.test="test"
+	>
 	> # file: here/l
+	> user.test="test"
+	>
 
-	$ getfattr -m- -Rhd here | grep file: | sort
+	$ getfattr -m- -Rhd here
 	> # file: here/f
+	> user.test="test"
+	>
 	> # file: here/l
+	> trusted.test="test"
+	>
 
-	$ getfattr -m- -RLhd here | grep file: | sort
+	$ getfattr -m- -RLhd here
 	> # file: here/f
+	> user.test="test"
+	>
 	> # file: here/l
+	> trusted.test="test"
+	>
 
 	$ getfattr -m- -RPhd here
 
 Make sure we recurse into sub-directories:
 	$ mkdir sub
 	$ mv f l sub
-	$ getfattr -m- -Rd . | grep file: | sort
+	$ getfattr -m- -Rd .
 	> # file: sub/f
+	> user.test="test"
+	>
 	> # file: sub/l
+	> user.test="test"
+	>
 
-	$ getfattr -m- -Rhd . | grep file: | sort
+	$ getfattr -m- -Rhd .
 	> # file: sub/f
+	> user.test="test"
+	>
 	> # file: sub/l
+	> trusted.test="test"
+	>
 
 Make sure we follow symlinks to directories only when we should:
 	$ mkdir sub2
 	$ ln -s ../sub sub2/to-sub
 	$ getfattr -m- -Rhd sub2
 
-	$ getfattr -m- -RLhd sub2 | grep file: | sort
+	$ getfattr -m- -RLhd sub2
 	> # file: sub2/to-sub/f
+	> user.test="test"
+	>
 	> # file: sub2/to-sub/l
+	> trusted.test="test"
+	>
 
 	$ getfattr -m- -RPhd sub2
 
 Symlink loop detection:
 	$ ln -s .. sub/up
-	$ getfattr -m- -RLhd . | grep file: | sort
+	$ getfattr -m- -RLhd .
 	> # file: sub2/to-sub/f
+	> user.test="test"
+	>
 	> # file: sub2/to-sub/l
+	> trusted.test="test"
+	>
 	> # file: sub/f
+	> user.test="test"
+	>
 	> # file: sub/l
+	> trusted.test="test"
+	>
 
 	$ cd ..
 	$ rm -rf d
