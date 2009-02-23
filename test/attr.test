@@ -264,29 +264,14 @@ Tests for proper path recursion reported by Tony Ernst <tee@sgi.com> bnc#457660
 	$ setfattr -n "user.9" 1/2/3
 	$ setfattr -n "user.a" 1/2/3
 
-	$ getfattr -h -L -R -m '.' -e hex 1
+	$ getfattr -h -L -R 1 | grep file: | sort
 	> # file: 1
-	> user.9
-	> user.a
-	>
 	> # file: 1/2
-	> user.9
-	> user.a
-	>
 	> # file: 1/2/3
-	> user.9
-	> user.a
-	>
 
-	$ getfattr -h -P -R -m '.' -e hex 1/2
+	$ getfattr -h -P -R 1/2 | grep file: | sort
 	> # file: 1/2
-	> user.9
-	> user.a
-	>
 	> # file: 1/2/3
-	> user.9
-	> user.a
-	>
 
 	$ rm -R 1
 
@@ -302,70 +287,34 @@ Test for proper recursion of directory structures with -L -P -R
 	$ setfattr -n "user.a" 1/link
 	$ setfattr -n "user.a" 1/sub/sub-file
 	$ setfattr -n "user.a" 1/sub
-	$ getfattr -P -R 1
+	$ getfattr -P -R 1 | grep file: | sort
 	> # file: 1
-	> user.a
-	>
-	> # file: 1/sub
-	> user.a
-	>
-	> # file: 1/sub/link
-	> user.a
-	>
-	> # file: 1/sub/sub-file
-	> user.a
-	>
 	> # file: 1/link
-	> user.a
-	>
 	> # file: 1/link/link-file
-	> user.a
-	>
-	$ getfattr -R -P 1/sub
 	> # file: 1/sub
-	> user.a
-	>
 	> # file: 1/sub/link
-	> user.a
-	>
 	> # file: 1/sub/sub-file
-	> user.a
-	>
-	$ getfattr -L -R 1
+
+	$ getfattr -R -P 1/sub | grep file: | sort
+	> # file: 1/sub
+	> # file: 1/sub/link
+	> # file: 1/sub/sub-file
+
+	$ getfattr -L -R 1 | grep file: | sort
 	> # file: 1
-	> user.a
-	>
-	> # file: 1/sub
-	> user.a
-	>
-	> # file: 1/sub/link
-	> user.a
-	>
-	> # file: 1/sub/link/link-file
-	> user.a
-	>
-	> # file: 1/sub/sub-file
-	> user.a
-	>
 	> # file: 1/link
-	> user.a
-	>
 	> # file: 1/link/link-file
-	> user.a
-	>
-	$ getfattr -R 1/sub/link
+	> # file: 1/sub
 	> # file: 1/sub/link
-	> user.a
-	>
 	> # file: 1/sub/link/link-file
-	> user.a
-	>
-	$ getfattr -L -R 1/sub/link
+	> # file: 1/sub/sub-file
+
+	$ getfattr -R 1/sub/link | grep file: | sort
 	> # file: 1/sub/link
-	> user.a
-	>
 	> # file: 1/sub/link/link-file
-	> user.a
-	>
+
+	$ getfattr -L -R 1/sub/link | grep file: | sort
+	> # file: 1/sub/link
+	> # file: 1/sub/link/link-file
 
 	$ rm -R 1
