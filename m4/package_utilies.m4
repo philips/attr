@@ -100,6 +100,8 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
         xgettext=$XGETTEXT
         AC_SUBST(xgettext)
         AC_PACKAGE_NEED_UTILITY($1, "$xgettext", xgettext, gettext)
+
+	AC_DEFINE([ENABLE_GETTEXT], 1, [enable gettext])
     fi
 
     if test -z "$RPM"; then
