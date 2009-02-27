@@ -14,7 +14,8 @@ LSRCFILES = configure configure.in aclocal.m4 Makepkgs install-sh exports \
 	README VERSION
 
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
-	Logs/* built .census install.* install-dev.* install-lib.* *.gz
+	Logs/* built .census install.* install-dev.* install-lib.* *.gz \
+	config.guess config.sub ltmain.sh libtool
 
 LIB_SUBDIRS = include libmisc libattr
 TOOL_SUBDIRS = attr getfattr setfattr examples test m4 man doc po debian build
@@ -40,6 +41,8 @@ clean:	# if configure hasn't run, nothing to clean
 endif
 
 configure include/builddefs:
+	libtoolize -c -f
+	aclocal -I m4
 	autoconf
 	./configure \
 		--prefix=/ \
@@ -61,9 +64,6 @@ include/config.h: include/builddefs
 		rm -f include/builddefs; \
 		$(MAKE) $(AM_MAKEFLAGS) include/builddefs; \
 	fi
-
-aclocal.m4::
-	aclocal --acdir=`pwd`/m4 --output=$@
 
 install: default $(addsuffix -install,$(SUBDIRS))
 	$(INSTALL) -m 755 -d $(PKG_DOC_DIR)

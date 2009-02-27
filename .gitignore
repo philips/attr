@@ -25,3 +25,8 @@ attr-*.tar.gz
 *.o
 /po/attr.pot
 /setfattr/setfattr
+/aclocal.m4
+/config.guess
+/config.sub
+/libtool
+/ltmain.sh
