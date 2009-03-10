@@ -56,7 +56,7 @@ _chown ()
 		    fi
 		fi
 	       _st=0
-	    fi     
+	    fi
 	fi
     fi
 
@@ -65,7 +65,7 @@ _chown ()
 
 
 _manifest ()
-{ 
+{
     echo $* | sed -e 's/\/\//\//g' >>${DIST_MANIFEST:-/dev/null}
 }
 
@@ -114,14 +114,14 @@ do
 	DIRMODE=`expr $OPTARG`
 	FILEMODE=$DIRMODE
 	;;
-   D) 
+   D)
 	Dflag=true
 	;;
-   S) 
+   S)
 	symlink=$OPTARG
 	Sflag=true
 	;;
-   d) 
+   d)
 	dir=$DIST_ROOT/$OPTARG
 	dflag=true
 	;;
@@ -130,7 +130,7 @@ do
 	Tflag=true
 	;;
    *)
-   	_usage
+	_usage
 	;;
    esac
 done
@@ -143,7 +143,7 @@ then
     #
     # first usage
     #
-    $MKDIR -p $dir 
+    $MKDIR -p $dir
     status=$?
     if [ $status -eq 0 ]
     then
@@ -163,13 +163,13 @@ then
     #
     if [ $# -ne 1 ]
     then
-    	_usage
+	_usage
     else
-    	target=$DIST_ROOT/$1
+	target=$DIST_ROOT/$1
     fi
     $LN -s -f $symlink $target
     status=$?
-    $MANIFEST l $symlink ${target#$DIST_ROOT} 
+    $MANIFEST l $symlink ${target#$DIST_ROOT}
 elif $Tflag
 then
     #
@@ -287,7 +287,7 @@ else
 	$CP $f $dir
 	status=$?
 	if [ $status -eq 0 ]
-	then 
+	then
 	    if [ -f $dir/$f ]
 	    then
 		$CHMOD $FILEMODE $dir/$f
