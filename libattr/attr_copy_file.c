@@ -1,5 +1,3 @@
-/* Copy extended attributes between files. */
- 
 /* Copyright (C) 2002 Andreas Gruenbacher <agruen@suse.de>, SuSE Linux AG.
 
   This program is free software; you can redistribute it and/or
@@ -16,6 +14,8 @@
   License along with this library; if not, write to the Free Software
   Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 */
+
+/* Copy extended attributes between files. */
 
 #if defined (HAVE_CONFIG_H)
 #include "config.h"

@@ -1,4 +1,5 @@
-/* Copyright (C) 2006 Andreas Gruenbacher <agruen@xxxxxxx>, SuSE Linux AG.
+/*
+  Copyright (C) 2006 Andreas Gruenbacher <agruen@suse.de>, SuSE Linux AG.
 
   This program is free software; you can redistribute it and/or
   modify it under the terms of the GNU Lesser General Public
