@@ -9,13 +9,17 @@ ifeq ($(HAVE_BUILDDEFS), yes)
 include $(TOPDIR)/include/builddefs
 endif
 
-CONFIGURE = configure include/builddefs include/config.h
-LSRCFILES = configure configure.in aclocal.m4 Makepkgs install-sh exports \
-	README VERSION
+CONFIGURE = \
+	aclocal.m4 \
+	configure config.guess config.sub \
+	ltmain.sh m4/libtool.m4 m4/ltoptions.m4 m4/ltsugar.m4 \
+	m4/ltversion.m4 m4/lt~obsolete.m4
+LSRCFILES = \
+	configure.in Makepkgs install-sh exports README VERSION \
+	$(CONFIGURE)
 
 LDIRT = config.log .dep config.status config.cache confdefs.h conftest* \
-	Logs/* built .census install.* install-dev.* install-lib.* *.gz \
-	config.guess config.sub ltmain.sh libtool
+	Logs/* built .census install.* install-dev.* install-lib.* *.gz
 
 LIB_SUBDIRS = include libmisc libattr
 TOOL_SUBDIRS = attr getfattr setfattr examples test m4 man doc po debian build
@@ -41,7 +45,8 @@ clean:	# if configure hasn't run, nothing to clean
 endif
 
 configure include/builddefs:
-	libtoolize -c -f
+	libtoolize -c -i -f
+	cp include/install-sh .
 	aclocal -I m4
 	autoconf
 	./configure \
@@ -84,6 +89,7 @@ install-lib: install $(addsuffix -install-lib,$(SUBDIRS))
 
 realclean distclean: clean
 	rm -f $(LDIRT) $(CONFIGURE)
+	rm -f include/builddefs include/config.h install-sh libtool
 	rm -rf autom4te.cache Logs
 
 .PHONY: tests root-tests ext-tests
