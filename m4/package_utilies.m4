@@ -4,7 +4,7 @@ dnl This file is part of Attr.
 dnl
 dnl Attr is free software: you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by
-dnl the Free Software Foundation, either version 2.1 of the License, or
+dnl the Free Software Foundation, either version 2 of the License, or
 dnl (at your option) any later version.
 dnl
 dnl Attr is distributed in the hope that it will be useful,
