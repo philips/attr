@@ -60,8 +60,13 @@ else
 clean:	# if configure hasn't run, nothing to clean
 endif
 
+# Recent versions of libtool require the -i option for copying auxiliary
+# files (config.sub, config.guess, install-sh, ltmain.sh), while older
+# versions will copy those files anyway, and don't understand -i.
+LIBTOOLIZE_INSTALL = `libtoolize -n -i >/dev/null 2>/dev/null && echo -i`
+
 configure include/builddefs:
-	libtoolize -c -i -f
+	libtoolize -c $(LIBTOOLIZE_INSTALL) -f
 	cp include/install-sh .
 	aclocal -I m4
 	autoconf
