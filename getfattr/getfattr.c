@@ -91,8 +91,11 @@ int do_listxattr(const char *path, char *list, size_t size)
 
 const char *strerror_ea(int err)
 {
+#ifdef __linux__
+	/* The Linux kernel does not define ENOATTR, but maps it to ENODATA. */
 	if (err == ENODATA)
 		return _("No such attribute");
+#endif
 	return strerror(err);
 }
 
