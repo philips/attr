@@ -57,7 +57,7 @@ static int walk_tree_visited(dev_t dev, ino_t ino)
 
 static int walk_tree_rec(const char *path, int walk_flags,
 			 int (*func)(const char *, const struct stat *, int,
-			 	     void *), void *arg, int depth)
+				     void *), void *arg, int depth)
 {
 	int follow_symlinks = (walk_flags & WALK_TREE_LOGICAL) ||
 			      (!(walk_flags & WALK_TREE_PHYSICAL) &&

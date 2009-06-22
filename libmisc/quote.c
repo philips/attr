@@ -29,7 +29,7 @@ const char *quote(const char *str)
 	const unsigned char *s;
 	char *q;
 	size_t nonpr;
-	
+
 	if (!str)
 		return str;
 

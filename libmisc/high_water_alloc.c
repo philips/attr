@@ -36,7 +36,7 @@ int high_water_alloc(void **buf, size_t *bufsize, size_t newsize)
 		newbuf = realloc(*buf, newsize);
 		if (!newbuf)
 			return 1;
-		
+
 		*buf = newbuf;
 		*bufsize = newsize;
 	}
