@@ -308,6 +308,8 @@ sub exec_test($$) {
     my $result = [];
     while (<IN>) {
       #print "< $_";
+      # remove libtool 'lt-' prefixes on prog name output
+      s#^lt-##g;
       if ($needs_shell) {
 	s#^/bin/sh: line \d+: ##;
       }
