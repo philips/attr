@@ -22,7 +22,7 @@
 #include <ctype.h>
 #include "misc.h"
 
-const char *quote(const char *str)
+const char *quote(const char *str, const char *quote_chars)
 {
 	static char *quoted_str;
 	static size_t quoted_str_len;
@@ -34,7 +34,7 @@ const char *quote(const char *str)
 		return str;
 
 	for (nonpr = 0, s = (unsigned char *)str; *s != '\0'; s++)
-		if (!isprint(*s) || isspace(*s) || *s == '\\' || *s == '=')
+		if (*s == '\\' || strchr(quote_chars, *s))
 			nonpr++;
 	if (nonpr == 0)
 		return str;
@@ -43,7 +43,7 @@ const char *quote(const char *str)
 			     (s - (unsigned char *)str) + nonpr * 3 + 1))
 		return NULL;
 	for (s = (unsigned char *)str, q = quoted_str; *s != '\0'; s++) {
-		if (!isprint(*s) || isspace(*s) || *s == '\\' || *s == '=') {
+		if (*s == '\\' || strchr(quote_chars, *s)) {
 			*q++ = '\\';
 			*q++ = '0' + ((*s >> 6)    );
 			*q++ = '0' + ((*s >> 3) & 7);
