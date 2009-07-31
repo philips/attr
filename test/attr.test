@@ -222,7 +222,7 @@ Tests for file name that contain special characters
 	$ touch "f "
 	$ setfattr -n user.name -v value "f "
 	$ getfattr -d "f "
-	> # file: f\040
+	> # file: f 
 	> user.name="value"
 	>
 
@@ -232,23 +232,23 @@ Tests for attribute names that contains special characters
 
 	$ touch f
 	$ setfattr -n "user.sp ace" -v value f
-	$ setfattr -n "user.special\\007" -v value f
+	$ setfattr -n "user.special " -v value f
 	$ getfattr f
 	> # file: f
-	> user.sp\040ace
-	> user.special\007
+	> user.sp ace
+	> user.special 
 	>
 
 	$ getfattr -d f
 	> # file: f
-	> user.sp\040ace="value"
-	> user.special\007="value"
+	> user.sp ace="value"
+	> user.special ="value"
 	>
 
 	$ setfattr -x "user.sp ace" f
 	$ setfattr -n "user.sp ace" -v value f
-	$ setfattr -x "user.sp\\040ace" f
-	$ setfattr -x "user.special\\007" f
+	$ setfattr -x "user.sp ace" f
+	$ setfattr -x "user.special	" f
 	$ rm f
 
 	$ cd ..
