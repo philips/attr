@@ -53,7 +53,7 @@ free_attr_actions(void)
 static int
 attr_parse_attr_conf(struct error_context *ctx)
 {
-	char *text, *t;
+	char *text = NULL, *t;
 	size_t size_guess = 4096, len;
 	FILE *file;
 	char *pattern = NULL;
@@ -64,15 +64,16 @@ attr_parse_attr_conf(struct error_context *ctx)
 		return 0;
 
 repeat:
-	text = malloc(size_guess + 1);
-	if (!text)
-		goto fail;
-
 	if ((file = fopen(ATTR_CONF, "r")) == NULL) {
 		if (errno == ENOENT)
 			return 0;
 		goto fail;
 	}
+
+	text = malloc(size_guess + 1);
+	if (!text)
+		goto fail;
+
 	len = fread(text, 1, size_guess, file);
 	if (ferror(file))
 		goto fail;
