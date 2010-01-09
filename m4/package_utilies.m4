@@ -36,55 +36,38 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
     AC_SUBST(cc)
     AC_PACKAGE_NEED_UTILITY($1, "$cc", cc, [C compiler])
 
-    if test -z "$MAKE"; then
-        AC_PATH_PROG(MAKE, gmake,, /usr/bin:/usr/local/bin:/usr/freeware/bin)
-    fi
-    if test -z "$MAKE"; then
-        AC_PATH_PROG(MAKE, make,, /usr/bin)
-    fi
+    search_path="$PATH$PATH_SEPARATOR/usr/freeware/bin$PATH_SEPARATOR/bin$PATH_SEPARATOR/usr/bin$PATH_SEPARATOR/usr/local/bin"
+
+    AC_PATH_PROGS(MAKE, gmake make,, $search_path)
     make=$MAKE
     AC_SUBST(make)
     AC_PACKAGE_NEED_UTILITY($1, "$make", make, [GNU make])
 
-    if test -z "$TAR"; then
-        AC_PATH_PROG(TAR, tar,, /usr/freeware/bin:/bin:/usr/local/bin:/usr/bin)
-    fi
+    AC_PATH_PROG(TAR, tar,, $search_path)
     tar=$TAR
     AC_SUBST(tar)
-    if test -z "$ZIP"; then
-        AC_PATH_PROG(ZIP, gzip,, /bin:/usr/bin:/usr/local/bin:/usr/freeware/bin)
-    fi
 
+    AC_PATH_PROG(ZIP, gzip,, $search_path)
     zip=$ZIP
     AC_SUBST(zip)
 
-    if test -z "$MAKEDEPEND"; then
-        AC_PATH_PROG(MAKEDEPEND, makedepend, /bin/true)
-    fi
+    AC_PATH_PROG(MAKEDEPEND, makedepend, /bin/true)
     makedepend=$MAKEDEPEND
     AC_SUBST(makedepend)
 
-    if test -z "$AWK"; then
-        AC_PATH_PROG(AWK, awk,, /bin:/usr/bin)
-    fi
+    AC_PATH_PROG(AWK, awk,, $search_path)
     awk=$AWK
     AC_SUBST(awk)
 
-    if test -z "$SED"; then
-        AC_PATH_PROG(SED, sed,, /bin:/usr/bin)
-    fi
+    AC_PATH_PROG(SED, sed,, $search_path)
     sed=$SED
     AC_SUBST(sed)
 
-    if test -z "$ECHO"; then
-        AC_PATH_PROG(ECHO, echo,, /bin:/usr/bin)
-    fi
+    AC_PATH_PROG(ECHO, echo,, $search_path)
     echo=$ECHO
     AC_SUBST(echo)
 
-    if test -z "$SORT"; then
-        AC_PATH_PROG(SORT, sort,, /bin:/usr/bin)
-    fi
+    AC_PATH_PROG(SORT, sort,, $search_path)
     sort=$SORT
     AC_SUBST(sort)
 
@@ -92,23 +75,17 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
     AC_PROG_LN_S
 
     if test "$enable_gettext" = yes; then
-        if test -z "$MSGFMT"; then
-                AC_PATH_PROG(MSGFMT, msgfmt,, /usr/bin:/usr/local/bin:/usr/freeware/bin)
-        fi
+        AC_PATH_PROG(MSGFMT, msgfmt,, $search_path)
         msgfmt=$MSGFMT
         AC_SUBST(msgfmt)
         AC_PACKAGE_NEED_UTILITY($1, "$msgfmt", msgfmt, gettext)
 
-        if test -z "$MSGMERGE"; then
-                AC_PATH_PROG(MSGMERGE, msgmerge,, /usr/bin:/usr/local/bin:/usr/freeware/bin)
-        fi
+        AC_PATH_PROG(MSGMERGE, msgmerge,, $search_path)
         msgmerge=$MSGMERGE
         AC_SUBST(msgmerge)
         AC_PACKAGE_NEED_UTILITY($1, "$msgmerge", msgmerge, gettext)
 
-        if test -z "$XGETTEXT"; then
-                AC_PATH_PROG(XGETTEXT, xgettext,, /usr/bin:/usr/local/bin:/usr/freeware/bin)
-        fi
+        AC_PATH_PROG(XGETTEXT, xgettext,, $search_path)
         xgettext=$XGETTEXT
         AC_SUBST(xgettext)
         AC_PACKAGE_NEED_UTILITY($1, "$xgettext", xgettext, gettext)
@@ -116,9 +93,7 @@ AC_DEFUN([AC_PACKAGE_UTILITIES],
 	AC_DEFINE([ENABLE_GETTEXT], 1, [enable gettext])
     fi
 
-    if test -z "$RPM"; then
-        AC_PATH_PROG(RPM, rpm,, /bin:/usr/bin:/usr/freeware/bin)
-    fi
+    AC_PATH_PROG(RPM, rpm,, $search_path)
     rpm=$RPM
     AC_SUBST(rpm)
 
