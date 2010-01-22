@@ -78,7 +78,9 @@ static int walk_tree_rec(const char *path, int walk_flags,
 		return func(path, NULL, flags | WALK_TREE_FAILED, arg);
 	if (S_ISLNK(st.st_mode)) {
 		flags |= WALK_TREE_SYMLINK;
-		if (flags & WALK_TREE_DEREFERENCE) {
+		if ((flags & WALK_TREE_DEREFERENCE) ||
+		    ((flags & WALK_TREE_TOPLEVEL) &&
+		     (flags & WALK_TREE_DEREFERENCE_TOPLEVEL))) {
 			if (stat(path, &st) != 0)
 				return func(path, NULL,
 					    flags | WALK_TREE_FAILED, arg);

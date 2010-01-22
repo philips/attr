@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include <string.h>
 #include "misc.h"
 
 const char *quote(const char *str, const char *quote_chars)
